@@ -246,3 +246,25 @@
  .album-count{order:3;flex-basis:100%;margin-right:0}
  .album-play-button{font-size:11px;padding:8px 10px}
 }
+
+/* v2.3 optional account & cloud settings */
+.cloud-account{border:1px solid #354b43;background:#11211f;border-radius:9px;padding:11px 9px;display:flex;flex-direction:column;gap:7px;min-width:0;flex:0 0 auto}
+.cloud-account-label{font-size:10px;letter-spacing:1.2px;color:var(--muted);font-weight:800}
+.cloud-account-name{font-size:11px;font-weight:700;line-height:1.4;color:#e1eee5;overflow-wrap:anywhere}
+.cloud-signin{border:1px solid #41694c;background:#203d2b;color:var(--accent);font-size:11px;line-height:1.35;padding:10px;justify-content:center;text-align:center;min-height:38px;flex:0 0 auto}
+.cloud-account-actions{display:flex;flex-direction:column;gap:6px;min-width:0}
+.cloud-account-actions[hidden]{display:none}
+.cloud-account-actions button,.cloud-setup button{border:1px solid #456b4f;border-radius:6px;background:#244331;color:#e0f9d2;font-size:10px;text-align:left;padding:8px 9px;min-height:31px}
+.cloud-account button:disabled{opacity:.55;cursor:wait}
+.cloud-setup summary{cursor:pointer;color:#bfcea9;font-size:10px;line-height:1.5}
+.cloud-setup label{font-size:10px;color:var(--muted);display:block;margin-top:8px}
+.cloud-setup input{width:100%;min-width:0;background:#0a181b;color:var(--text);font-size:10px;border:1px solid #4a6655;border-radius:5px;padding:7px;margin:5px 0;overflow-wrap:anywhere}
+.cloud-setup small{display:block;color:var(--muted);font-size:9px;line-height:1.5;margin-top:7px}
+.cloud-status{font-size:10px;color:#a1b5a9;line-height:1.5;overflow-wrap:anywhere}
+.cloud-status.error{color:#f6bbad}
+@media(max-width:700px){
+ .sidebar .cloud-account{order:4;flex:1 0 100%;width:100%;padding:8px 10px}
+ .sidebar .cloud-account-actions{flex-direction:row;flex-wrap:wrap}
+ .sidebar .cloud-account-actions button{flex:1 1 auto}
+ .sidebar .cloud-signin{text-align:left;justify-content:flex-start}
+}
