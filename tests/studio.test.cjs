@@ -62,11 +62,13 @@ test('studio has its own accessible workspace and genres precede optional accoun
 
 });
 
-test('Showdance Studio navigation sits at the bottom below the genre browser',()=>{
+test('Showdance navigation is in top-level modes, with genre-first sidebar',()=>{
   const html=fs.readFileSync('index.html','utf8');
+  assert.equal((html.match(/id="studioNav"/g)||[]).length,1);
+  assert.ok(html.indexOf('id="studioNav"')>html.indexOf('<nav class="mode-tabs"'));
+  assert.ok(html.indexOf('id="studioNav"')<html.indexOf('</nav>',html.indexOf('<nav class="mode-tabs"')));
   const sidebar=html.slice(html.indexOf('<aside class="sidebar">'),html.indexOf('</aside>'));
-  assert.equal((sidebar.match(/id="studioNav"/g)||[]).length,1);
-  assert.ok(sidebar.indexOf('id="studioNav"')>sidebar.indexOf('id="genreTree"'));
-  assert.ok(sidebar.indexOf('id="studioNav"')>sidebar.indexOf('id="folderSummary"'));
-  assert.ok(sidebar.includes('class="sidebar-studio-footer"'));
+  assert.ok(sidebar.includes('id="genreTree"'));
+  assert.ok(sidebar.includes('class="sidebar-local-tools"'));
+  assert.ok(!sidebar.includes('id="studioNav"'));
 });
