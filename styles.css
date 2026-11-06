@@ -394,3 +394,18 @@
 
 /* Honor the account's authenticated/guest visibility toggles. */
 .topbar-account-menu [hidden]{display:none!important}
+
+/* Studio access belongs at the bottom of the sidebar, away from music genres. */
+.sidebar-studio-footer{display:flex;flex:0 0 auto;margin-top:auto;padding-top:12px;border-top:1px solid #375146;background:#0c131a;position:sticky;bottom:0;z-index:5}
+.sidebar-studio-footer .studio-nav{width:100%;min-height:48px;display:flex;align-items:center;gap:10px;background:#233e30;color:#e5fbd7;border:1px solid #587d56;border-radius:10px;padding:12px 13px;font-size:13px;font-weight:760;white-space:normal}
+.sidebar-studio-footer .studio-nav:hover,.sidebar-studio-footer .studio-nav.active{background:#365d3d;color:#f6ffe9;border-color:#97bd71}
+.sidebar-studio-footer .studio-nav:focus-visible{outline:2px solid #d7ffa9;outline-offset:2px}
+@media(min-width:701px){
+  .sidebar{height:calc(100dvh - 92px);min-height:0}
+  .sidebar .genre-tree{flex:1 1 220px;max-height:none;min-height:140px}
+  .sidebar-studio-footer{margin-top:auto}
+}
+@media(max-width:700px){
+  .sidebar-studio-footer{order:7;flex:1 0 100%;width:100%;position:static;margin-top:4px;padding:10px 0 0;box-sizing:border-box}
+  .sidebar-studio-footer .studio-nav{justify-content:center}
+}
