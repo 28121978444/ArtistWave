@@ -54,3 +54,25 @@
 .lyrics-link:hover{background:#2d3a26}
 @media(max-width:1050px){.unavailable-row{grid-template-columns:32px minmax(0,1fr) 65px 112px}.unavailable-row .recording-name{display:none}}
 @media(max-width:700px){.playlist-actions{align-items:center}.catalog-toggle{min-width:155px}.unavailable-row{grid-template-columns:23px minmax(0,1fr) 94px;gap:6px;padding:10px 6px}.unavailable-row .track-source{display:none}.lyrics-link{font-size:10px;padding:6px 4px}}
+
+/* v1.5: linked lyrics sources for ALL tracks, with explicit provider credit */
+.track-row{grid-template-columns:40px minmax(0,3fr) minmax(0,2fr) 72px minmax(162px,1.5fr)}
+.track-actions{display:flex;align-items:center;justify-content:flex-end;gap:7px;min-width:0}
+.lyrics-actions{display:flex;align-items:center;justify-content:flex-end;gap:5px;flex-wrap:wrap;min-width:0}
+.lyrics-actions .lyrics-link{font-size:10px;padding:6px 7px;line-height:1.2}
+.lyrics-credit{font-size:9px;color:var(--muted);width:100%;text-align:right;line-height:1.2}
+.unavailable-row{grid-template-columns:40px minmax(0,3fr) minmax(0,2fr) 72px minmax(162px,1.5fr)}
+.unavailable-row>.lyrics-actions{align-self:center}
+.track-heart,.track-actions .heart-button{flex:none}
+@media(max-width:1050px){
+  .track-row,.unavailable-row{grid-template-columns:32px minmax(0,1fr) 68px minmax(162px,1fr)}
+  .recording-name{display:none}
+}
+@media(max-width:700px){
+  .track-row,.unavailable-row{grid-template-columns:26px minmax(0,1fr) minmax(120px,1.1fr);gap:5px;padding:9px 5px}
+  .track-row>.track-source,.unavailable-row>.track-source{display:none}
+  .track-actions{gap:1px;justify-content:flex-end}
+  .lyrics-actions{gap:3px}
+  .lyrics-actions .lyrics-link{font-size:9px;padding:6px 5px}
+  .lyrics-credit{font-size:8px}
+}
