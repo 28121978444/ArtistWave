@@ -105,3 +105,80 @@
 .genre-results{scroll-margin-top:15px}
 .genre-artist-list{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
 @media(max-width:800px){.genre-category-heading{width:100%}.genre-tree{max-height:350px}}
+
+/* v1.8 sidebar fix: do not compress expanded genre buttons to a few pixels.
+   The outer genre list scrolls, while every button keeps its natural height. */
+.sidebar{min-width:0}
+.sidebar .genre-tree{
+  display:flex;
+  flex-direction:column;
+  flex:1 1 auto;
+  min-height:0;
+  min-width:0;
+  max-height:none;
+  gap:8px;
+  overflow-y:auto;
+  overflow-x:hidden;
+  align-items:stretch;
+  padding:2px 5px 12px 2px;
+}
+.sidebar .genre-node{
+  display:flex;
+  flex:0 0 auto;
+  flex-shrink:0;
+  flex-direction:column;
+  width:100%;
+  height:auto;
+  min-width:0;
+  overflow:visible;
+  border-radius:9px;
+}
+.sidebar .genre-top-button,
+.sidebar .genre-style-button,
+.sidebar .genre-era-button,
+.sidebar .genre-sidebar-artist{
+  display:block;
+  position:static;
+  width:100%;
+  height:auto;
+  min-height:38px;
+  max-height:none;
+  line-height:1.4;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  box-sizing:border-box;
+  flex:0 0 auto;
+  text-align:left;
+}
+.sidebar .genre-top-button{padding:11px 12px;min-height:45px}
+.sidebar .genre-style-button{padding:9px 11px;min-height:39px}
+.sidebar .genre-era-button{padding:9px 10px;min-height:38px}
+.sidebar .genre-sidebar-artist{padding:9px 10px;min-height:34px}
+.sidebar .genre-era-list,
+.sidebar .genre-style-group,
+.sidebar .genre-era-group,
+.sidebar .genre-sidebar-artists{
+  flex:0 0 auto;
+  height:auto;
+  min-height:0;
+  overflow:visible;
+}
+.sidebar .genre-category-heading{
+  flex:0 0 auto;
+  width:100%;
+  line-height:1.5;
+  margin:16px 0 7px;
+  white-space:normal;
+}
+.sidebar .sidebar-bottom{flex:0 0 auto}
+@media(max-width:700px){
+  .sidebar{align-items:stretch;overflow:visible}
+  .sidebar .genre-tree{
+    order:5;
+    flex:1 0 100%;
+    width:100%;
+    max-height:360px;
+    overflow-y:auto;
+  }
+  .sidebar .genre-node{width:100%}
+}
