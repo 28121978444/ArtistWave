@@ -36,14 +36,39 @@ function trackPriority(track){
   const title=cleanTrackTitle(track.title,track.artist);
   return source+format+(title.length>2?1:0);
 }
+// One visible track per artist/title, but keep independent playable sources
+// behind it so the player can recover from a failed URL without extra rows.
+function trackSources(track){
+  return track?[track,...(Array.isArray(track.alternates)?track.alternates:[])]
+    .filter(t=>t&&t.url).map(({alternates,...t})=>t):[];
+}
 function dedupeTracks(tracks){
-  const chosen=new Map();
-  for(const track of tracks){
-    if(!track?.title)continue;
-    const key=trackKey(track);
-    if(!chosen.has(key)||trackPriority(track)>trackPriority(chosen.get(key)))chosen.set(key,track);
+  const buckets=new Map();
+  for(const original of tracks){
+    if(!original?.title)continue;
+    const key=trackKey(original);
+    if(!buckets.has(key))buckets.set(key,[]);
+    const bucket=buckets.get(key);
+    for(const source of trackSources(original)){
+      // Identical URLs/files have no value as alternate playback attempts.
+      if(!bucket.some(t=>t.url===source.url))bucket.push(source);
+    }
+    if(!original.url&&!bucket.length)bucket.push({...original,alternates:undefined});
   }
-  return [...chosen.values()];
+  return [...buckets.values()].map(bucket=>{
+    bucket.sort((a,b)=>trackPriority(b)-trackPriority(a));
+    const [preferred,...alternates]=bucket;
+    const albumSource=bucket.find(t=>t.albumKind==='album'&&t.collection);
+    const result={...preferred};
+    if(albumSource&&result.albumKind!=='album'){
+      result.collection=albumSource.collection;
+      result.albumKind='album';
+      result.year=albumSource.year||result.year;
+    }
+    if(alternates.length)result.alternates=alternates;
+    else delete result.alternates;
+    return result;
+  });
 }
 function mergePlaylistTracks(incoming){
   const previouslySelected=S.tracks[S.selected]||null;
