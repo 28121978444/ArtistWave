@@ -9,6 +9,26 @@ const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const creatorMatches=(value,name)=>{let list=Array.isArray(value)?value:[value];return list.some(v=>String(v||'').split(/\s*(?:;|\||,|\bfeat\.?\b|\bfeaturing\b)\s*/i).some(a=>norm(a)===norm(name)))};
 const current=()=>S.tracks[S.selected];
 function updatePlayer(){const t=current();$('nowTitle').textContent=t?.title||'Nothing playing yet';$('nowArtist').textContent=t?.artist||'Find your next favorite';$('playingSource').textContent=t?.source||'READY';$('playButton').textContent=audio.paused?'▶':'Ⅱ';$('favoriteCurrent').disabled=!t;$('favoriteCurrent').textContent=t&&S.favorites.some(x=>x.id===t.id)?'♥':'♡'}
+function makeLyricsActions(track){
+  const actions=document.createElement('div');actions.className='lyrics-actions';
+  const query=encodeURIComponent(track.artist+' '+track.title);
+  const sources=[
+    {name:'AZLyrics',href:'https://search.azlyrics.com/search.php?q='+query+'&w=songs'},
+    {name:'Genius',href:'https://genius.com/search?q='+query}
+  ];
+  for(const source of sources){
+    const a=document.createElement('a');a.className='lyrics-link';
+    a.href=source.href;a.target='_blank';a.rel='noopener noreferrer';
+    a.textContent=source.name+' ↗';
+    a.title='Search for '+track.title+' on '+source.name+' in a new tab; lyrics page not verified';
+    a.setAttribute('aria-label','Search '+source.name+' for lyrics to '+track.title+' by '+track.artist);
+    actions.append(a);
+  }
+  const caption=document.createElement('span');caption.className='lyrics-credit';
+  caption.textContent='External lyrics searches · AZLyrics / Genius';
+  actions.append(caption);
+  return actions;
+}
 function render(){
   const list=$('trackList');list.replaceChildren();
   $('favoriteCount').textContent=S.favorites.length;
@@ -31,7 +51,8 @@ function render(){
     const source=document.createElement('span');source.className='track-source';source.textContent=t.source;
     const fav=document.createElement('button');fav.className='heart-button';fav.textContent=S.favorites.some(x=>x.id===t.id)?'♥':'♡';
     fav.setAttribute('aria-label','Toggle favorite');fav.onclick=()=>favorite(t);
-    el.append(play,info,collection,source,fav);list.append(el);
+    const controls=document.createElement('div');controls.className='track-actions';controls.append(fav,makeLyricsActions(t));
+    el.append(play,info,collection,source,controls);list.append(el);
   });
   for(const t of unplayable){
     const el=document.createElement('div');el.className='track-row unavailable-row';
@@ -41,11 +62,7 @@ function render(){
     const artist=document.createElement('small');artist.textContent=t.artist;info.append(title,artist);
     const status=document.createElement('span');status.className='recording-name';status.textContent='No playable audio found';
     const badge=document.createElement('span');badge.className='track-source';badge.textContent='LYRICS';
-    const link=document.createElement('a');link.className='lyrics-link';
-    link.href='https://genius.com/search?q='+encodeURIComponent(t.artist+' '+t.title);
-    link.target='_blank';link.rel='noopener noreferrer';
-    link.textContent='Find lyrics ↗';link.title='Search for this song on Genius (results not guaranteed)';
-    el.append(symbol,info,status,badge,link);list.append(el);
+    el.append(symbol,info,status,badge,makeLyricsActions(t));list.append(el);
   }
 }
 function favorite(t){if(!t)return;if(t.source==='LOCAL'){show('Local files cannot be saved as persistent favorites.');return}S.favorites=S.favorites.some(x=>x.id===t.id)?S.favorites.filter(x=>x.id!==t.id):[...S.favorites,t];localStorage.setItem('artistwave:favorites',JSON.stringify(S.favorites));render();updatePlayer()}
