@@ -72,3 +72,9 @@ This repository includes [an automatic deployment workflow](.github/workflows/pa
 Once the workflow succeeds, the expected site address is **https://28121978444.github.io/ArtistWave/**. This URL is not guaranteed to work until Pages is enabled and a deployment has succeeded.
 
 ArtistWave is a static client-side app. Online MusicBrainz/Internet Archive requests require an Internet connection and may be affected by browser cross-origin restrictions or third-party service availability. No API keys or credentials are required or stored in the repository.
+
+### Troubleshooting a 404 on GitHub Pages
+
+If `https://28121978444.github.io/ArtistWave/` shows **There isn't a GitHub Pages site here**, the repository may be public without Pages itself being enabled. On 2026-11-06 the deployment workflow's **Configure GitHub Pages** step failed with **Get Pages site failed — Not Found**. The JavaScript syntax check and site-file preparation passed before that step.
+
+**One-time fix (repository owner):** Go to [Settings → Pages](https://github.com/28121978444/ArtistWave/settings/pages) and set **Build and deployment → Source → GitHub Actions**. This creates/configures the Pages site. Then use [Actions → Deploy ArtistWave to GitHub Pages](https://github.com/28121978444/ArtistWave/actions/workflows/pages.yml) to rerun the failed job or choose **Run workflow** on `main`. GitHub's default `GITHUB_TOKEN` cannot create a new Pages site simply by setting `enablement: true` in the workflow; a user must enable it in repository settings unless a separate credential with administration and Pages permissions is configured. No such credential should be added to the site.
