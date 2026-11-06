@@ -735,7 +735,7 @@ async function searchMatches(term){if(sourceMode()==='local'){await chooseArtist
 try{const data=await getJSON('https://musicbrainz.org/ws/2/artist/?query='+encodeURIComponent('artist:"'+term+'"')+'&fmt=json&limit=15');if(matchRequest!==S.matchRequest)return;for(const artist of (data.artists||[])){const name=artist.name||'';let detail=[artist.type,artist.country,artist.disambiguation].filter(Boolean).join(' · ')||'MusicBrainz artist';list.append(sourceChoice(name,detail,()=>chooseArtist(name,artist.id),'artist',artist.id));count++}}catch(e){if(matchRequest!==S.matchRequest)return;show('MusicBrainz artist lookup was unavailable; showing Archive matches where possible.',true)}
 try{const query='mediatype:audio AND ('+'title:('+term+') OR creator:('+term+'))';const url='https://archive.org/advancedsearch.php?q='+encodeURIComponent(query)+'&fl[]=identifier&fl[]=title&fl[]=creator&rows=12&page=1&output=json';const data=await getJSON(url);if(matchRequest!==S.matchRequest)return;for(const d of data.response?.docs||[]){const name=Array.isArray(d.title)?d.title[0]:d.title;const creator=Array.isArray(d.creator)?d.creator.join(', '):d.creator||'Unknown creator';list.append(sourceChoice(name||d.identifier,'Internet Archive recording · '+creator,()=>chooseArchiveItem(d),'item',d.identifier));count++}}catch(e){if(matchRequest!==S.matchRequest)return;if(!count)show('The online search services are unavailable. You can still add local audio files.',true)}
 if(!count){list.append(sourceChoice('Search Internet Archive for '+term,'Try an exact creator search',()=>chooseArtist(term,null)))}else show('Choose a matching artist or recording above to build your playlist.')}
-async function chooseArtist(name,mbid){const selection=++S.matchRequest;S.requestId++;S.loading=false;audio.pause();audio.removeAttribute('src');clearAlbumQueue();S.artist=name;S.archiveItemView=false;S.providerChecked={};S.providerBusy={};S.providerErrors={};S.artistMbid=mbid||null;S.unavailable=[];S.catalogResolved=false;S.catalogLoading=false;S.catalogRequest++;S.page=0;S.tracks=[];S.onlineTracks=[];S.selected=-1;S.view='discover';$('matchList').querySelectorAll('button').forEach(x=>x.classList.remove('selected'));$('playlistHeading').textContent=name;$('externalSearch').hidden=false;$('externalSearch').href='https://www.youtube.com/results?search_query='+encodeURIComponent(name+' music');$('externalSearch').textContent='Search '+name+' on YouTube ↗';show(sourceMode()==='local'?'Searching your local music for '+name+'…':'Searching publicly available recordings attributed to '+name+'…');rebuildPlaylist();if(sourceMode()!=='local')await loadOnlineProviders(name,selection);else show(S.tracks.length+' local track(s) found for '+name+'.');if(selection===S.matchRequest&&sourceMode()!=='local'&&$('showUnavailable').checked)await loadUnavailable()}
+async function chooseArtist(name,mbid){window.ArtistWaveStudio?.close();const selection=++S.matchRequest;S.requestId++;S.loading=false;audio.pause();audio.removeAttribute('src');clearAlbumQueue();S.artist=name;S.archiveItemView=false;S.providerChecked={};S.providerBusy={};S.providerErrors={};S.artistMbid=mbid||null;S.unavailable=[];S.catalogResolved=false;S.catalogLoading=false;S.catalogRequest++;S.page=0;S.tracks=[];S.onlineTracks=[];S.selected=-1;S.view='discover';$('matchList').querySelectorAll('button').forEach(x=>x.classList.remove('selected'));$('playlistHeading').textContent=name;$('externalSearch').hidden=false;$('externalSearch').href='https://www.youtube.com/results?search_query='+encodeURIComponent(name+' music');$('externalSearch').textContent='Search '+name+' on YouTube ↗';show(sourceMode()==='local'?'Searching your local music for '+name+'…':'Searching publicly available recordings attributed to '+name+'…');rebuildPlaylist();if(sourceMode()!=='local')await loadOnlineProviders(name,selection);else show(S.tracks.length+' local track(s) found for '+name+'.');if(selection===S.matchRequest&&sourceMode()!=='local'&&$('showUnavailable').checked)await loadUnavailable()}
 async function chooseArchiveItem(d){S.matchRequest++;const request=++S.requestId;S.loading=false;audio.pause();audio.removeAttribute('src');clearPlaybackRecovery();S.catalogRequest++;S.catalogResolved=false;S.catalogLoading=false;S.unavailable=[];clearAlbumQueue();S.archiveItemView=true;S.artistMbid=null;const name=Array.isArray(d.title)?d.title[0]:d.title||d.identifier;S.artist=Array.isArray(d.creator)?d.creator[0]:d.creator||name;S.page=0;S.selected=-1;S.tracks=[];S.onlineTracks=[];updatePlayer();$('playlistHeading').textContent=name;$('externalSearch').hidden=true;show('Loading recording: '+name);try{const tracks=await tracksFromItem(d.identifier,S.artist);if(request!==S.requestId)return;S.onlineTracks=dedupeTracks(tracks);rebuildPlaylist();show(S.tracks.length+' unique playable tracks found in this item.')}catch(e){if(request===S.requestId)show('Unable to load the selected recording: '+e.message,true)}if(request===S.requestId)$('loadMore').hidden=true}
 async function tracksFromItem(id,artist){
   const m=await getJSON('https://archive.org/metadata/'+encodeURIComponent(id));
@@ -854,13 +854,13 @@ $('albumJumpSelect').addEventListener('change',event=>{
   if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
 });
 $('recentNav').onclick=()=>{
-  clearAlbumQueue();S.view='recent';
+  window.ArtistWaveStudio?.close();clearAlbumQueue();S.view='recent';
   $('locationName').textContent='Recently Played';
   $('playlistHeading').textContent='Recently played';
   render();$('playlistSection').scrollIntoView({behavior:'smooth',block:'start'});
 };
-$('discoverNav').onclick=()=>{clearAlbumQueue();S.view='discover';$('locationName').textContent='Discover';render()};
-$('favoritesNav').onclick=()=>{clearAlbumQueue();S.view='favorites';$('locationName').textContent='Favorites';$('playlistHeading').textContent='Your favorites';render()};
+$('discoverNav').onclick=()=>{window.ArtistWaveStudio?.close();clearAlbumQueue();S.view='discover';$('locationName').textContent='Discover';render()};
+$('favoritesNav').onclick=()=>{window.ArtistWaveStudio?.close();clearAlbumQueue();S.view='favorites';$('locationName').textContent='Favorites';$('playlistHeading').textContent='Your favorites';render()};
 $('clearList').onclick=()=>{clearAlbumQueue();if(S.view==='recent'){S.recent=[];window.ArtistWaveCloud?.persistGuestRecent([]);window.ArtistWaveCloud?.changed()}else if(S.view==='favorites'){S.favorites=[];window.ArtistWaveCloud?.persistGuestFavorites(S.favorites);window.ArtistWaveCloud?.changed()}else{clearPlaybackRecovery();S.tracks=[];S.onlineTracks=[];S.unavailable=[];S.catalogResolved=false;S.catalogLoading=false;S.catalogRequest++;S.selected=-1;audio.pause();audio.removeAttribute('src')}render();updatePlayer()};
 $('addFolderNav').onclick=chooseLocalFolder;
 $('reopenFolderNav').onclick=reopenSavedFolder;
@@ -1282,6 +1282,11 @@ window.addEventListener('artistwave:cloud-load',event=>{
   if($('showUnavailable').checked&&sourceMode()!=='local')loadUnavailable();
 });
 window.ArtistWaveCloud?.init({getFavorites:()=>S.favorites,getRecent:()=>safeRecentTracks(S.recent)});
+window.ArtistWaveStudioHost={
+  tracks:()=>[...S.tracks,...S.favorites,...S.recent,...S.local],
+  pauseMain:()=>audio.pause(),
+  render:()=>{render();updatePlayer()}
+};
 restoreFolderHandle();
 
 render();updatePlayer();
