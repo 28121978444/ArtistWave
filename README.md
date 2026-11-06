@@ -116,3 +116,39 @@ This is a static browser application: CORS restrictions, throttling, unavailable
 ## Album-grouped playlist (v2.2)
 
 The playlist groups available tracks by the album or collection title provided by local MP3 metadata, folder name, Audius, Jamendo or the Internet Archive. Unspecified and generic releases appear under **Singles & unknown albums**. Every album heading shows the track count and a **▶ Play album** button when at least one playable track exists. Clicking it starts the first song in that section and plays through only that album's songs in the displayed order, even when tracks are interleaved across different sources in the underlying playlist. Repeat-all loops within the current album, repeat-one repeats its current song, and manual track selection or shuffle-all exits album playback. Catalog-only entries remain visible under their album where known but do not get included in the playable queue. Duplicate filtering and source priorities remain active.
+
+## Accounts and cloud sync (v2.3)
+
+ArtistWave supports **optional Google account authorization and private cloud sync**, while retaining **guest mode** for listeners who prefer to keep data on their own device. The application is still a static GitHub Pages site: no ArtistWave-managed authentication server or traditional database is required. Signed-in data is stored as `artistwave-library-v1.json` in the user's private, hidden **Google Drive appDataFolder**, accessed only with their consent. **No audio files are uploaded**.
+
+### One-time setup required by the site owner
+
+Google authorization cannot work until a Google Cloud project and browser OAuth client have been configured:
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/), create/select a Google Cloud project, and **enable the Google Drive API**.
+2. Configure the Google Auth Platform OAuth consent screen for the project. Add the scopes `openid`, `email`, `profile` and `https://www.googleapis.com/auth/drive.appdata`; add test users if the consent screen is in Testing status. Google's review/publication requirements apply if the app is made broadly available.
+3. Create an OAuth **Web application** client. Under **Authorized JavaScript origins**, add `https://28121978444.github.io` (the origin, **not** the `/ArtistWave/` path). For localhost testing, add the exact localhost origin. Use no client secret in this public app.
+4. Set the public OAuth **client ID** in `index.html`, in the `<meta name="google-oauth-client-id" content="">` tag's `content` attribute, and publish the site. Alternatively, for a browser-only trial enter the ID in the sidebar's **Google Drive sync setup** field. Client IDs are public identifiers, not secrets.
+5. On the site, click **Sign in with Google** and grant the requested consent. The browser receives a short-lived token that is kept **in memory**, not stored in a cookie, localStorage or the repository.
+
+The sign-in button will prompt for the OAuth client ID until setup is completed. Browser popups must be permitted. No Google account credentials or refresh tokens are stored by ArtistWave.
+
+### Data and account isolation
+
+- **Guest mode** continues to save favorites and provider preferences locally in that browser without sign-in.
+- **First account sign-in:** If there is no existing private cloud library, a new one is created using the current guest favorites/preferences. Otherwise the existing cloud library is loaded, keeping the guest library separate. **Import guest favorites** explicitly merges guest favorites into an existing cloud account.
+- **Signed in:** Favorite additions/removals and source preferences are synced after a brief delay, with **Sync now** available as a manual action. Account changes are not written into the guest favorites store. When Google Drive is temporarily unavailable, the UI shows the error and does not silently replace newer cloud data.
+- **Sign out:** Returns to the original guest favorites and source preferences. If account changes are pending cloud sync, sign-out is blocked with instructions to sync first.
+- **Other devices:** Sign in with the same Google account and same configured OAuth app to load the cloud library. No account-specific audio is transferred. Local folder permissions and local-only tracks must be selected again per device.
+- **Stored data:** Online favorites, source toggles, and search/display preferences. A future version can extend this schema to custom playlists and showdance routines. Currently no standalone playlist-editor or routine data is saved because those features do not exist yet.
+- **Privacy:** Only the Google Drive `drive.appdata` scope is requested for storage, in addition to identity scopes. This grants access to the application's hidden files, not to the user's general Drive file list. Google may require app verification before broad public release.
+
+Google's documentation: [OAuth token model](https://developers.google.com/identity/oauth2/web/guides/use-token-model) and [Drive appDataFolder](https://developers.google.com/workspace/drive/api/guides/appdata).
+
+### Updated development roadmap
+
+1. **v2.3 — Accounts and cloud sync** (implemented; Google OAuth setup required to activate)
+2. **v2.4 — Album intelligence and playback reliability:** verify real album associations; improve recording fallback, failed-stream recovery and queue handling.
+3. **v2.5 — Library improvements:** covers, recently played, richer metadata, and durable local-folder access where browsers allow it.
+4. **v3.0 — Showdance Studio:** tempo/energy browsing, routine playlists, cue points, transitions and arrangement tools, with appropriate licensing.
+5. **Later:** additional music genres, mobile usability and performance improvements.
