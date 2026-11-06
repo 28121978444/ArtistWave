@@ -55,4 +55,9 @@ test('studio has its own accessible workspace and genres precede optional accoun
     assert.match(html,new RegExp('id="'+id+'"'));
   assert.ok(html.indexOf('id="genreTree"')<html.indexOf('class="cloud-account"'));
   assert.match(html,/script src="studio\.js" defer/);
+  assert.ok(html.indexOf('class="topbar-account-menu"')>html.indexOf('<header class="topbar"'));
+  assert.ok(html.indexOf('class="topbar-account-menu"')<html.indexOf('</header>'));
+  assert.equal((html.match(/id="cloudSignIn"/g)||[]).length,1);
+  assert.ok(html.indexOf('id="genreTree"')<html.indexOf('<header class="topbar"'));
+
 });
