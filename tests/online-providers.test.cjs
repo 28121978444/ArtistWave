@@ -63,7 +63,7 @@ test('Jamendo requires a client ID, then checks API status',async()=>{
   widgets.jamendoClientId.value='a123456b';
   setFetch(async url=>{
     assert.match(url,/client_id=a123456b/);
-    assert.match(url,/artist_name=Nita\\+Strauss/);
+    assert.match(url,/artist_name=Nita\+Strauss/);
     return {headers:{status:'success'},results:[{id:1,name:'Song',artist_name:'Nita Strauss',audio:'https://cdn.example/1.mp3'}]};
   });
   const rows=await api.fetchJamendoTracks('Nita Strauss');
