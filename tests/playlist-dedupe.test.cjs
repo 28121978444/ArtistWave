@@ -47,3 +47,34 @@ test('catalog and audio keys match even with filename decorations',()=>{
   const playable=item('aud','01 - Nita Strauss - The Wolf You Feed (MP3)','ARCHIVE','https://example.org/1.mp3');
   assert.equal(trackKey(catalog),trackKey(playable));
 });
+
+test('deduped row retains alternate links in preferred-source order',()=>{
+  const rows=dedupeTracks([
+    item('jam','The Wolf You Feed','JAMENDO','https://jamendo.example/wolf.mp3'),
+    item('archive','The Wolf You Feed','ARCHIVE','https://archive.org/wolf.flac'),
+    item('audius','The Wolf You Feed','AUDIUS','https://api.audius.co/wolf'),
+    item('archive2','The Wolf You Feed','ARCHIVE','https://archive.org/wolf.flac')
+  ]);
+  assert.equal(rows.length,1);
+  assert.equal(rows[0].source,'ARCHIVE');
+  assert.deepEqual(Array.from(rows[0].alternates,x=>x.source),['AUDIUS','JAMENDO']);
+});
+test('explicit album metadata is preferred over generic Archive collection name',()=>{
+  const archive={...item('archive','Summer Storm','ARCHIVE','https://archive.org/summer.flac'),collection:'Archive session',albumKind:'collection'};
+  const audius={...item('audius','Summer Storm','AUDIUS','https://api.audius.co/summer'),collection:'Controlled Chaos',albumKind:'album',year:'2018'};
+  const rows=dedupeTracks([archive,audius]);
+  assert.equal(rows.length,1);
+  assert.equal(rows[0].source,'ARCHIVE');
+  assert.equal(rows[0].collection,'Controlled Chaos');
+  assert.equal(rows[0].year,'2018');
+});
+test('live and studio recordings keep separate fallback pools',()=>{
+  const tracks=dedupeTracks([
+    item('studio','Summer Storm','ARCHIVE','https://archive.org/studio.mp3'),
+    item('live','Summer Storm (Live)','ARCHIVE','https://archive.org/live.mp3'),
+    item('studio2','Summer Storm','AUDIUS','https://api.audius.co/studio.mp3')
+  ]);
+  assert.equal(tracks.length,2);
+  assert.equal(tracks.find(t=>t.title==='Summer Storm').alternates.length,1);
+  assert.equal(tracks.find(t=>t.title.includes('Live')).alternates,undefined);
+});
