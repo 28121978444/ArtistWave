@@ -54,3 +54,7 @@ Jazz and metal are planned for later iterations. Their navigation will use histo
 ### Personalizing an artist image
 
 Click an image in a search-result artist/recording card to replace it using a direct HTTPS image URL or your own image file. Files are resized before being saved to this browser's local storage. **Restore automatic image** forgets the manual choice. A saved image stays the same across future searches in the same browser profile, unless you reset it, clear site data or the remote host stops serving the image.
+
+## Song lyrics links (v1.5)
+
+Every track—playable or catalog-only—has clearly labeled **AZLyrics** and **Genius** external search links. They open in a new browser tab. The interface credits these destination websites and explicitly describes the links as *searches*, not verified song pages or reproduced lyrics. ArtistWave does not scrape, copy, cache or display their copyrighted lyrics. Lyrics sites may return zero results or change their search URLs. The checkbox **Show titles without audio** is optional and uses MusicBrainz title data, not a guarantee that audio does not exist anywhere online.
