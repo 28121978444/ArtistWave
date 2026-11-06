@@ -152,3 +152,14 @@ Google's documentation: [OAuth token model](https://developers.google.com/identi
 3. **v2.5 — Library improvements:** covers, recently played, richer metadata, and durable local-folder access where browsers allow it.
 4. **v3.0 — Showdance Studio:** tempo/energy browsing, routine playlists, cue points, transitions and arrangement tools, with appropriate licensing.
 5. **Later:** additional music genres, mobile usability and performance improvements.
+
+## v2.4 — Album intelligence and playback reliability
+
+- **Album provenance:** Album metadata supplied directly by a track, a source's album field, or a local file's album tag is distinguished from a generic Internet Archive item title. Archive items with no explicit album are displayed as **Archive collection · [item title]**, not presented as verified albums. Tracks lacking album information remain grouped as **Singles & unknown albums**.
+- **Release years:** A year appears alongside an album or collection heading when the underlying source provides one. ArtistWave does not guess missing years or automatically assert a MusicBrainz album match based only on the song title.
+- **One song, multiple sources:** Duplicates are still displayed as a single playlist row, but alternative playable URLs are retained internally. Local playback takes precedence over Internet Archive, then Audius, then Jamendo; file format is a secondary preference within a provider.
+- **Automatic source recovery:** If a streaming URL fails to play, reports a media error, or stalls while loading, the player tries the next enabled available link for that same song. No extra playlist entries are added. If every enabled link fails, ArtistWave stops that song and displays a clear error rather than looping indefinitely.
+- **Album queues:** Play album, next/previous and repeat continue to respect album-only playback. Manual song selection or shuffle-all exits album playback. Switching online providers recalculates the selected song's available alternatives without changing the user's preferred source settings.
+- **Google Drive favorites:** When saved as favorites, safe HTTPS alternate playback sources can be synchronized along with the chosen track. Local paths, blob URLs, and local audio files are never uploaded to the cloud.
+
+Playback still depends on publicly accessible sources, user/browser permissions and licensing. A source being listed does not guarantee that it can be played on every browser. A true catalog-verification/enrichment service with caching and rate limits can be considered for a future release.
