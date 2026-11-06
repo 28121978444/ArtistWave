@@ -44,3 +44,13 @@ This project does not download from commercial streaming platforms or bypass lic
 ## Artist / recording images (v1.2)
 
 Match cards show an image on the left third and identifying text on the right two-thirds. Archive recording cards use an Archive thumbnail. MusicBrainz artist cards try photos or logos linked to the exact artist ID and, if unavailable, cover art from a release by that artist. Where no usable artwork is found, a styled fallback symbol is shown. The first successfully selected image URL is stored in browser `localStorage` under the unique artist/recording ID and reused on later searches, including after closing the tab. This preference is local to the same browser profile/device; images still depend on the original host being available. Clearing site data resets the choice.
+
+## Rap era browser (v1.3)
+
+The left sidebar now has **MUSIC GENRES → Rap → 80s / 90s / 2000s / 2010s / 2020s**. Choosing an era shows an editorial artist list (major and less-commercial artists). Clicking an artist opens their artist-only Archive playlist. Artists may appear in several decades. The list is curated rather than an objective chart ranking; commercial tracks may not be available for streaming.
+
+Jazz and metal are planned for later iterations. Their navigation will use historically meaningful stylistic periods, rather than assuming every genre fits decade groupings (for example, Swing, Bebop, Hard Bop, Modal and Fusion for jazz).
+
+### Personalizing an artist image
+
+Click an image in a search-result artist/recording card to replace it using a direct HTTPS image URL or your own image file. Files are resized before being saved to this browser's local storage. **Restore automatic image** forgets the manual choice. A saved image stays the same across future searches in the same browser profile, unless you reset it, clear site data or the remote host stops serving the image.
