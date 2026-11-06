@@ -391,3 +391,6 @@
  .topbar-account-menu>.cloud-account{position:fixed;top:60px;right:10px;width:min(340px,calc(100vw - 20px));max-height:calc(100dvh - 90px)}
  .topbar-account-toggle{padding:8px 10px;font-size:11px}
 }
+
+/* Honor the account's authenticated/guest visibility toggles. */
+.topbar-account-menu [hidden]{display:none!important}
