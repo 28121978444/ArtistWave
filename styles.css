@@ -10,3 +10,35 @@
 .match-copy strong{font-size:13px;line-height:1.25;overflow-wrap:anywhere}
 .match-copy small{font-size:11px;line-height:1.4;color:var(--muted);overflow-wrap:anywhere}
 @media(max-width:560px){.match-list{grid-template-columns:1fr}.match-card{min-height:105px}.match-art{min-height:105px}}
+
+/* v1.3: Rap era navigation and stable custom artwork */
+.genre-tree{display:flex;flex-direction:column;gap:7px;max-height:46vh;overflow-y:auto;padding:0 3px 3px 0}
+.genre-node{border:1px solid #31443c;border-radius:9px;background:#14211e;overflow:hidden}
+.genre-node summary{cursor:pointer;padding:13px 11px;font-size:13px;font-weight:750;list-style-position:inside;color:var(--accent)}
+.genre-era-list{display:flex;flex-direction:column;padding:3px 8px 9px 21px;gap:3px}
+.genre-era-button{border:0;border-radius:6px;background:transparent;color:#bccdc4;text-align:left;padding:9px 10px;font-size:12px}
+.genre-era-button:hover,.genre-era-button[aria-pressed="true"]{background:#29422f;color:var(--accent)}
+.genre-results{padding:30px 0 20px;border-bottom:1px solid var(--line)}
+.genre-results[hidden]{display:none}
+.genre-artist-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px}
+.genre-artist-card{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;text-align:left;border:1px solid #30473b;border-radius:9px;padding:15px 35px 15px 15px;background:#13221d;color:#f0f5ee;min-height:87px}
+.genre-artist-card:hover{border-color:var(--accent);background:#23372b}
+.genre-artist-card strong{font-size:13px}
+.genre-artist-card small{font-size:11px;color:var(--muted);line-height:1.4}
+.genre-artist-card>span:last-child{position:absolute;right:14px;top:15px;color:var(--accent)}
+.match-art{cursor:pointer}
+.match-art:focus-visible{outline:2px solid var(--accent);outline-offset:-3px;z-index:2}
+.art-dialog{width:min(94vw,480px);background:#15221f;color:var(--text);border:1px solid #496a54;border-radius:12px;padding:25px;box-shadow:0 20px 80px #000c}
+.art-dialog::backdrop{background:#000b}
+.art-dialog form{display:flex;flex-direction:column;gap:14px}
+.art-dialog h2{margin:0;font-size:24px}
+.art-dialog-info{margin:0;color:var(--muted);font-size:13px}
+.art-dialog label{font-size:12px;color:#cad9cf}
+.art-dialog input[type=url]{width:100%;padding:13px;background:#0e1717;border:1px solid #466453;border-radius:7px;color:var(--text)}
+.art-dialog-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.art-dialog-actions .primary-button{min-height:40px}
+.art-upload{display:inline-flex;align-items:center;min-height:40px;border:1px solid #4b6653;border-radius:7px;padding:0 12px;cursor:pointer}
+.art-dialog-bottom{justify-content:space-between}
+.art-dialog-bottom button{background:transparent;border:1px solid #4d6557;color:#cfe5d1;border-radius:7px;padding:10px}
+#artDialogError{font-size:12px;color:#ffa791;margin:0;min-height:15px}
+@media(max-width:800px){.genre-tree{max-height:50vh}.sidebar{flex-wrap:wrap}.genre-tree{width:100%;order:5}.genre-results{padding-top:22px}}
