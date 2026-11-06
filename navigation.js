@@ -39,10 +39,8 @@
       window.ArtistWaveStudio?.close();
     }
     if(target!=='youtube')stopVideo();
-    if(target==='youtube'){
-      window.ArtistWaveStudioHost?.pauseMain?.();
-      window.ArtistWaveStudio?.stop?.();
-    }
+    if(target!=='audio')window.ArtistWaveStudioHost?.pauseMain?.();
+    if(target==='youtube')window.ArtistWaveStudio?.stop?.();
     mode=target;
     document.body.dataset.mode=target;
     $('studioWorkspace').hidden=target!=='studio';
