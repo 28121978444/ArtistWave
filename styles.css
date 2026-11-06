@@ -481,3 +481,20 @@ body[data-mode="youtube"] .studio-workspace{display:none!important}
   .youtube-link-row button{min-height:40px}
   .youtube-player-region{min-height:200px}
 }
+
+/* Workspace navigation regression fix: never vertically center short pages. */
+body[data-mode="studio"] .main,
+body[data-mode="youtube"] .main{
+  margin:0 auto;
+  align-self:start;
+  min-height:0;
+}
+body[data-mode="studio"] .app-shell,
+body[data-mode="youtube"] .app-shell{
+  align-content:start;
+  align-items:start;
+}
+body[data-mode="audio"] .studio-workspace,
+body[data-mode="audio"] .youtube-workspace{display:none!important}
+body[data-mode="youtube"] .youtube-workspace,
+body[data-mode="studio"] .studio-workspace{margin-top:0}
