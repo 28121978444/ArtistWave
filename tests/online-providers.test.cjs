@@ -18,7 +18,7 @@ function harness(mode='both'){
   const context={S,norm,$:id=>widgets[id],sourceMode:()=>widgets.sourceMode.value,URLSearchParams,encodeURIComponent,
     dedupeTracks:rows=>[...new Map(rows.map(row=>[norm(row.artist)+'|'+norm(row.title),row])).values()],
     getJSON:url=>getJSON(url),show(){},render(){},updatePlayer(){},loadMore:async()=>{},audio:{pause(){},removeAttribute(){}},
-    Promise,Map,Object,extractYear:value=>(String(value||'').match(/\b(18\d\d|19\d\d|20\d\d)\b/)||[])[1]||''};
+    Promise,Map,Object,albumArtwork:value=>typeof value==='string'?value:'',extractYear:value=>(String(value||'').match(/\b(18\d\d|19\d\d|20\d\d)\b/)||[])[1]||''};
   const api=vm.runInNewContext(app.slice(start,end)+'\n;({providerArtistMatches,normalizeAudiusTracks,normalizeJamendoTracks,fetchAudiusTracks,fetchJamendoTracks,searchOnlineProvider,providerEnabled,loadOnlineProviders})',context);
   return {widgets,S,api,setFetch:fn=>{getJSON=fn}};
 }
