@@ -94,7 +94,7 @@
     return type.includes('json')?response.json():response.text();
   }
   async function findCloudFile(){
-    const query=new URLSearchParams({spaces:'appDataFolder',fields:'nextPageToken,files(id,name,mimeType,modifiedTime)',page_size:'100'});
+    const query=new URLSearchParams({spaces:'appDataFolder',fields:'nextPageToken,files(id,name,mimeType,modifiedTime)',pageSize:'100'});
     const list=await driveRequest('?'+query);
     const files=(list.files||[]).filter(f=>f.name===CLOUD_FILE);
     return files.sort((a,b)=>String(b.modifiedTime||'').localeCompare(String(a.modifiedTime||'')))[0]?.id||'';
@@ -191,7 +191,7 @@
     S.token=token;S.expires=expiry;S.subject=String(identity.sub);S.email=String(identity.email||'Google account');S.fileId='';
     let remote;
     try{remote=await readCloud()}
-    catch(e){S.token='';S.expires=0;S.subject='';throw e}
+    catch(e){S.token='';S.expires=0;S.subject='';S.email='';S.fileId='';throw e}
     const cache=safeRead(accountKey(),null);
     let account=remote||cache;
     if(!account){
