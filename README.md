@@ -58,3 +58,7 @@ Click an image in a search-result artist/recording card to replace it using a di
 ## Song lyrics links (v1.5)
 
 Every track—playable or catalog-only—has clearly labeled **AZLyrics** and **Genius** external search links. They open in a new browser tab. The interface credits these destination websites and explicitly describes the links as *searches*, not verified song pages or reproduced lyrics. ArtistWave does not scrape, copy, cache or display their copyrighted lyrics. Lyrics sites may return zero results or change their search URLs. The checkbox **Show titles without audio** is optional and uses MusicBrainz title data, not a guarantee that audio does not exist anywhere online.
+
+## Rap navigation visibility fix (v1.6)
+
+Clicking an era in the left **Rap** menu expands its artist names **directly underneath that era**. The larger artist panel in the main view is also populated and scrolled into view. Clicking a name in either location starts that artist's Archive playlist search. Clicking the open era collapses it.
