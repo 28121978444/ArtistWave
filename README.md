@@ -212,3 +212,7 @@ The top header provides three clear destinations, without combining their playba
 The Google account dropdown stays at the top right and remains dedicated to ArtistWave's optional Drive sync. No YouTube Premium or YouTube account access is requested; YouTube sign-in and subscription features are subject to YouTube's own embedded player behavior. Some YouTube videos cannot be embedded by their owners.
 
 On smaller displays, workspace navigation remains accessible at the top, with the entertainment sidebar presented only within the audio workspace. The embedded player keeps a 16:9 presentation and at least a 200px minimum height to accommodate official controls.
+
+### YouTube account continuation
+
+ArtistWave's **Google Drive sign-in** does not itself authenticate a YouTube browser session. The official embedded YouTube player may use an existing youtube.com session through the browser's cookies, subject to privacy settings. The YouTube workspace displays a context-sensitive connection hint when a Google account is signed into ArtistWave and offers **Continue with YouTube** in a user-initiated new tab to visit YouTube and sign in if required. No automatic YouTube sign-in is claimed, no third-party cookies are set by ArtistWave, and no YouTube API scope or account credential is requested.
