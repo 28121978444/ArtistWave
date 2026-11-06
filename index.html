@@ -35,7 +35,7 @@
       </section>
       <section class="playlist-section" id="playlistSection"><div class="section-heading playlist-title"><div><div class="overline" id="playlistOverline">02 / YOUR PLAYLIST</div><h2 id="playlistHeading">Your next obsession starts here.</h2></div><div class="playlist-actions"><label class="checkbox catalog-toggle"><input type="checkbox" id="showUnavailable"/><span>Show titles without audio</span></label><button class="text-button" id="shuffleAll" disabled>⤨ Shuffle all</button><button class="text-button" id="clearList" disabled>× Clear</button></div></div><div id="statusMessage" class="status-message" role="status" aria-live="polite">Search for an artist to discover playable recordings, or add tracks from your computer below.</div><div class="track-table-head"><span>TRACK</span><span>RECORDING</span><span>SOURCE</span><span></span></div><div id="trackList" class="track-list"><div class="empty-state"><div class="empty-icon">♫</div><strong>It's quiet in here.</strong><span>Search for an artist above to start the music.</span></div></div><a id="externalSearch" class="external-search" href="#" target="_blank" rel="noopener noreferrer" hidden></a><button class="load-more" id="loadMore" hidden>Load more recordings ↓</button></section>
 
-      <section class="local-section"><div class="local-left"><div class="overline">03 / YOUR OWN COLLECTION</div><h2>Bring your music along.</h2><p>Add files or select a music folder from the sidebar. ArtistWave scans supported files and subfolders on your device (where permitted). Nothing is uploaded. Folder access is requested only when you select it.</p></div><div class="file-drop" id="fileDrop" tabindex="0" role="button" aria-label="Add local audio files"><span class="upload-icon">↥</span><strong>Drop audio files here</strong><span>or <u>browse files</u> · MP3, FLAC, WAV, OGG, M4A</span><input id="fileInput" type="file" accept="audio/*,.flac,.m4a" multiple hidden /><input id="folderInput" type="file" webkitdirectory directory multiple hidden /></div></section>
+      <section class="local-section"><div class="local-left"><div class="overline">03 / YOUR OWN COLLECTION</div><h2>Bring your music along.</h2><p>Add files or select a music folder from the sidebar. ArtistWave scans supported files and subfolders on your device (where permitted). Nothing is uploaded. Folder access is requested only when you select it.</p></div><div class="file-drop" id="fileDrop" tabindex="0" role="button" aria-label="Add local audio files"><span class="upload-icon">↥</span><strong>Drop audio files here</strong><span>or <u>browse files</u> · MP3, FLAC, WAV, OGG, M4A</span><input id="fileInput" type="file" accept="audio/*,.flac,.m4a" multiple hidden /></div></section>
       <footer class="footer"><span>ARTISTWAVE © 2026</span><span>Built for the love of listening.</span><a href="https://archive.org" target="_blank" rel="noopener noreferrer">Internet Archive ↗</a></footer>
     </main>
   </div>
@@ -52,6 +52,7 @@
       <p id="artDialogError" role="status"></p>
     </form>
   </dialog>
+  <input id="folderInput" type="file" webkitdirectory directory multiple hidden />
   <audio id="audio" preload="metadata"></audio>
   <script src="app.js" defer></script>
 </body>
