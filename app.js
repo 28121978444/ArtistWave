@@ -75,6 +75,11 @@ function sourceChoice(label,sub,onClick,kind='artist',id=''){
   const placeholder=document.createElement('span');placeholder.className='match-art-fallback';
   placeholder.textContent=kind==='item'?'♫':String(label||'?').trim().slice(0,1).toUpperCase();
   art.append(placeholder);
+  art.title='Change this artist image';
+  art.setAttribute('role','button');
+  art.setAttribute('tabindex','0');
+  art.setAttribute('aria-label','Change image for '+label);
+
   const words=document.createElement('span');words.className='match-copy';
   const name=document.createElement('strong');name.textContent=label;
   const detail=document.createElement('small');detail.textContent=sub;
@@ -88,6 +93,10 @@ function sourceChoice(label,sub,onClick,kind='artist',id=''){
     img.onload=()=>{if(img.naturalWidth>1){placeholder.hidden=true;art.classList.add('has-image')}else{img.remove()}};
     art.querySelector('img')?.remove();art.append(img);
   };
+  art.dataset.artKey=key;
+  const changeImage=e=>{e.stopPropagation();e.preventDefault();openArtworkEditor({key,label,kind,id,showImage})};
+  art.addEventListener('click',changeImage);
+  art.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){changeImage(e)}});
   if(pinnedArt[key])showImage(pinnedArt[key]);
   else if(kind==='item'&&id){
     const url='https://archive.org/services/img/'+encodeURIComponent(id);
@@ -126,4 +135,195 @@ $('fileDrop').ondragover=e=>{e.preventDefault();$('fileDrop').classList.add('dra
 $('fileDrop').ondrop=e=>{e.preventDefault();$('fileDrop').classList.remove('dragover');addFiles(e.dataTransfer.files)};
 $('fileInput').onchange=e=>addFiles(e.target.files);
 function addFiles(files){let count=0;for(const file of files){if(!file.type.startsWith('audio/')&&!/\.(mp3|flac|wav|ogg|m4a|opus)$/i.test(file.name))continue;let base=file.name.replace(/\.[^.]+$/,'');let parts=base.split(/\s+-\s+/);let artist=parts.length>1?parts.shift():S.artist||'Local file';let title=parts.length?parts.join(' - '):base;if(S.artist&&norm(artist)!==norm(S.artist)&&parts.length)continue;let url=URL.createObjectURL(file);S.tracks.push({id:'local:'+url,title,artist,collection:'Your device',source:'LOCAL',url});count++}S.view='discover';render();show(count+' local audio files added. Files stay on your device.')}
+
+// Curated decade guide. Ordering is editorial, not a claim of exact chart rank.
+// The same artist may appear in more than one era when their career spans decades.
+const RAP_ERAS={
+  "80s":[
+    ["Run-D.M.C.","Pioneers of mainstream hip-hop"],
+    ["Public Enemy","Political hip-hop"],
+    ["LL Cool J","Solo rap breakthrough"],
+    ["Eric B. & Rakim","Lyricism and golden-age production"],
+    ["N.W.A","West Coast gangsta rap"],
+    ["Salt-N-Pepa","Rap trio"],
+    ["Boogie Down Productions","Bronx hip-hop"],
+    ["Slick Rick","Storytelling rap"],
+    ["EPMD","East Coast duo"],
+    ["MC Lyte","Golden-age MC"],
+    ["Too $hort","Oakland rap"],
+    ["Geto Boys","Houston rap"]
+  ],
+  "90s":[
+    ["2Pac","West Coast icon · 1990s"],
+    ["The Notorious B.I.G.","Biggie Smalls · East Coast icon"],
+    ["Dr. Dre","G-funk producer and MC"],
+    ["Snoop Dogg","West Coast G-funk"],
+    ["Nas","New York lyricist"],
+    ["Wu-Tang Clan","Staten Island collective"],
+    ["Ice Cube","West Coast solo career"],
+    ["A Tribe Called Quest","Jazz rap"],
+    ["OutKast","Southern hip-hop"],
+    ["Mobb Deep","Queensbridge duo"],
+    ["Compton's Most Wanted","West Coast underground"],
+    ["South Central Cartel","Los Angeles rap collective"],
+    ["Above the Law","Pomona G-funk"],
+    ["DJ Quik","Compton producer and MC"],
+    ["Gang Starr","East Coast jazz rap"],
+    ["Bone Thugs-n-Harmony","Cleveland melodic rap"],
+    ["Scarface","Southern rap"],
+    ["Geto Boys","Houston group"],
+    ["The Pharcyde","Alternative hip-hop"],
+    ["Jeru the Damaja","Brooklyn underground"]
+  ],
+  "2000s":[
+    ["Eminem","Major-label breakout"],
+    ["Jay-Z","East Coast rap"],
+    ["50 Cent","New York rap"],
+    ["Kanye West","Chicago producer and rapper"],
+    ["Lil Wayne","New Orleans rap"],
+    ["OutKast","Southern hip-hop"],
+    ["Missy Elliott","Virginia rap"],
+    ["Ludacris","Atlanta rap"],
+    ["The Game","West Coast rap"],
+    ["MF DOOM","Underground alternative rap"],
+    ["Talib Kweli","Conscious hip-hop"],
+    ["Clipse","Virginia duo"],
+    ["Tech N9ne","Independent rap"]
+  ],
+  "2010s":[
+    ["Kendrick Lamar","Compton lyricist"],
+    ["J. Cole","North Carolina rapper"],
+    ["Drake","Toronto rap"],
+    ["Nicki Minaj","New York rapper"],
+    ["Future","Atlanta trap"],
+    ["Travis Scott","Houston rapper"],
+    ["Tyler, the Creator","Alternative hip-hop"],
+    ["A$AP Rocky","Harlem rapper"],
+    ["Run the Jewels","Rap duo"],
+    ["Denzel Curry","Florida rapper"],
+    ["Little Simz","UK hip-hop"]
+  ],
+  "2020s":[
+    ["Kendrick Lamar","Continued prominence"],
+    ["J. Cole","Continued prominence"],
+    ["Little Simz","UK hip-hop"],
+    ["JID","Atlanta lyricist"],
+    ["Denzel Curry","Florida rapper"],
+    ["Doechii","Tampa rapper"],
+    ["Tyler, the Creator","Alternative hip-hop"],
+    ["GloRilla","Memphis rapper"],
+    ["Baby Keem","Contemporary hip-hop"],
+    ["Central Cee","UK rap"]
+  ]
+};
+let chosenRapEra=null;
+function renderGenreTree(){
+  const tree=$('genreTree');tree.replaceChildren();
+  const genre=document.createElement('details');genre.className='genre-node';genre.open=true;
+  const summary=document.createElement('summary');summary.textContent='🎤 Rap';genre.append(summary);
+  const years=document.createElement('div');years.className='genre-era-list';
+  for(const decade of Object.keys(RAP_ERAS)){
+    const btn=document.createElement('button');btn.type='button';btn.className='genre-era-button';
+    btn.textContent=decade;btn.setAttribute('aria-pressed',String(decade===chosenRapEra));
+    btn.onclick=()=>showRapEra(decade);
+    years.append(btn);
+  }
+  genre.append(years);tree.append(genre);
+}
+function showRapEra(decade){
+  chosenRapEra=decade;renderGenreTree();
+  const panel=$('genreResults');panel.hidden=false;
+  $('genreResultsHeading').textContent='Rap → '+decade;
+  $('genreResultsCount').textContent=RAP_ERAS[decade].length+' ARTISTS';
+  $('genreResultsDescription').textContent='Featured names first, then more artists active in this era. Click any name to build an artist-only playlist.';
+  const list=$('genreArtistList');list.replaceChildren();
+  for(const [name,description] of RAP_ERAS[decade]){
+    const button=document.createElement('button');button.className='genre-artist-card';button.type='button';
+    const title=document.createElement('strong');title.textContent=name;
+    const detail=document.createElement('small');detail.textContent=description;
+    const arrow=document.createElement('span');arrow.textContent='↗';
+    button.append(title,detail,arrow);
+    button.onclick=()=>{
+      $('artistInput').value=name;
+      $('locationName').textContent='Rap / '+decade+' / '+name;
+      // Use the same disambiguation workflow as typing into the search box.
+      searchMatches(name);
+      $('discoverSection').scrollIntoView({behavior:'smooth',block:'start'});
+    };
+    list.append(button);
+  }
+}
+let artworkEditor=null;
+function openArtworkEditor(detail){
+  artworkEditor=detail;
+  $('artDialogArtist').textContent=detail.label;
+  $('artDialogError').textContent='';
+  $('artUrl').value=(pinnedArt[detail.key]||'').startsWith('https://')?pinnedArt[detail.key]:'';
+  if(typeof $('artDialog').showModal==='function')$('artDialog').showModal();
+  else $('artDialog').setAttribute('open','');
+}
+function closeArtworkEditor(){
+  if(typeof $('artDialog').close==='function')$('artDialog').close();
+  else $('artDialog').removeAttribute('open');
+}
+function applyArtwork(url){
+  if(!artworkEditor)return;
+  const key=artworkEditor.key;const previous=pinnedArt[key];
+  pinnedArt[key]=url;
+  try{localStorage.setItem(ART_KEY,JSON.stringify(pinnedArt))}
+  catch{
+    if(previous===undefined)delete pinnedArt[key];else pinnedArt[key]=previous;
+    $('artDialogError').textContent='Could not save. Try using an image URL or a smaller image file.';
+    return;
+  }
+  // Replace every match card sharing this artist/recording ID.
+  document.querySelectorAll('.match-art').forEach(art=>{
+    if(art.dataset.artKey!==key)return;
+    art.querySelector('img')?.remove();
+    const placeholder=art.querySelector('.match-art-fallback');
+    const img=document.createElement('img');img.alt='';img.referrerPolicy='no-referrer';
+    img.onload=()=>{if(placeholder)placeholder.hidden=true};
+    img.onerror=()=>{img.remove();if(placeholder)placeholder.hidden=false};
+    img.src=url;art.append(img);
+  });
+  closeArtworkEditor();
+}
+$('artSaveUrl').addEventListener('click',async()=>{
+  const url=$('artUrl').value.trim();
+  if(!/^https:\/\//i.test(url)){$('artDialogError').textContent='Please use a direct HTTPS image URL.';return}
+  $('artDialogError').textContent='Checking image…';
+  if(!(await imageValid(url))){$('artDialogError').textContent='This URL could not be loaded as an image.';return}
+  applyArtwork(url);
+});
+$('artUpload').addEventListener('change',event=>{
+  const file=event.target.files?.[0];event.target.value='';
+  if(!file)return;
+  if(!file.type.startsWith('image/')){$('artDialogError').textContent='Choose an image file.';return}
+  // Shrink the chosen image to keep it small enough for browser localStorage.
+  const reader=new FileReader();reader.onload=()=>{
+    const source=new Image();source.onload=()=>{
+      const scale=Math.min(1,480/Math.max(source.naturalWidth,source.naturalHeight));
+      const canvas=document.createElement('canvas');
+      canvas.width=Math.max(1,Math.round(source.naturalWidth*scale));
+      canvas.height=Math.max(1,Math.round(source.naturalHeight*scale));
+      const context=canvas.getContext('2d');
+      if(!context){$('artDialogError').textContent='Image processing is unavailable.';return}
+      context.drawImage(source,0,0,canvas.width,canvas.height);
+      applyArtwork(canvas.toDataURL('image/jpeg',.7));
+    };
+    source.onerror=()=>{$('artDialogError').textContent='The selected file is not a valid image.'};
+    source.src=reader.result;
+  };reader.readAsDataURL(file);
+});
+$('artReset').addEventListener('click',()=>{
+  if(!artworkEditor)return;
+  delete pinnedArt[artworkEditor.key];
+  try{localStorage.setItem(ART_KEY,JSON.stringify(pinnedArt))}catch{}
+  closeArtworkEditor();
+  // Refresh the current artist choices to restore automatically selected imagery.
+  const term=$('artistInput').value.trim();
+  if(term)searchMatches(term);
+});
+renderGenreTree();
+
 render();updatePlayer();
