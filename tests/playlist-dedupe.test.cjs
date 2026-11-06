@@ -9,7 +9,7 @@ const start=app.indexOf('function cleanTrackTitle(');
 const end=app.indexOf('const current=()',start);
 assert.ok(start>=0 && end>start,'Song deduplication helpers are present');
 const S={artist:'Nita Strauss',tracks:[],selected:-1};
-const norm=s=>String(s||'').normalize('NFKD').toLowerCase().replace(/[\\u0300-\\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+const norm=s=>String(s||'').normalize('NFKD').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 const functions=vm.runInNewContext(app.slice(start,end)+';({cleanTrackTitle,trackKey,trackPriority,dedupeTracks,mergePlaylistTracks})',{S,norm,Map});
 const {dedupeTracks,mergePlaylistTracks,trackKey}=functions;
 const item=(id,title,source,url,artist='Nita Strauss',collection='Album')=>({id,title,source,url,artist,collection});
