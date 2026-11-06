@@ -309,3 +309,59 @@
   .sidebar .genre-tree{order:2;flex:1 0 100%;min-height:220px;max-height:360px}
   .sidebar .cloud-account{order:4}
 }
+
+/* ArtistWave 3.0 — gymnastics and dance competition rehearsal workspace */
+.studio-workspace{padding:25px 0 35px;min-width:0}
+.studio-workspace[hidden]{display:none}
+.studio-intro{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:27px 26px;margin:8px 0 20px;background:linear-gradient(115deg,#17392d,#15222e);border:1px solid #4d7052;border-radius:15px}
+.studio-intro h2{font-size:clamp(25px,3vw,38px);margin:8px 0 10px;line-height:1.1;color:#e8ffd9}
+.studio-intro p{max-width:630px;font-size:13px;line-height:1.7;color:#c4d6ce;margin:0}
+.studio-intro button,.studio-input-actions button,.studio-panel-heading button,.studio-practice button,.studio-add-row button{background:#c4f38a;color:#18291c;border:0;border-radius:8px;font-size:12px;font-weight:800;padding:11px 15px;white-space:nowrap}
+.studio-intro button{background:#244b3e;border:1px solid #6d9077;color:#edffe4}
+.studio-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(240px,.85fr);gap:18px;align-items:start}
+.studio-main,.studio-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+.studio-panel{background:#111d21;border:1px solid #344a41;border-radius:13px;padding:20px;min-width:0}
+.studio-panel h3{font-size:18px;margin:0 0 11px;color:#eef8e7}
+.studio-panel>p,.studio-side p{line-height:1.7;color:#c5d5cd;font-size:12px}
+.studio-panel-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin-bottom:13px}
+.studio-panel-heading h3{margin:0}
+.studio-panel label{font-size:11px;font-weight:700;color:#b4c6bb;display:flex;flex-direction:column;gap:6px}
+.studio-panel input,.studio-panel select{background:#0b1619;border:1px solid #50665a;color:#f4f8f2;border-radius:7px;padding:10px;width:100%;min-width:0;font-family:inherit;font-size:12px;box-sizing:border-box}
+.studio-panel select{cursor:pointer}
+.studio-input-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:13px 0}
+.studio-input-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+#studioDelete{background:#3b2b29;color:#f4c6be;border:1px solid #86564d}
+.studio-caption{font-size:11px!important;line-height:1.6;color:#97ab9e!important;margin:11px 0 0}
+.studio-duration{font-size:15px;color:#d2ffa6;font-weight:800;font-variant-numeric:tabular-nums}
+.studio-duration-track{width:100%;height:9px;overflow:hidden;border-radius:6px;background:#25372e;border:1px solid #395848}
+.studio-duration-track>div{height:100%;width:0;background:#b4ee79;border-radius:6px;transition:width .15s}
+.studio-duration-track>div.over-target{background:#ffad75}
+.studio-add-row{display:flex;gap:9px;align-items:center;margin:17px 0}
+.studio-add-row select{flex:1;min-width:0}
+.studio-segments{display:flex;flex-direction:column;gap:11px;min-width:0}
+.studio-segment{border:1px solid #365244;border-radius:10px;background:#182824;padding:12px;min-width:0}
+.studio-segment-header{display:flex;gap:6px 12px;align-items:baseline;flex-wrap:wrap;margin-bottom:11px}
+.studio-segment-header strong{color:#f5ffe6;font-size:13px}
+.studio-segment-source{color:#b0c0b2;font-size:10px}
+.studio-segment-fields{display:grid;grid-template-columns:100px 100px minmax(120px,1fr);gap:9px}
+.studio-segment-actions{display:flex;gap:6px;justify-content:flex-end;margin-top:9px}
+.studio-segment-actions button{border:1px solid #507459;background:#213b31;color:#e1f4d3;min-width:34px;min-height:33px;border-radius:7px}
+.studio-segment-actions button:last-child{color:#ffb4a7}
+.studio-empty{font-size:12px;color:#acc0ae;border:1px dashed #3b574b;border-radius:8px;padding:18px;margin:0}
+.studio-practice{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:17px}
+#studioStop{background:#26352f;color:#e0e9dd;border:1px solid #5b7661}
+.studio-practice span{font-size:11px;color:#a9ceae;line-height:1.5}
+.studio-practice .error{color:#ffb8a6}
+.studio-panel button:disabled{opacity:.55;cursor:not-allowed}
+.studio-nav{color:#d3f1c1}
+@media(max-width:1100px){.studio-layout{grid-template-columns:minmax(0,1fr)}.studio-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){
+  .studio-intro{padding:18px;align-items:flex-start;flex-direction:column}
+  .studio-panel{padding:13px}
+  .studio-input-grid{grid-template-columns:1fr}
+  .studio-side{grid-template-columns:1fr}
+  .studio-segment-fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .studio-segment-cue{grid-column:span 2}
+  .studio-add-row{flex-direction:column;align-items:stretch}
+  .studio-add-row button{width:100%}
+}
