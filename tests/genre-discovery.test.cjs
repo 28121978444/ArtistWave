@@ -5,16 +5,16 @@ const fs=require('node:fs');
 const vm=require('node:vm');
 const source=fs.readFileSync('app.js','utf8');
 const html=fs.readFileSync('index.html','utf8');
-const start=source.indexOf('const MUSIC_GENRES=[');
+const start=source.indexOf('const RAP_ERAS=');
 const end=source.indexOf('const expandedGenre=',start);
 const helpers=source.indexOf('function genreSearchMatches(');
 const helperEnd=source.indexOf('function renderGenreTree()',helpers);
 assert.ok(start>0&&end>start&&helpers>end&&helperEnd>helpers);
-const artistRows=values=>values.split(';').map(v=>{const split=v.indexOf('|');return [v.slice(0,split),v.slice(split+1)]});
+
 const norm=value=>String(value||'').normalize('NFKD').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 const {MUSIC_GENRES,genreSearchMatches,matchingGenreEras}=vm.runInNewContext(
   source.slice(start,end)+source.slice(helpers,helperEnd)+'\n;({MUSIC_GENRES,genreSearchMatches,matchingGenreEras})',
-  {artistRows,norm,Number,Object}
+  {norm,Number,Object}
 );
 test('preserves legacy genres while adding broad casual listening styles',()=>{
   const names=MUSIC_GENRES.map(g=>g.name);
