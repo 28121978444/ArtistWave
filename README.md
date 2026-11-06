@@ -78,3 +78,15 @@ ArtistWave is a static client-side app. Online MusicBrainz/Internet Archive requ
 If `https://28121978444.github.io/ArtistWave/` shows **There isn't a GitHub Pages site here**, the repository may be public without Pages itself being enabled. On 2026-11-06 the deployment workflow's **Configure GitHub Pages** step failed with **Get Pages site failed — Not Found**. The JavaScript syntax check and site-file preparation passed before that step.
 
 **One-time fix (repository owner):** Go to [Settings → Pages](https://github.com/28121978444/ArtistWave/settings/pages) and set **Build and deployment → Source → GitHub Actions**. This creates/configures the Pages site. Then use [Actions → Deploy ArtistWave to GitHub Pages](https://github.com/28121978444/ArtistWave/actions/workflows/pages.yml) to rerun the failed job or choose **Run workflow** on `main`. GitHub's default `GITHUB_TOKEN` cannot create a new Pages site simply by setting `enablement: true` in the workflow; a user must enable it in repository settings unless a separate credential with administration and Pages permissions is configured. No such credential should be added to the site.
+
+## Genre movements and showdance discovery (v1.7)
+
+The left sidebar now browses a curated selection in this order:
+
+- **Jazz** → Early Jazz, Swing, Bebop, Cool Jazz, Hard Bop, Modal/Spiritual, Fusion, and contemporary movements.
+- **Rock** → **Classic & Hard Rock**, **Heavy Metal**, **Power Metal**, **Death Metal**. Each has its own historical eras and artist lists. Artists can repeat across eras (Alice Cooper appears throughout several Classic/Hard Rock periods).
+- **Rap** → Retains the existing 80s, 90s, 2000s, 2010s, 2020s artist lists, including major names and lesser-known performers.
+- **Reggae** → Ska, Rocksteady, Roots, Dub, Dancehall, and contemporary/reggae revival.
+- **Showdance & training** → **Dance Pop**, **Electronic Dance** (House, Trance, festival EDM), **Funk & Disco**, **Latin Dance**, **Cinematic & Orchestral**, and **Breakbeat & Street**. Use these lists as inspiration for gymnastics and showdance routine selection.
+
+Selecting a genre, then a substyle when present, then an era opens the artist list both inside the sidebar and in the main content area. Clicking an artist starts the existing artist-only recording search. These are editorial exploration categories rather than authoritative historical boundaries, musical rankings, or guarantees of playable recordings. Some names intentionally appear in multiple eras. Gymnastics coaches/performers should verify actual tempo, length, content suitability and any necessary music permissions for public performances. This is not an automatic tempo/BPM-based fitness recommendation engine.
