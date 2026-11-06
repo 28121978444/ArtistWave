@@ -101,7 +101,7 @@
   $('youtubeSearchForm').addEventListener('submit',event=>{
     if(!$('youtubeSearch').value.trim())event.preventDefault();
   });
-  window.ArtistWaveNavigation={setMode,parseYouTubeUrl};
+  window.ArtistWaveNavigation={setMode,parseYouTubeUrl,updateYouTubeAccount};
   document.body.dataset.mode='audio';
   updateYouTubeAccount();
 })();
