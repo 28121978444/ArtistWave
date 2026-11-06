@@ -19,20 +19,26 @@
       <div class="side-label">MUSIC GENRES</div>
       <nav id="genreTree" class="genre-tree" aria-label="Browse music genres, styles and eras"></nav>
       <div class="side-divider"></div>
-      <button class="nav-item folder-nav" id="addFolderNav" type="button"><span>📁</span> Add Music Folder</button>
-      <button class="nav-item folder-reopen" id="reopenFolderNav" type="button" hidden><span>↻</span> Reopen saved folder</button>
-      <button class="nav-item folder-forget" id="forgetFolderNav" type="button" hidden><span>×</span> Forget saved folder</button>
-      <div class="folder-summary" id="folderSummary" aria-live="polite">No local folder selected</div>
+      <details class="sidebar-local-tools" id="localToolsMenu">
+        <summary>📁 Local music</summary>
+                <button class="nav-item folder-nav" id="addFolderNav" type="button"><span>📁</span> Add Music Folder</button>
+        <button class="nav-item folder-reopen" id="reopenFolderNav" type="button" hidden><span>↻</span> Reopen saved folder</button>
+        <button class="nav-item folder-forget" id="forgetFolderNav" type="button" hidden><span>×</span> Forget saved folder</button>
+        <div class="folder-summary" id="folderSummary" aria-live="polite">No local folder selected</div>
+      </details>
       <div class="side-divider"></div>
       
-      <div class="sidebar-studio-footer" aria-label="Gym workspace">
-        <button class="nav-item studio-nav" id="studioNav" type="button"><span>🤸</span> Showdance Studio</button>
-      </div>
       <div class="sidebar-bottom"><span class="icon-spark">✦</span><p>Just the artist you love.<br><span>No algorithm detours.</span></p></div>
     </aside>
 
     <main class="main">
-      <header class="topbar"><div class="breadcrumb">YOUR SPACE <span>/</span> <strong id="locationName">Discover</strong></div><div class="top-right"><span class="live-dot"></span><span class="player-mode-label">LOCAL PLAYER</span><span class="version">V 3.0</span>
+      <header class="topbar">
+        <nav class="mode-tabs" aria-label="Switch ArtistWave workspace">
+          <button type="button" id="modeAudio" class="mode-tab active" aria-current="page">🎧 Entertainment</button>
+          <button type="button" id="studioNav" class="mode-tab studio-nav">🤸 Showdance</button>
+          <button type="button" id="modeYoutube" class="mode-tab">▶ YouTube</button>
+        </nav>
+        <div class="top-right"><span class="live-dot"></span><span class="player-mode-label">LOCAL PLAYER</span><span class="version">V 3.0</span>
           <details class="topbar-account-menu" id="accountMenu">
             <summary class="topbar-account-toggle" aria-label="Open account and cloud sync settings">☁ Account</summary>
             <div class="cloud-account" aria-label="Account and private cloud sync">
@@ -55,6 +61,27 @@
       </div>
           </details>
         </div></header>
+            <section class="youtube-workspace" id="youtubeWorkspace" hidden aria-labelledby="youtubeHeading">
+        <div class="youtube-head"><div class="overline">WATCH MUSIC / VIDEO</div><h2 id="youtubeHeading">▶ YouTube</h2>
+          <p>Watch music videos using YouTube’s official, visible player. The entertainment audio library remains separate.</p></div>
+        <div class="youtube-panel">
+          <form id="youtubeLinkForm" class="youtube-link-form">
+            <label for="youtubeUrl">Paste a YouTube video or playlist link</label>
+            <div class="youtube-link-row"><input id="youtubeUrl" type="url" inputmode="url" placeholder="https://www.youtube.com/watch?v=…" autocomplete="off" spellcheck="false" />
+              <button type="submit">▶ Open video</button></div>
+          </form>
+          <form id="youtubeSearchForm" class="youtube-search-form" action="https://www.youtube.com/results" method="get" target="_blank" rel="noopener noreferrer">
+            <label for="youtubeSearch">Find videos on YouTube</label>
+            <div class="youtube-link-row"><input id="youtubeSearch" name="search_query" placeholder="Artist, track, or music video" maxlength="140" />
+              <button type="submit">Search YouTube ↗</button></div>
+          </form>
+          <div id="youtubeMessage" class="youtube-message" role="status" aria-live="polite">Paste a YouTube link to watch it here, or search on YouTube and copy the link.</div>
+          <div id="youtubePlayerRegion" class="youtube-player-region" hidden>
+            <iframe id="youtubeFrame" title="Official YouTube video player" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
+          <p class="youtube-disclaimer">Videos must permit embedding. Playback uses YouTube’s official player, not extracted audio; YouTube Premium does not unlock a separate audio-only stream here.</p>
+        </div>
+      </section>
       <section class="studio-workspace" id="studioWorkspace" hidden aria-labelledby="studioHeading">
         <div class="studio-intro">
           <div><div class="overline">ARTISTWAVE 3.0 / GYM WORKSPACE</div><h2 id="studioHeading">🤸 Showdance Studio</h2>
@@ -145,5 +172,6 @@
   <script src="cloud-sync.js" defer></script>
   <script src="app.js" defer></script>
   <script src="studio.js" defer></script>
+  <script src="navigation.js" defer></script>
 </body>
 </html>
