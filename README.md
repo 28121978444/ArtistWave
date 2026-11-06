@@ -200,3 +200,15 @@ ArtistWave now has a separate **🤸 Showdance Studio** workspace, intended for 
 ### Sidebar visibility fix
 
 The genre navigation has been moved above the larger account/folder controls in the left sidebar. On desktop it has its own scroll area with more vertical space, while the overall sidebar can scroll to the optional account and folder settings. On narrow screens, genres remain accessible in the responsive sidebar.
+
+## Three listening workspaces — top navigation
+
+The top header provides three clear destinations, without combining their playback methods:
+
+- **🎧 Entertainment:** Existing audio-only discovery, artist search, genres, favorites, albums, local folders, and streaming providers. The large decorative hero is hidden to prioritize finding and playing music. Local folder tools are collapsed in the left sidebar so the genre browser has more room.
+- **🤸 Showdance:** The existing gymnastics and dance rehearsal workspace remains available for review by trainers. This navigation release does not add or change its routine-editing features.
+- **▶ YouTube:** A separate video viewing workspace using a **visible official YouTube embedded player**, not an extracted audio stream. Paste an HTTPS YouTube watch, short, live, or playlist URL to play when embedding is permitted. A search form opens YouTube search results in a new tab; it does not use a YouTube search API key. Switching away removes the embedded player URL so video playback stops.
+
+The Google account dropdown stays at the top right and remains dedicated to ArtistWave's optional Drive sync. No YouTube Premium or YouTube account access is requested; YouTube sign-in and subscription features are subject to YouTube's own embedded player behavior. Some YouTube videos cannot be embedded by their owners.
+
+On smaller displays, workspace navigation remains accessible at the top, with the entertainment sidebar presented only within the audio workspace. The embedded player keeps a 16:9 presentation and at least a 200px minimum height to accommodate official controls.
