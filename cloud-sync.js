@@ -94,6 +94,7 @@
     $('cloudSignIn').disabled=S.busy;
     $('cloudSyncNow').disabled=S.busy||!S.signed;
     $('cloudImportGuest').disabled=S.busy||!S.signed;
+    window.ArtistWaveNavigation?.updateYouTubeAccount?.();
   };
   function applyPrefs(p){
     const prefs=cleanPrefs(p);
