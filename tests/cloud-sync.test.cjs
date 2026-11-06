@@ -19,6 +19,7 @@ function fixture(remote=null){
   const guest={id:'archive:guest',artist:'Nita Strauss',title:'Guest Song',source:'ARCHIVE',url:'https://example.org/guest.mp3'};
   const cloud={id:'archive:cloud',artist:'Nita Strauss',title:'Cloud Song',source:'ARCHIVE',url:'https://example.org/cloud.mp3'};
   let favorites=[guest];
+  let recent=[guest];
   const listeners={};
   let callback;
   const response=(body,status=200)=>({
@@ -44,6 +45,7 @@ function fixture(remote=null){
   }}} ,dispatchEvent(event){(listeners[event.type]||[]).forEach(handler=>handler(event))},addEventListener(type,listener){(listeners[type]??=[]).push(listener)}};
   listeners['artistwave:cloud-load']=[event=>{
     favorites=event.detail.favorites;
+    recent=event.detail.recent||[];
     const prefs=event.detail.preferences;
     els.sourceMode.value=prefs.sourceMode;
     els.showUnavailable.checked=prefs.showUnavailable;
@@ -57,8 +59,8 @@ function fixture(remote=null){
   const context={window,document,localStorage:storage,Headers,URLSearchParams,CustomEvent,fetch:fakeFetch,
     Date,Map,Set,Promise,JSON,clearTimeout,setTimeout,queueMicrotask};
   vm.runInNewContext(source,context);
-  window.ArtistWaveCloud.init({getFavorites:()=>favorites});
-  return {els,requests,window,entries,getFavorites:()=>favorites,guest,cloud};
+  window.ArtistWaveCloud.init({getFavorites:()=>favorites,getRecent:()=>recent});
+  return {els,requests,window,entries,getFavorites:()=>favorites,getRecent:()=>recent,guest,cloud};
 }
 const settle=()=>new Promise(resolve=>setTimeout(resolve,12));
 test('cloud backup excludes local blobs and malformed URLs',()=>{
@@ -109,4 +111,21 @@ test('cloud favorites retain playable online fallbacks but exclude device URLs',
   assert.equal(clean.length,1);
   assert.deepEqual(Array.from(clean[0].alternates,t=>t.source),['AUDIUS']);
   assert.doesNotMatch(JSON.stringify(clean),/blob:device-only/);
+});
+
+test('account cloud payload includes only online listening history',()=>{
+  const f=fixture();
+  const data=f.window.ArtistWaveCloud.payload([f.guest],{sourceMode:'both'},[
+    f.guest,{id:'local:1',artist:'X',title:'Private',source:'LOCAL',url:'blob:secret'}
+  ]);
+  assert.deepEqual(Array.from(data.recent,t=>t.id),['archive:guest']);
+  assert.doesNotMatch(JSON.stringify(data),/blob:secret/);
+});
+test('existing account without history loads safely and logout restores guest history',async()=>{
+  const f=fixture({schema:1,updatedAt:'2026-10-01T00:00:00Z',favorites:[{id:'archive:cloud',artist:'Nita Strauss',title:'Cloud Song',source:'ARCHIVE',url:'https://example.org/cloud.mp3'}],preferences:{sourceMode:'both'}});
+  f.els.cloudSignIn.onclick();await settle();
+  assert.equal(f.window.ArtistWaveCloud.isSignedIn(),true);
+  assert.equal(f.getRecent().length,0);
+  f.els.cloudSignOut.onclick();
+  assert.deepEqual(Array.from(f.getRecent(),t=>t.id),['archive:guest']);
 });
