@@ -97,3 +97,16 @@ test('guest mode persists favorites locally without account sign-in',()=>{
   f.window.ArtistWaveCloud.persistGuestFavorites([f.guest]);
   assert.match(f.entries.get('artistwave:favorites'),/Guest Song/);
 });
+
+test('cloud favorites retain playable online fallbacks but exclude device URLs',()=>{
+  const f=fixture();
+  const track={...f.guest,alternates:[
+    {id:'aud',title:'Guest Song',artist:'Nita Strauss',source:'AUDIUS',url:'https://api.audius.co/v1/tracks/1/stream'},
+    {id:'local',title:'Guest Song',artist:'Nita Strauss',source:'LOCAL',url:'blob:device-only'},
+    {id:'unsafe',title:'Guest Song',artist:'Nita Strauss',source:'ARCHIVE',url:'javascript:bad'}
+  ]};
+  const clean=f.window.ArtistWaveCloud.cleanFavorites([track]);
+  assert.equal(clean.length,1);
+  assert.deepEqual(Array.from(clean[0].alternates,t=>t.source),['AUDIUS']);
+  assert.doesNotMatch(JSON.stringify(clean),/blob:device-only/);
+});
