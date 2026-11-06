@@ -233,14 +233,14 @@
   }
   function open(){
     $('studioWorkspace').hidden=false;
-    for(const id of ['discoverSection','playlistSection','genreResults','albumJump'])$(id).hidden=true;
+    for(const id of ['artistWaveHero','discoverSection','playlistSection','genreResults','albumJump'])$(id).hidden=true;
     $('locationName').textContent='Showdance Studio';
     $('studioNav').classList.add('active');
     render();$('studioWorkspace').scrollIntoView({behavior:'smooth',block:'start'});
   }
   function close(){
     stop();$('studioWorkspace').hidden=true;
-    for(const id of ['discoverSection','playlistSection'])$(id).hidden=false;
+    for(const id of ['artistWaveHero','discoverSection','playlistSection'])$(id).hidden=false;
     $('albumJump').hidden=false;
     $('studioNav').classList.remove('active');
     $('locationName').textContent='Discover';
