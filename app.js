@@ -114,7 +114,12 @@ async function fetchAudiusTracks(artist){
     getJSON(base+'/users/'+encodeURIComponent(user.id)+'/tracks?'+new URLSearchParams({limit:'75',offset:'0'}))
   ));
   if(candidates.length&&queries.every(item=>item.status==='rejected'))throw Error('Artist tracks could not be loaded');
-  return dedupeTracks(queries.flatMap(item=>item.status==='fulfilled'?normalizeAudiusTracks(item.value.data,artist):[]));
+  return dedupeTracks(queries.flatMap((item,index)=>{
+    if(item.status!=='fulfilled')return [];
+    // User-track response may omit the embedded owner record.
+    const owner=candidates[index];
+    return normalizeAudiusTracks((item.value.data||[]).map(t=>({...t,user:t.user||owner})),artist);
+  }));
 }
 async function fetchJamendoTracks(artist){
   const clientId=jamendoClientId();
@@ -152,7 +157,7 @@ async function loadOnlineProviders(artist,selection){
   if(providerEnabled('archive')&&S.page===0&&!S.loading){
     pending.push((async()=>{
       S.providerBusy.archive=true;
-      try{await loadMore();S.providerChecked.archive=true}
+      try{await loadMore()}
       finally{S.providerBusy.archive=false;refreshProviderStatus()}
     })());
   }
@@ -332,7 +337,13 @@ function render(){
     const info=document.createElement('div');info.className='track-info';const title=document.createElement('strong');title.textContent=t.title;
     const artist=document.createElement('small');artist.textContent=t.artist;info.append(title,artist);
     const collection=document.createElement('span');collection.className='recording-name';collection.textContent=t.collection||'Audio';
-    const source=document.createElement('span');source.className='track-source';source.textContent=t.source;
+    const source=document.createElement('span');source.className='track-source';
+    if(t.sourceUrl&&/^https:\/\//.test(t.sourceUrl)){
+      const link=document.createElement('a');link.className='provider-link';link.href=t.sourceUrl;
+      link.target='_blank';link.rel='noopener noreferrer';link.textContent=t.source+' ↗';
+      link.setAttribute('aria-label','View '+t.title+' on '+t.source);
+      source.append(link);
+    }else source.textContent=t.source;
     const fav=document.createElement('button');fav.className='heart-button';fav.textContent=S.favorites.some(x=>x.id===t.id)?'♥':'♡';
     fav.setAttribute('aria-label','Toggle favorite');fav.onclick=()=>favorite(t);
     const controls=document.createElement('div');controls.className='track-actions';controls.append(fav,makeLyricsActions(t));
@@ -461,6 +472,7 @@ async function tracksFromItem(id,artist){let m=await getJSON('https://archive.or
 async function loadMore(){
   if(S.loading||!S.artist||sourceMode()==='local'||!providerEnabled('archive'))return;
   const request=++S.requestId,artist=S.artist;
+  delete S.providerErrors.archive;
   S.loading=true;$('loadMore').hidden=true;
   const page=++S.page;
   try{
@@ -477,11 +489,12 @@ async function loadMore(){
     }
     if(request!==S.requestId)return;
     S.onlineTracks=dedupeTracks([...S.onlineTracks,...found]);
+    S.providerChecked.archive=true;
     rebuildPlaylist();
     $('loadMore').hidden=page*30>=(result.response?.numFound||0);
     refreshProviderStatus();
     render();
-  }catch(e){if(request===S.requestId){S.providerErrors.archive=e.message;refreshProviderStatus()}}
+  }catch(e){if(request===S.requestId){S.page=Math.max(0,S.page-1);S.providerErrors.archive=e.message;refreshProviderStatus()}}
   finally{if(request===S.requestId)S.loading=false}
 }
 
