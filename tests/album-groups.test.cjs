@@ -4,7 +4,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
 const app=fs.readFileSync('app.js','utf8');
-const start=app.indexOf('function albumLabel(');
+const start=app.indexOf('function extractYear(');
 const end=app.indexOf('function render(){',start);
 assert.ok(start>=0&&end>start,'album helpers exist');
 const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
