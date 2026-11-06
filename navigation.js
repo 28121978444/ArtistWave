@@ -30,8 +30,14 @@
   }
   function setMode(target){
     if(!tabs[target])return;
-    if(target!=='studio'&&mode==='studio')window.ArtistWaveStudio?.close();
-    if(target==='studio'&&mode!=='studio')window.ArtistWaveStudio?.open();
+    // A single handler owns workspace visibility. Never rely on the previous
+    // mode: an account action, sidebar link or a direct Studio close may have
+    // altered visibility without changing the navigation's previous mode.
+    if(target==='studio'){
+      window.ArtistWaveStudio?.open();
+    }else{
+      window.ArtistWaveStudio?.close();
+    }
     if(target!=='youtube')stopVideo();
     if(target==='youtube'){
       window.ArtistWaveStudioHost?.pauseMain?.();
@@ -39,6 +45,15 @@
     }
     mode=target;
     document.body.dataset.mode=target;
+    $('studioWorkspace').hidden=target!=='studio';
+    $('youtubeWorkspace').hidden=target!=='youtube';
+    const entertainment=target==='audio';
+    for(const id of ['discoverSection','playlistSection','artistWaveHero']){
+      $(id).hidden=!entertainment;
+    }
+    if(entertainment){
+      window.ArtistWaveStudioHost?.render?.();
+    }
     for(const [name,tab] of Object.entries(tabs)){
       tab.classList.toggle('active',name===target);
       if(name===target)tab.setAttribute('aria-current','page');
@@ -46,11 +61,12 @@
     }
     if(target==='youtube')$('locationName').textContent='YouTube';
     else if(target==='audio')$('locationName').textContent='Discover';
-    $('youtubeWorkspace').hidden=target!=='youtube';
-    if(target==='audio')window.ArtistWaveStudioHost?.render?.();
+    else $('locationName').textContent='Showdance Studio';
+    // Switching workspaces must never inherit scroll position from another
+    // workspace. Keep the mode tabs and the new content at the top.
+    window.scrollTo({top:0,left:0,behavior:'instant'});
   }
   tabs.audio.addEventListener('click',()=>setMode('audio'));
-  // studioNav already has the Studio open handler, attached by studio.js.
   tabs.studio.addEventListener('click',()=>setMode('studio'));
   tabs.youtube.addEventListener('click',()=>setMode('youtube'));
   $('studioClose').addEventListener('click',()=>setMode('audio'));
