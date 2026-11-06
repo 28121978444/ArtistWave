@@ -29,13 +29,13 @@ function fixture(remote=null){
   const fakeFetch=async(url,options={})=>{
     requests.push({url,options});
     if(url.includes('/oauth2/v3/userinfo'))return response(profile);
+    if(url.includes('uploadType=multipart'))return response({id:'new-file'});
+    if(url.includes('uploadType=media'))return response({id:'drive-file'});
     if(url.includes('/drive/v3/files?')){
       const files=remote?[{id:'drive-file',name:'artistwave-library-v1.json',modifiedTime:remote.updatedAt}]:[];
       return response({files});
     }
     if(url.includes('alt=media'))return response(remote);
-    if(url.includes('uploadType=multipart'))return response({id:'new-file'});
-    if(url.includes('uploadType=media'))return response({id:'drive-file'});
     throw Error('Unexpected request: '+url);
   };
   const window={google:{accounts:{oauth2:{
