@@ -100,7 +100,7 @@ function normalizeAudiusTracks(records,artist){
     providerArtistMatches(t.user?.name,t.user?.handle,artist)
   ).map(t=>({
     id:'audius:'+t.id,title:String(t.title),artist,
-    collection:t.album_name||'Audius release',source:'AUDIUS',
+    collection:t.album_name||t.album?.name||'Audius release',albumKind:(t.album_name||t.album?.name)?'album':'single',year:extractYear(t.release_date),source:'AUDIUS',
     url:'https://api.audius.co/v1/tracks/'+encodeURIComponent(t.id)+'/stream',
     sourceUrl:typeof t.permalink==='string'&&t.permalink.startsWith('https://audius.co/')?t.permalink:
       'https://audius.co/search?query='+encodeURIComponent(artist+' '+t.title)
@@ -112,7 +112,7 @@ function normalizeJamendoTracks(records,artist){
     /^https:\/\//i.test(t.audio)&&norm(t.artist_name)===norm(artist)
   ).map(t=>({
     id:'jamendo:'+t.id,title:String(t.name),artist,
-    collection:t.album_name||'Jamendo single',source:'JAMENDO',
+    collection:t.album_name||'Jamendo single',albumKind:t.album_name?'album':'single',year:extractYear(t.releasedate),source:'JAMENDO',
     url:t.audio,
     sourceUrl:typeof t.shareurl==='string'&&t.shareurl.startsWith('https://')?t.shareurl:
       'https://www.jamendo.com/track/'+encodeURIComponent(t.id),
@@ -213,16 +213,19 @@ function localMatchesArtist(track,name){
 function rebuildPlaylist(){
   const previous=S.tracks[S.selected];
   const candidates=[
-    ...(sourceMode()==='local'?[]:S.onlineTracks.filter(t=>providerEnabled(t.source.toLowerCase()))),
+     ...(sourceMode()==='local'?[]:S.onlineTracks.flatMap(trackSources).filter(t=>providerEnabled(t.source.toLowerCase()))),
     ...(sourceMode()==='online'?[]:S.local.filter(t=>localMatchesArtist(t,S.artist)))
   ];
   S.tracks=dedupeTracks(candidates);
   S.albumQueue=S.albumQueue.filter(key=>S.tracks.some(t=>trackKey(t)===key));
   S.selected=previous?S.tracks.findIndex(t=>trackKey(t)===trackKey(previous)):-1;
-  if(previous&&!S.tracks.some(t=>t.id===previous.id)){
-    // Stop audio when the selected file is no longer permitted by source mode.
-    audio.pause();audio.removeAttribute('src');
-    S.selected=-1;
+  if(previous&&S.selected<0){
+    audio.pause();audio.removeAttribute('src');clearPlaybackRecovery();
+  }else if(previous&&S.selected>=0&&S.activeSource){
+    const stillAllowed=trackSources(S.tracks[S.selected]).some(t=>t.url===S.activeSource.url);
+    if(!stillAllowed){
+      audio.pause();audio.removeAttribute('src');clearPlaybackRecovery();
+    }
   }
   render();updatePlayer();
 }
@@ -283,7 +286,7 @@ async function importLocalFiles(entries,{folder=false}={}){
       const artist=(tags.artist||fallback.artist).replace(/\0/g,' / ').trim();
       const title=tags.title||fallback.title;
       const url=URL.createObjectURL(file);
-      const track={id:'local:'+id,title,artist,collection:tags.collection||fallback.collection,source:'LOCAL',url,path};
+      const track={id:'local:'+id,title,artist,collection:tags.collection||fallback.collection,albumKind:tags.collection||fallback.collection!=='Your device'?'album':'single',source:'LOCAL',url,path};
       S.local.push(track);
       S.localFiles.add(id);added++;
     }
@@ -345,15 +348,22 @@ function makeLyricsActions(track){
   return actions;
 }
 
+function extractYear(input){
+  const match=String(input||'').match(/\b(18\d\d|19\d\d|20\d\d)\b/);
+  return match?match[1]:'';
+}
 function albumLabel(track){
   const name=String(track?.collection||'').trim();
-  return !name||/^(?:audio|your device|unknown|unknown album|untitled|single|singles|audius release|jamendo single)$/i.test(name)?'Singles & unknown albums':name;
+  if(!name||/^(?:audio|your device|unknown|unknown album|untitled|single|singles|audius release|jamendo single)$/i.test(name))
+    return 'Singles & unknown albums';
+  // Internet Archive item titles are not necessarily official albums.
+  return track?.albumKind==='collection'?'Archive collection · '+name:name;
 }
 function groupTracksByAlbum(tracks){
   const groups=new Map();
   tracks.forEach((track,index)=>{
-    const label=albumLabel(track),key=norm(label);
-    if(!groups.has(key))groups.set(key,{label,items:[]});
+    const label=albumLabel(track),key=norm(track.artist||'')+'|'+norm(label);
+    if(!groups.has(key))groups.set(key,{label,artist:track.artist||'',key,items:[]});
     groups.get(key).items.push({track,index});
   });
   return [...groups.values()];
@@ -391,7 +401,7 @@ function render(){
   }
   const playableGroups=groupTracksByAlbum(songs);
   const catalogGroups=groupTracksByAlbum(unplayable);
-  const catalogByAlbum=new Map(catalogGroups.map(group=>[norm(group.label),group.items]));
+  const catalogByAlbum=new Map(catalogGroups.map(group=>[group.key,group.items]));
   function appendPlayable(t,i,parent){
     const el=document.createElement('div');el.className='track-row'+(S.view!=='favorites'&&i===S.selected?' active':'');
     const play=document.createElement('button');play.className='track-play';play.textContent='▶';play.setAttribute('aria-label','Play '+t.title);
@@ -425,16 +435,18 @@ function render(){
   }
   const visited=new Set();
   for(const group of [...playableGroups,...catalogGroups]){
-    const key=norm(group.label);
+    const key=group.key;
     if(visited.has(key))continue;
     visited.add(key);
-    const playable=playableGroups.find(g=>norm(g.label)===key)?.items||[];
+    const playable=playableGroups.find(g=>g.key===key)?.items||[];
     const catalog=catalogByAlbum.get(key)||[];
     const section=document.createElement('section');section.className='album-group';
     section.setAttribute('aria-label','Album: '+group.label);
     const header=document.createElement('div');header.className='album-header';
     const heading=document.createElement('h3');heading.className='album-heading';heading.textContent=group.label;
     const count=document.createElement('span');count.className='album-count';
+    const year=playable.concat(catalog).map(item=>extractYear(item.track.year)).find(Boolean);
+    if(year){const date=document.createElement('span');date.className='album-year';date.textContent=year;header.append(date)}
     const total=playable.length+catalog.length;
     count.textContent=total+' track'+(total===1?'':'s');
     header.append(heading,count);
@@ -562,7 +574,24 @@ try{const query='mediatype:audio AND ('+'title:('+term+') OR creator:('+term+'))
 if(!count){list.append(sourceChoice('Search Internet Archive for '+term,'Try an exact creator search',()=>chooseArtist(term,null)))}else show('Choose a matching artist or recording above to build your playlist.')}
 async function chooseArtist(name,mbid){const selection=++S.matchRequest;S.requestId++;S.loading=false;audio.pause();audio.removeAttribute('src');clearAlbumQueue();S.artist=name;S.archiveItemView=false;S.providerChecked={};S.providerBusy={};S.providerErrors={};S.artistMbid=mbid||null;S.unavailable=[];S.catalogResolved=false;S.catalogLoading=false;S.catalogRequest++;S.page=0;S.tracks=[];S.onlineTracks=[];S.selected=-1;S.view='discover';$('matchList').querySelectorAll('button').forEach(x=>x.classList.remove('selected'));$('playlistHeading').textContent=name;$('externalSearch').hidden=false;$('externalSearch').href='https://www.youtube.com/results?search_query='+encodeURIComponent(name+' music');$('externalSearch').textContent='Search '+name+' on YouTube ↗';show(sourceMode()==='local'?'Searching your local music for '+name+'…':'Searching publicly available recordings attributed to '+name+'…');rebuildPlaylist();if(sourceMode()!=='local')await loadOnlineProviders(name,selection);else show(S.tracks.length+' local track(s) found for '+name+'.');if(selection===S.matchRequest&&sourceMode()!=='local'&&$('showUnavailable').checked)await loadUnavailable()}
 async function chooseArchiveItem(d){S.matchRequest++;const request=++S.requestId;S.loading=false;audio.pause();audio.removeAttribute('src');S.catalogRequest++;S.catalogResolved=false;S.catalogLoading=false;S.unavailable=[];clearAlbumQueue();S.archiveItemView=true;S.artistMbid=null;const name=Array.isArray(d.title)?d.title[0]:d.title||d.identifier;S.artist=Array.isArray(d.creator)?d.creator[0]:d.creator||name;S.page=0;S.selected=-1;S.tracks=[];S.onlineTracks=[];updatePlayer();$('playlistHeading').textContent=name;$('externalSearch').hidden=true;show('Loading recording: '+name);try{const tracks=await tracksFromItem(d.identifier,S.artist);if(request!==S.requestId)return;S.onlineTracks=dedupeTracks(tracks);rebuildPlaylist();show(S.tracks.length+' unique playable tracks found in this item.')}catch(e){if(request===S.requestId)show('Unable to load the selected recording: '+e.message,true)}if(request===S.requestId)$('loadMore').hidden=true}
-async function tracksFromItem(id,artist){let m=await getJSON('https://archive.org/metadata/'+encodeURIComponent(id));let files=(m.files||[]).filter(f=>/\.(mp3|ogg|oga|m4a|aac|wav|flac|opus)$/i.test(f.name||'')&&!/(_meta|__ia_thumb|spectrogram)/i.test(f.name||''));return files.slice(0,70).map(f=>({id:id+'/'+f.name,title:(f.title||f.name.split('/').pop()).replace(/\.(mp3|ogg|oga|m4a|aac|wav|flac|opus)$/i,'').replace(/^\d+[-._ ]+/,'').replace(/_/g,' '),artist,collection:m.metadata?.title||id,source:'ARCHIVE',url:'https://archive.org/download/'+encodeURIComponent(id)+'/'+f.name.split('/').map(encodeURIComponent).join('/')}))}
+async function tracksFromItem(id,artist){
+  const m=await getJSON('https://archive.org/metadata/'+encodeURIComponent(id));
+  const files=(m.files||[]).filter(f=>/\.(mp3|ogg|oga|m4a|aac|wav|flac|opus)$/i.test(f.name||'')&&!/(_meta|__ia_thumb|spectrogram)/i.test(f.name||''));
+  const val=x=>Array.isArray(x)?String(x[0]||'').trim():String(x||'').trim();
+  const itemAlbum=val(m.metadata?.album);
+  const itemTitle=val(m.metadata?.title)||id;
+  const itemYear=extractYear(m.metadata?.year||m.metadata?.date);
+  return files.slice(0,70).map(f=>{
+    const album=val(f.album)||itemAlbum;
+    return {
+      id:id+'/'+f.name,
+      title:(val(f.title)||f.name.split('/').pop()).replace(/\.(mp3|ogg|oga|m4a|aac|wav|flac|opus)$/i,'').replace(/^\d+[-._ ]+/,'').replace(/_/g,' '),
+      artist,collection:album||itemTitle,albumKind:album?'album':'collection',
+      year:extractYear(f.year||f.date)||itemYear,source:'ARCHIVE',
+      url:'https://archive.org/download/'+encodeURIComponent(id)+'/'+f.name.split('/').map(encodeURIComponent).join('/')
+    };
+  });
+}
 async function loadMore(){
   if(S.loading||!S.artist||sourceMode()==='local'||!providerEnabled('archive'))return;
   const request=++S.requestId,artist=S.artist;
