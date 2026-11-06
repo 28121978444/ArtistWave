@@ -25,16 +25,30 @@
       showUnavailable:Boolean(p.showUnavailable),includeLive:p.includeLive!==false,
       providers:Object.fromEntries(providerKeys.map(k=>[k,p.providers?.[k]===undefined?(k!=='jamendo'):Boolean(p.providers[k])]))};
   };
-  const cleanFavorites=value=>Array.isArray(value)?value.filter(t=>
-    t&&typeof t==='object'&&typeof t.id==='string'&&
-    typeof t.title==='string'&&typeof t.artist==='string'&&
-    typeof t.url==='string'&&/^https:\/\//.test(t.url)&&
-    t.source!=='LOCAL'
-  ).slice(0,2000).map(t=>({
-    id:t.id.slice(0,250),title:t.title.slice(0,250),artist:t.artist.slice(0,250),
-    collection:String(t.collection||'').slice(0,250),source:String(t.source||'ARCHIVE').slice(0,30),
-    url:t.url.slice(0,1800),...(typeof t.sourceUrl==='string'&&/^https:\/\//.test(t.sourceUrl)?{sourceUrl:t.sourceUrl.slice(0,1800)}:{})
-  })):[];
+  // Favorites may keep multiple playback URLs for the same song. Never sync
+  // device-local blob URLs, even when they appear only as alternate sources.
+  const cleanOnlineTrack=t=>{
+    if(!t||typeof t!=='object'||typeof t.id!=='string'||
+      typeof t.title!=='string'||typeof t.artist!=='string'||
+      typeof t.url!=='string'||!/^https:\/\//.test(t.url)||t.source==='LOCAL')return null;
+    return {
+      id:t.id.slice(0,250),title:t.title.slice(0,250),artist:t.artist.slice(0,250),
+      collection:String(t.collection||'').slice(0,250),
+      albumKind:t.albumKind==='album'?'album':t.albumKind==='collection'?'collection':'single',
+      year:String(t.year||'').slice(0,4),
+      source:String(t.source||'ARCHIVE').slice(0,30),url:t.url.slice(0,1800),
+      ...(typeof t.sourceUrl==='string'&&/^https:\/\//.test(t.sourceUrl)?{sourceUrl:t.sourceUrl.slice(0,1800)}:{})
+    };
+  };
+  const cleanFavorites=value=>Array.isArray(value)?value
+    .map(t=>{
+      const cleaned=cleanOnlineTrack(t);
+      if(!cleaned)return null;
+      const variants=Array.isArray(t.alternates)?t.alternates:[];
+      const links=variants.map(cleanOnlineTrack).filter(v=>v&&v.url!==cleaned.url).slice(0,10);
+      if(links.length)cleaned.alternates=[...new Map(links.map(v=>[v.url,v])).values()];
+      return cleaned;
+    }).filter(Boolean).slice(0,2000):[];
   const dedupeFavorites=tracks=>{
     const map=new Map();
     for(const t of cleanFavorites(tracks)){
