@@ -368,3 +368,26 @@
 
 /* Dedicated workspace visibility must override the normal hero flex layout. */
 .hero[hidden],.studio-workspace[hidden]{display:none!important}
+
+/* v3.0: compact account dropdown on the right side of the top bar. */
+.topbar{position:relative;z-index:30;overflow:visible}
+.topbar .top-right{display:flex;align-items:center;gap:9px;min-width:0}
+.topbar-account-menu{position:relative;flex:0 0 auto;z-index:31;letter-spacing:normal}
+.topbar-account-toggle{list-style:none;display:inline-flex;align-items:center;justify-content:center;min-height:36px;border-radius:9px;padding:8px 13px;box-sizing:border-box;border:1px solid #517556;background:#1d382b;color:#e4fbd4;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+.topbar-account-toggle::-webkit-details-marker{display:none}
+.topbar-account-toggle::after{content:'⌄';font-size:13px;margin-left:9px;color:#c9e8b9}
+.topbar-account-menu[open] .topbar-account-toggle{background:#31523c;border-color:#83a46c}
+.topbar-account-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.topbar-account-menu>.cloud-account{position:absolute;right:0;top:calc(100% + 9px);z-index:40;width:min(330px,calc(100vw - 30px));box-sizing:border-box;padding:14px;display:flex;flex-direction:column;gap:9px;max-height:min(72dvh,600px);overflow-y:auto;box-shadow:0 18px 42px #0009;background:#14241f;border:1px solid #51725d;border-radius:12px}
+.topbar-account-menu>.cloud-account .cloud-signin{width:100%;display:flex;justify-content:center;min-height:38px}
+.topbar-account-menu>.cloud-account .cloud-account-actions button{width:100%;cursor:pointer}
+.topbar-account-menu>.cloud-account .cloud-account-actions button:hover{background:#355844}
+.topbar-account-menu>.cloud-account .cloud-setup{min-width:0}
+.topbar-account-menu>.cloud-account .cloud-setup input{width:100%;max-width:100%}
+@media(max-width:700px){
+ .topbar{padding:0 4px}
+ .topbar .top-right{gap:5px}
+ .topbar .player-mode-label,.topbar .live-dot{display:none}
+ .topbar-account-menu>.cloud-account{position:fixed;top:60px;right:10px;width:min(340px,calc(100vw - 20px));max-height:calc(100dvh - 90px)}
+ .topbar-account-toggle{padding:8px 10px;font-size:11px}
+}
