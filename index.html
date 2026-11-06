@@ -16,7 +16,7 @@
           <button type="button" id="studioNav" class="mode-tab studio-nav">🤸 Showdance</button>
           <button type="button" id="modeYoutube" class="mode-tab">▶ YouTube</button>
         </nav>
-        <div class="top-right"><span class="version">V 3.0</span>
+        <div class="top-right"><span class="version">V 3.1</span>
           <details class="topbar-account-menu" id="accountMenu">
             <summary class="topbar-account-toggle" aria-label="Open account and cloud sync settings">☁ Account</summary>
             <div class="cloud-account" aria-label="Account and private cloud sync">
@@ -46,6 +46,9 @@
       <button class="nav-item" id="favoritesNav"><span>♡</span> Favorites <span class="nav-count" id="favoriteCount">0</span></button>
       <button class="nav-item" id="recentNav" type="button"><span>◷</span> Recently Played <span class="nav-count" id="recentCount">0</span></button>
       <div class="side-label">MUSIC GENRES</div>
+      <label class="genre-filter-label" for="genreFilter">Filter genres and styles</label>
+      <div class="genre-filter-row"><input id="genreFilter" type="search" placeholder="Search genres or artists…" maxlength="80" autocomplete="off" aria-describedby="genreFilterCount" /><button id="genreFilterClear" type="button" aria-label="Clear genre filter" hidden>×</button></div>
+      <div id="genreFilterCount" class="genre-filter-count" role="status" aria-live="polite"></div>
       <nav id="genreTree" class="genre-tree" aria-label="Browse music genres, styles and eras"></nav>
       <div class="side-divider"></div>
       <details class="sidebar-local-tools" id="localToolsMenu">
