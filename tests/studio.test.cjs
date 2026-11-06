@@ -61,3 +61,12 @@ test('studio has its own accessible workspace and genres precede optional accoun
   assert.ok(html.indexOf('id="genreTree"')<html.indexOf('<header class="topbar"'));
 
 });
+
+test('Showdance Studio navigation sits at the bottom below the genre browser',()=>{
+  const html=fs.readFileSync('index.html','utf8');
+  const sidebar=html.slice(html.indexOf('<aside class="sidebar">'),html.indexOf('</aside>'));
+  assert.equal((sidebar.match(/id="studioNav"/g)||[]).length,1);
+  assert.ok(sidebar.indexOf('id="studioNav"')>sidebar.indexOf('id="genreTree"'));
+  assert.ok(sidebar.indexOf('id="studioNav"')>sidebar.indexOf('id="folderSummary"'));
+  assert.ok(sidebar.includes('class="sidebar-studio-footer"'));
+});
