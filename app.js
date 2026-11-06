@@ -319,41 +319,84 @@ const RAP_ERAS={
 };
 let chosenRapEra=null;
 function renderGenreTree(){
-  const tree=$('genreTree');tree.replaceChildren();
-  const genre=document.createElement('details');genre.className='genre-node';genre.open=true;
-  const summary=document.createElement('summary');summary.textContent='🎤 Rap';genre.append(summary);
-  const years=document.createElement('div');years.className='genre-era-list';
+  const tree=$('genreTree');
+  tree.replaceChildren();
+  const genre=document.createElement('details');
+  genre.className='genre-node';
+  genre.open=true;
+  const summary=document.createElement('summary');
+  summary.textContent='🎤 Rap';
+  genre.append(summary);
+  const eras=document.createElement('div');
+  eras.className='genre-era-list';
   for(const decade of Object.keys(RAP_ERAS)){
-    const btn=document.createElement('button');btn.type='button';btn.className='genre-era-button';
-    btn.textContent=decade;btn.setAttribute('aria-pressed',String(decade===chosenRapEra));
-    btn.onclick=()=>showRapEra(decade);
-    years.append(btn);
+    const era=document.createElement('div');
+    era.className='genre-era-group';
+    const btn=document.createElement('button');
+    btn.type='button';
+    btn.className='genre-era-button';
+    btn.textContent=decade+'  ›';
+    const active=decade===chosenRapEra;
+    btn.setAttribute('aria-expanded',String(active));
+    btn.setAttribute('aria-controls','rap-artists-'+decade);
+    btn.classList.toggle('active',active);
+    btn.onclick=()=>showRapEra(active?null:decade);
+    era.append(btn);
+    const artists=document.createElement('div');
+    artists.id='rap-artists-'+decade;
+    artists.className='genre-sidebar-artists';
+    artists.hidden=!active;
+    for(const [name] of RAP_ERAS[decade]){
+      const artist=document.createElement('button');
+      artist.type='button';
+      artist.className='genre-sidebar-artist';
+      artist.textContent=name;
+      artist.onclick=()=>selectRapArtist(decade,name);
+      artists.append(artist);
+    }
+    era.append(artists);
+    eras.append(era);
   }
-  genre.append(years);tree.append(genre);
+  genre.append(eras);
+  tree.append(genre);
+}
+function selectRapArtist(decade,name){
+  $('artistInput').value=name;
+  $('locationName').textContent='Rap / '+decade+' / '+name;
+  $('matchPanel').hidden=true;
+  chooseArtist(name,null);
+  $('playlistSection').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function showRapEra(decade){
-  chosenRapEra=decade;renderGenreTree();
-  const panel=$('genreResults');panel.hidden=false;
+  chosenRapEra=decade;
+  renderGenreTree();
+  const panel=$('genreResults');
+  if(!decade){
+    panel.hidden=true;
+    return;
+  }
+  panel.hidden=false;
   $('genreResultsHeading').textContent='Rap → '+decade;
   $('genreResultsCount').textContent=RAP_ERAS[decade].length+' ARTISTS';
-  $('genreResultsDescription').textContent='Featured names first, then more artists active in this era. Click any name to build an artist-only playlist.';
-  const list=$('genreArtistList');list.replaceChildren();
+  $('genreResultsDescription').textContent='Choose an artist below or in the Rap sidebar to build an artist-only playlist.';
+  const list=$('genreArtistList');
+  list.replaceChildren();
   for(const [name,description] of RAP_ERAS[decade]){
-    const button=document.createElement('button');button.className='genre-artist-card';button.type='button';
-    const title=document.createElement('strong');title.textContent=name;
-    const detail=document.createElement('small');detail.textContent=description;
-    const arrow=document.createElement('span');arrow.textContent='↗';
+    const button=document.createElement('button');
+    button.className='genre-artist-card';
+    button.type='button';
+    const title=document.createElement('strong');
+    title.textContent=name;
+    const detail=document.createElement('small');
+    detail.textContent=description;
+    const arrow=document.createElement('span');
+    arrow.textContent='↗';
     button.append(title,detail,arrow);
-    button.onclick=()=>{
-      $('artistInput').value=name;
-      $('locationName').textContent='Rap / '+decade+' / '+name;
-      // Curated artist selection opens their playlist directly.
-      $('matchPanel').hidden=true;
-      chooseArtist(name,null);
-      $('playlistSection').scrollIntoView({behavior:'smooth',block:'start'});
-    };
+    button.onclick=()=>selectRapArtist(decade,name);
     list.append(button);
   }
+  // Keep the results easy to notice when an era is selected.
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
 }
 let artworkEditor=null;
 function openArtworkEditor(detail){
