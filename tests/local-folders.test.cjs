@@ -17,7 +17,7 @@ function setup(mode='both'){
   const folderSummary={textContent:''};
   let selectedMode=mode;
   const norm=s=>String(s||'').normalize('NFKD').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
-  const box={S,norm,Map,Set,Uint8Array,TextDecoder,URL:{createObjectURL:()=> 'blob:mock'},audio:{pause(){},removeAttribute(){}},render(){},updatePlayer(){},show(){},window:{},$:(id)=>id==='sourceMode'?{value:selectedMode}:folderSummary};
+  const box={S,norm,Map,Set,Uint8Array,TextDecoder,URL:{createObjectURL:()=> 'blob:mock'},audio:{pause(){},removeAttribute(){}},render(){},updatePlayer(){},show(){},window:{},$:(id)=>id==='sourceMode'?{value:selectedMode}:id==='providerArchive'?{checked:true}:id==='providerAudius'||id==='providerJamendo'?{checked:false}:folderSummary};
   const f=vm.runInNewContext(app.slice(dedupeStart,dedupeEnd)+'\n'+app.slice(folderStart,folderEnd)+'\n;({parseLocalFilename,localMatchesArtist,rebuildPlaylist,importLocalFiles,readLocalTags})',box);
   return {S,f,folderSummary,setMode(value){selectedMode=value}};
 }
