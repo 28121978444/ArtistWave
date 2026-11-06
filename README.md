@@ -62,3 +62,13 @@ Every track—playable or catalog-only—has clearly labeled **AZLyrics** and **
 ## Rap navigation visibility fix (v1.6)
 
 Clicking an era in the left **Rap** menu expands its artist names **directly underneath that era**. The larger artist panel in the main view is also populated and scrolled into view. Clicking a name in either location starts that artist's Archive playlist search. Clicking the open era collapses it.
+
+## Online hosting (GitHub Pages)
+
+This repository includes [an automatic deployment workflow](.github/workflows/pages.yml). It deploys the static website whenever changes are pushed to `main`, and also supports manual runs through the Actions tab.
+
+**One-time repository setup:** Open **Settings → Pages**, and under **Build and deployment** select **GitHub Actions**. Ensure GitHub Actions is enabled for this repository. If the repository is private, Pages eligibility depends on your GitHub plan; making it public is an option but also exposes the source code.
+
+Once the workflow succeeds, the expected site address is **https://28121978444.github.io/ArtistWave/**. This URL is not guaranteed to work until Pages is enabled and a deployment has succeeded.
+
+ArtistWave is a static client-side app. Online MusicBrainz/Internet Archive requests require an Internet connection and may be affected by browser cross-origin restrictions or third-party service availability. No API keys or credentials are required or stored in the repository.
