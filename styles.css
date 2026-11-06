@@ -42,3 +42,15 @@
 .art-dialog-bottom button{background:transparent;border:1px solid #4d6557;color:#cfe5d1;border-radius:7px;padding:10px}
 #artDialogError{font-size:12px;color:#ffa791;margin:0;min-height:15px}
 @media(max-width:800px){.genre-tree{max-height:50vh}.sidebar{flex-wrap:wrap}.genre-tree{width:100%;order:5}.genre-results{padding-top:22px}}
+
+/* v1.4: optional catalog-only titles and external lyrics lookup */
+.catalog-toggle{display:inline-flex;align-items:center;gap:8px;max-width:225px;white-space:normal;color:#d0e6d4;font-size:11px;text-align:left;line-height:1.3}
+.catalog-toggle input{accent-color:var(--accent);flex:none}
+.unavailable-row{grid-template-columns:40px minmax(0,3fr) minmax(0,2fr) 65px 112px;border-left:2px solid #846d48;background:#171e20}
+.unavailable-row .track-info strong{color:#b7c7c2}
+.unavailable-mark{color:#b9a079;text-align:center}
+.unavailable-row .recording-name{color:#c2ad81}
+.lyrics-link{display:inline-flex;justify-content:center;align-items:center;font-size:11px;white-space:nowrap;color:#d7f3ac;border:1px solid #647c55;padding:8px 7px;border-radius:6px;text-decoration:none}
+.lyrics-link:hover{background:#2d3a26}
+@media(max-width:1050px){.unavailable-row{grid-template-columns:32px minmax(0,1fr) 65px 112px}.unavailable-row .recording-name{display:none}}
+@media(max-width:700px){.playlist-actions{align-items:center}.catalog-toggle{min-width:155px}.unavailable-row{grid-template-columns:23px minmax(0,1fr) 94px;gap:6px;padding:10px 6px}.unavailable-row .track-source{display:none}.lyrics-link{font-size:10px;padding:6px 4px}}
