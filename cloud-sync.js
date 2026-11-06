@@ -73,7 +73,7 @@
         start:Math.max(0,Math.min(9000,Number(x.start)||0)),
         end:Math.max(1,Math.min(9000,Number(x.end)||30)),
         cue:String(x.cue||'').slice(0,120),
-        track:{id:String(t.id||'').slice(0,300),artist:String(t.artist).slice(0,160),
+        track:{id:source==='LOCAL'?'':String(t.id||'').slice(0,300),artist:String(t.artist).slice(0,160),
           title:String(t.title).slice(0,160),collection:String(t.collection||'').slice(0,160),
           source:source.slice(0,30),
           url:source!=='LOCAL'&&/^https:\/\//.test(t.url||'')?String(t.url).slice(0,1800):''}
