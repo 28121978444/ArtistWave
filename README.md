@@ -163,3 +163,13 @@ Google's documentation: [OAuth token model](https://developers.google.com/identi
 - **Google Drive favorites:** When saved as favorites, safe HTTPS alternate playback sources can be synchronized along with the chosen track. Local paths, blob URLs, and local audio files are never uploaded to the cloud.
 
 Playback still depends on publicly accessible sources, user/browser permissions and licensing. A source being listed does not guarantee that it can be played on every browser. A true catalog-verification/enrichment service with caching and rate limits can be considered for a future release.
+
+## v2.5 — Library improvements
+
+- **Album cover art:** Album groups display small cover images supplied by Audius, Jamendo, and Internet Archive where available. If a provider has no valid artwork or the image cannot be fetched, the heading shows a music-note placeholder. Artwork URLs are HTTPS only and are not uploaded to ArtistWave.
+- **Recently Played:** A Recently Played navigation entry displays the most recent 30 distinct tracks. Playing a track moves it to the top of the history. Entries can be played again and grouped by album. The **Clear** button in this view clears listening history.
+- **Guest and account history:** Guest listening history is retained in browser storage for playable online recordings. Signed-in users synchronize the same sanitized history through their private Google Drive application-data backup, alongside favorites and settings. Local audio blob URLs, the music files, and folder handles are **never sent to Google Drive**. A separate guest library is restored on account sign-out.
+- **Jump to album:** When tracks are listed, a dropdown above the playlist lets listeners jump directly to any album or Archive collection on the page, without scrolling through every track.
+- **Optional saved local-folder access:** On browsers supporting the File System Access API and IndexedDB handle storage, a selected folder handle is remembered locally. **Reopen saved folder** asks for the browser's read permission if required, then reindexes the folder; no background scanning or file upload occurs. **Forget saved folder** deletes the stored handle from ArtistWave's browser storage, but does not revoke browser-level permissions. On other browsers, choose the folder again after reloading.
+
+The saved-folder feature is intentionally local to each device and cannot be synchronized using the cloud account. Features depend on browser support and permission settings. The app remains entirely static on GitHub Pages without an ArtistWave-managed database.
