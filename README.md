@@ -216,3 +216,26 @@ On smaller displays, workspace navigation remains accessible at the top, with th
 ### YouTube account continuation
 
 ArtistWave's **Google Drive sign-in** does not itself authenticate a YouTube browser session. The official embedded YouTube player may use an existing youtube.com session through the browser's cookies, subject to privacy settings. The YouTube workspace displays a context-sensitive connection hint when a Google account is signed into ArtistWave and offers **Continue with YouTube** in a user-initiated new tab to visit YouTube and sign in if required. No automatic YouTube sign-in is claimed, no third-party cookies are set by ArtistWave, and no YouTube API scope or account credential is requested.
+
+## ArtistWave v3.1 — More genres for everyday music listening
+
+The **🎧 Entertainment** sidebar has an expanded curated genre browser, with 12 new categories:
+
+- Pop
+- R&B & Soul
+- Blues
+- Country & Americana
+- Folk & Acoustic
+- Indie & Alternative
+- Punk, Emo & Ska
+- Electronic & Chill
+- Ambient & Lo-fi
+- Classical & Piano
+- Global & World
+- Latin & Caribbean
+
+Each category has smaller styles and example artists, including classic and contemporary performers. Existing genres (Jazz, Rock and metal, Rap, Reggae, Dance Pop, Electronic Dance, Funk & Disco, Latin Dance, Cinematic, Breakbeat) are preserved. Dance-related browsing remains available, but no Showdance Studio editing or playback features were changed.
+
+The left sidebar now includes **Filter genres and styles**. Search by a genre name, substyle, artist, or description; matching groups expand to help users find the relevant substyle. Clear the filter with **×**. A result count and empty-search state are provided.
+
+**Important:** Genre entries are curated navigation suggestions, not a promise that every track is available from the current audio providers. Selecting an artist uses the same existing artist search and authorized playback sources (local files, Internet Archive, Audius, or optional Jamendo); no new streaming provider or license entitlement was added.
