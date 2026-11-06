@@ -199,3 +199,15 @@
 .match-item .match-copy{padding-right:41px}
 .match-item .match-art{cursor:pointer}
 @media(max-width:560px){.match-item>.match-card{min-height:105px}}
+
+/* v2.0: selected local folders and local / online source mode */
+.folder-nav{width:100%;align-items:center;min-height:40px;font-size:12px;flex-shrink:0}
+.folder-summary{padding:0 12px 9px;color:var(--muted);font-size:10px;line-height:1.5;overflow-wrap:anywhere;flex-shrink:0}
+.source-select-label{display:inline-flex;align-items:center;gap:9px;font-size:11px;color:var(--muted);flex-wrap:wrap}
+.source-select-label select{appearance:auto;background:#17272a;color:var(--text);border:1px solid #496252;border-radius:7px;padding:7px 9px;max-width:210px;font-size:12px}
+.source-select-label select:focus-visible{outline:2px solid var(--accent)}
+@media(max-width:700px){
+  .sidebar .folder-nav{order:4;width:auto;white-space:nowrap;flex:0 0 auto;margin-left:auto}
+  .sidebar .folder-summary{display:none}
+  .source-select-label{width:100%;justify-content:flex-start}
+}
