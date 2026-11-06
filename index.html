@@ -29,7 +29,7 @@
           <label for="googleClientId">Google OAuth web client ID</label>
           <input id="googleClientId" type="text" placeholder="…apps.googleusercontent.com" autocomplete="off" spellcheck="false" />
           <button type="button" id="cloudSaveClient">Save client ID</button>
-          <small>App owner: configure an OAuth web client and enable Google Drive API. No client secret is needed.</small>
+          <small>App owner: <a href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener noreferrer">create an OAuth web client</a> and enable Google Drive API. Set the authorized JavaScript origin to <code>https://28121978444.github.io</code>. Do not enter a client secret.</small>
         </details>
         <div id="cloudStatus" class="cloud-status" role="status" aria-live="polite">Guest mode · cloud sync off</div>
       </div>
@@ -81,6 +81,7 @@
   </dialog>
   <input id="folderInput" type="file" webkitdirectory directory multiple hidden />
   <audio id="audio" preload="metadata"></audio>
+  <script src="https://accounts.google.com/gsi/client" defer></script>
   <script src="cloud-sync.js" defer></script>
   <script src="app.js" defer></script>
 </body>
