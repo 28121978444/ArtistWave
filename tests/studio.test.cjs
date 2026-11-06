@@ -50,10 +50,14 @@ test('the Google cloud sanitizer excludes local paths and audio blobs too',()=>{
   assert.equal(data[0].segments[0].track.id,'');
   assert.equal(data[0].segments[0].track.url,'');
 });
-test('studio has its own accessible workspace and genres precede optional account',()=>{
+test('studio has its own accessible workspace and shared account header',()=>{
   for(const id of ['studioNav','studioWorkspace','studioRoutineSelect','studioAddTrack','studioPlay','studioStop','studioAudio','studioSegments'])
     assert.match(html,new RegExp('id="'+id+'"'));
-  assert.ok(html.indexOf('id="genreTree"')<html.indexOf('class="cloud-account"'));
+  assert.ok(html.indexOf('id="genreTree"')>html.indexOf('<aside class="sidebar">'));
+  assert.ok(html.indexOf('class="cloud-account"')<html.indexOf('</header>'));
+  assert.ok(html.indexOf('</header>')<html.indexOf('<aside class="sidebar">'));
+  assert.ok(html.indexOf('</aside>')<html.indexOf('<main class="main">'));
+  assert.ok(html.indexOf('<header class="topbar">')<html.indexOf('<main class="main">'));
   assert.match(html,/script src="studio\.js" defer/);
   assert.ok(html.indexOf('class="topbar-account-menu"')>html.indexOf('<header class="topbar"'));
   assert.ok(html.indexOf('class="topbar-account-menu"')<html.indexOf('</header>'));
