@@ -1267,6 +1267,7 @@ window.addEventListener('artistwave:cloud-load',event=>{
   const detail=event.detail||{};
   if(!Array.isArray(detail.favorites))return;
   S.favorites=dedupeTracks(detail.favorites.filter(t=>t.source!=='LOCAL'&&/^https:\/\//.test(t.url||'')));
+  if(Array.isArray(detail.recent))S.recent=dedupeRecent(detail.recent);
   const prefs=detail.preferences||{};
   if(['both','local','online'].includes(prefs.sourceMode))$('sourceMode').value=prefs.sourceMode;
   if(typeof prefs.includeLive==='boolean')$('includeLive').checked=prefs.includeLive;
