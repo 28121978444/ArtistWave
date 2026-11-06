@@ -84,3 +84,28 @@ test('short workspaces do not center the main content vertically',()=>{
   assert.match(css,/body\[data-mode="youtube"\] \.main\s*\{\s*margin:0 auto;/);
   assert.match(css,/body\[data-mode="audio"\] \.studio-workspace/);
 });
+
+test('YouTube shows Google connection without claiming iframe login',()=>{
+  const nodes=new Map();
+  const make=id=>({
+    id,textContent:'',hidden:false,dataset:{},
+    classList:{toggle(){},add(){},remove(){}},
+    addEventListener(){},removeAttribute(){},setAttribute(){}
+  });
+  const document={body:{dataset:{}},getElementById(id){if(!nodes.has(id))nodes.set(id,make(id));return nodes.get(id)}};
+  let signed=false;
+  const window={ArtistWaveCloud:{isSignedIn:()=>signed},scrollTo(){}};
+  vm.runInNewContext(script,{document,window,URL});
+  assert.match(document.getElementById('youtubeAccountStatus').textContent,/separate browser session/);
+  signed=true;window.ArtistWaveNavigation.updateYouTubeAccount();
+  assert.match(document.getElementById('youtubeAccountStatus').textContent,/existing YouTube browser session/);
+  assert.match(document.getElementById('youtubeAccountHeading').textContent,/Google connected/);
+  assert.doesNotMatch(document.getElementById('youtubeAccountStatus').textContent,/automatically signed into YouTube/);
+  signed=false;window.ArtistWaveNavigation.updateYouTubeAccount();
+  assert.match(document.getElementById('youtubeAccountStatus').textContent,/separate browser session/);
+});
+test('YouTube sign-in continuation opens the real site instead of a hidden iframe',()=>{
+  const markup=fs.readFileSync('index.html','utf8');
+  assert.match(markup,/<a id="youtubeSignInLink" href="https:\/\/www.youtube.com\/" target="_blank" rel="noopener noreferrer">/);
+  assert.ok(!script.includes('https://www.googleapis.com/auth/youtube.readonly'));
+});
