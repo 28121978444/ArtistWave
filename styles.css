@@ -293,3 +293,19 @@
   .album-cover{height:44px;width:44px;flex-basis:44px}
   .sidebar .folder-reopen,.sidebar .folder-forget{width:auto;flex:1 1 auto}
 }
+
+/* v3 sidebar usability: genres stay visible ahead of optional account tools. */
+@media(min-width:701px){
+  .sidebar{height:100dvh;box-sizing:border-box;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding-top:16px;padding-bottom:16px;gap:6px}
+  .sidebar .brand{margin-bottom:9px;flex:0 0 auto}
+  .sidebar .side-label{margin:7px 7px 3px;flex:0 0 auto}
+  .sidebar .nav-item{flex:0 0 auto;padding:10px 11px}
+  .sidebar .side-divider{margin:6px 0;flex:0 0 auto}
+  .sidebar .genre-tree{flex:0 0 auto;min-height:240px;max-height:min(52dvh,490px);overflow-y:auto;scrollbar-width:thin;border:1px solid #304a3d;background:#0f1c1a;border-radius:9px;padding:6px}
+  .sidebar .cloud-account{flex:0 0 auto}
+  .sidebar .sidebar-bottom{display:none}
+}
+@media(max-width:700px){
+  .sidebar .genre-tree{order:2;flex:1 0 100%;min-height:220px;max-height:360px}
+  .sidebar .cloud-account{order:4}
+}
