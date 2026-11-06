@@ -173,3 +173,30 @@ Playback still depends on publicly accessible sources, user/browser permissions 
 - **Optional saved local-folder access:** On browsers supporting the File System Access API and IndexedDB handle storage, a selected folder handle is remembered locally. **Reopen saved folder** asks for the browser's read permission if required, then reindexes the folder; no background scanning or file upload occurs. **Forget saved folder** deletes the stored handle from ArtistWave's browser storage, but does not revoke browser-level permissions. On other browsers, choose the folder again after reloading.
 
 The saved-folder feature is intentionally local to each device and cannot be synchronized using the cloud account. Features depend on browser support and permission settings. The app remains entirely static on GitHub Pages without an ArtistWave-managed database.
+
+## ArtistWave v3.0 — Showdance Studio for gyms
+
+ArtistWave now has a separate **🤸 Showdance Studio** workspace, intended for gym coaches and athletes planning **gymnastics and dance competition routines**. The original music discovery, favorites, album navigation, and player remain available.
+
+### Planning a competition routine
+
+1. Click **🤸 Showdance Studio** in the left sidebar, then **+ New routine**.
+2. Enter the routine name, athlete or team, discipline, and **target duration in seconds**. The default is a configurable 90 seconds and **not an official event-specific rule**.
+3. In the normal music library, search for songs or open a folder. Return to Studio to select tracks from the current playlist, local music library, favorites, or recently played tracks.
+4. Click **+ Add track**. Each section has editable **Start (sec)** and **End (sec)** times and a choreography cue. Use cue labels such as *Entrance*, *Tumbling pass*, *Formation change*, and *Final pose*.
+5. Reorder sections with **↑ / ↓** or delete them with **×**. The total planned duration is displayed against the gym's chosen target, with an alert when exceeded.
+6. Use **▶ Rehearse routine** and **■ Stop** to preview sections sequentially. Playback uses the browser and currently available source URLs; it does **not** export or render an edited audio file.
+
+### Saving, safety and source availability
+
+- Guest routines are saved in browser localStorage.
+- When using Google OAuth, routine metadata and **safe HTTPS online audio references** synchronize to the signed-in user's private Google Drive application-data file. Different user accounts retain separate routines.
+- Local songs are only stored as *artist/title/source metadata*. The actual audio files, object URLs, folder permissions, and local path identifiers are **never synchronized**. Reopen the local music folder to rehearse local segments on another device.
+- The workspace supports up to 75 saved routines, 30 sections per routine, and duration targets of 15–900 seconds. It assumes the coach or athlete will confirm the actual limits for the relevant discipline and competition.
+- Some online streams do not support reliable seeking to arbitrary times; use local files with the right performance rights where reliable practice playback is essential.
+- This version is a **rehearsal planner**, not a rendered audio editor: no crossfading, mixing, downloadable audio exports, automatic BPM analysis, or official scoring checks are claimed.
+- Music permissions and performance licensing remain the gym's responsibility.
+
+### Sidebar visibility fix
+
+The genre navigation has been moved above the larger account/folder controls in the left sidebar. On desktop it has its own scroll area with more vertical space, while the overall sidebar can scroll to the optional account and folder settings. On narrow screens, genres remain accessible in the responsive sidebar.
