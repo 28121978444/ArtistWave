@@ -203,24 +203,37 @@
     emitApply(account.favorites,account.preferences);
     updateUI();status('Connected · private Google Drive library loaded');
   }
-  async function beginSignIn(){
+  function beginSignIn(){
     if(S.busy)return;
     S.clientId=($('googleClientId').value||'').trim();
     if(!validClient(S.clientId)){
-      $('cloudSetup').open=true;status('Enter a valid Google OAuth web client ID first.',true);return;
+      $('cloudSetup').open=true;
+      status('Google OAuth is not configured. The site owner must create a Web application client ID.',true);
+      return;
+    }
+    // Google popup must be launched directly from the user's click. An async
+    // script download / await here can lose browser user activation.
+    if(!window.google?.accounts?.oauth2?.initTokenClient){
+      status('Google Identity Services is still loading or blocked. Reload the page and try again.',true);
+      return;
     }
     S.busy=true;updateUI();status('Opening Google account consent…');
     try{
-      await loadGoogle();
       S.tokenClient=window.google.accounts.oauth2.initTokenClient({
         client_id:S.clientId,scope:SCOPE,callback:async response=>{
           try{await connect(response)}
           catch(error){status('Sign-in failed: '+error.message,true)}
           finally{S.busy=false;updateUI()}
-        },error_callback:error=>{S.busy=false;updateUI();status('Google sign-in cancelled or blocked: '+(error.type||'unknown'),true)}
+        },error_callback:error=>{
+          S.busy=false;updateUI();
+          status('Google sign-in cancelled or blocked: '+(error.type||'unknown'),true)
+        }
       });
       S.tokenClient.requestAccessToken({prompt:'consent'});
-    }catch(e){S.busy=false;updateUI();status('Could not start Google sign-in: '+e.message,true)}
+    }catch(e){
+      S.busy=false;updateUI();
+      status('Could not start Google sign-in: '+e.message,true);
+    }
   }
   function saveClient(){
     const id=$('googleClientId').value.trim();
