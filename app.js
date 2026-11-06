@@ -1,7 +1,8 @@
 'use strict';
 const $=id=>document.getElementById(id),audio=$('audio');
-const S={artist:'',tracks:[],local:[],favorites:[],selected:-1,matches:[],view:'discover',shuffle:false,repeat:0,page:0,loading:false,artistMbid:null,unavailable:[],catalogLoading:false,catalogResolved:false,catalogRequest:0,requestId:0,matchRequest:0,onlineTracks:[],localFiles:new Set(),importingFolder:false,providerChecked:{},providerBusy:{},providerErrors:{},archiveItemView:false,albumQueue:[],activeSource:null,playbackToken:0,playCandidates:[],playCandidateIndex:0,bufferTimer:null};
+const S={artist:'',tracks:[],local:[],favorites:[],selected:-1,matches:[],view:'discover',shuffle:false,repeat:0,page:0,loading:false,artistMbid:null,unavailable:[],catalogLoading:false,catalogResolved:false,catalogRequest:0,requestId:0,matchRequest:0,onlineTracks:[],localFiles:new Set(),importingFolder:false,providerChecked:{},providerBusy:{},providerErrors:{},archiveItemView:false,albumQueue:[],activeSource:null,playbackToken:0,playCandidates:[],playCandidateIndex:0,bufferTimer:null,recent:[],folderHandleAvailable:false};
 try{S.favorites=JSON.parse(localStorage.getItem('artistwave:favorites')||'[]')}catch{}if(!Array.isArray(S.favorites))S.favorites=[];
+try{S.recent=JSON.parse(localStorage.getItem('artistwave:recent')||'[]')}catch{}if(!Array.isArray(S.recent))S.recent=[];
 const norm=s=>String(s||'').normalize('NFKD').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 const time=t=>Number.isFinite(t)?Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0'):'0:00';
 const show=(msg,error=false)=>{$('statusMessage').textContent=msg;$('statusMessage').classList.toggle('error',error)};
@@ -60,6 +61,8 @@ function dedupeTracks(tracks){
     const [preferred,...alternates]=bucket;
     const albumSource=bucket.find(t=>t.albumKind==='album'&&t.collection);
     const result={...preferred};
+    const artwork=bucket.find(t=>/^https:\/\//i.test(t.artwork||''));
+    if(artwork&&!result.artwork)result.artwork=artwork.artwork;
     if(albumSource&&result.albumKind!=='album'){
       result.collection=albumSource.collection;
       result.albumKind='album';
@@ -100,7 +103,7 @@ function normalizeAudiusTracks(records,artist){
     providerArtistMatches(t.user?.name,t.user?.handle,artist)
   ).map(t=>({
     id:'audius:'+t.id,title:String(t.title),artist,
-    collection:t.album_name||t.album?.name||'Audius release',albumKind:(t.album_name||t.album?.name)?'album':'single',year:extractYear(t.release_date),source:'AUDIUS',
+    collection:t.album_name||t.album?.name||'Audius release',artwork:albumArtwork(t.artwork),albumKind:(t.album_name||t.album?.name)?'album':'single',year:extractYear(t.release_date),source:'AUDIUS',
     url:'https://api.audius.co/v1/tracks/'+encodeURIComponent(t.id)+'/stream',
     sourceUrl:typeof t.permalink==='string'&&t.permalink.startsWith('https://audius.co/')?t.permalink:
       'https://audius.co/search?query='+encodeURIComponent(artist+' '+t.title)
@@ -112,7 +115,7 @@ function normalizeJamendoTracks(records,artist){
     /^https:\/\//i.test(t.audio)&&norm(t.artist_name)===norm(artist)
   ).map(t=>({
     id:'jamendo:'+t.id,title:String(t.name),artist,
-    collection:t.album_name||'Jamendo single',albumKind:t.album_name?'album':'single',year:extractYear(t.releasedate),source:'JAMENDO',
+    collection:t.album_name||'Jamendo single',artwork:albumArtwork(t.album_image||t.image),albumKind:t.album_name?'album':'single',year:extractYear(t.releasedate),source:'JAMENDO',
     url:t.audio,
     sourceUrl:typeof t.shareurl==='string'&&t.shareurl.startsWith('https://')?t.shareurl:
       'https://www.jamendo.com/track/'+encodeURIComponent(t.id),
@@ -201,6 +204,10 @@ function handleOnlineProviderChange(){
 }
 
 const current=()=>S.tracks[S.selected];
+function albumArtwork(value){
+  const candidate=typeof value==='string'?value:value&&typeof value==='object'?(value['480x480']||value['150x150']||value['1000x1000']||value.url):'';
+  return typeof candidate==='string'&&/^https:\/\//i.test(candidate)?candidate:'';
+}
 
 const MUSIC_EXT=/\.(?:mp3|m4a|aac|ogg|oga|flac|wav|opus)$/i;
 const sourceMode=()=>$('sourceMode')?.value||'both';
@@ -650,7 +657,7 @@ async function tracksFromItem(id,artist){
     return {
       id:id+'/'+f.name,
       title:(val(f.title)||f.name.split('/').pop()).replace(/\.(mp3|ogg|oga|m4a|aac|wav|flac|opus)$/i,'').replace(/^\d+[-._ ]+/,'').replace(/_/g,' '),
-      artist,collection:album||itemTitle,albumKind:album?'album':'collection',
+      artist,collection:album||itemTitle,albumKind:album?'album':'collection',artwork:'https://archive.org/services/img/'+encodeURIComponent(id),
       year:extractYear(f.year||f.date)||itemYear,source:'ARCHIVE',
       url:'https://archive.org/download/'+encodeURIComponent(id)+'/'+f.name.split('/').map(encodeURIComponent).join('/')
     };
