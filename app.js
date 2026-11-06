@@ -15,10 +15,92 @@ function favorite(t){if(!t)return;if(t.source==='LOCAL'){show('Local files canno
 function playAt(i){if(i<0||i>=S.tracks.length)return;S.selected=i;const t=current();audio.src=t.url;audio.play().catch(()=>show('Unable to play this recording. Try another track.',true));render();updatePlayer()}
 function next(direction=1){if(!S.tracks.length)return;let i=S.shuffle?Math.floor(Math.random()*S.tracks.length):(S.selected+direction+S.tracks.length)%S.tracks.length;playAt(i)}
 const getJSON=async url=>{const r=await fetch(url);if(!r.ok)throw Error('Service returned '+r.status);return r.json()};
-function sourceChoice(label,sub,onClick){let b=document.createElement('button');b.type='button';b.className='match-card';let name=document.createElement('strong');name.textContent=label;let detail=document.createElement('small');detail.textContent=sub;b.append(name,detail);b.onclick=onClick;return b}
+// Match artwork stays pinned to the MusicBrainz artist ID or Archive identifier.
+// Successful choices are remembered in this browser across searches and reloads.
+const ART_KEY='artistwave:match-art:v1';
+let pinnedArt={};
+try{pinnedArt=JSON.parse(localStorage.getItem(ART_KEY)||'{}')||{}}catch{pinnedArt={}}
+const artIdentity=(kind,id)=>kind+':'+id;
+const pinArt=(key,url)=>{if(!key||!url)return;pinnedArt[key]=url;try{localStorage.setItem(ART_KEY,JSON.stringify(pinnedArt))}catch{}};
+const imageValid=url=>new Promise(resolve=>{
+  const test=new Image();let finished=false;
+  const finish=ok=>{if(finished)return;finished=true;clearTimeout(timer);test.onload=null;test.onerror=null;resolve(ok)};
+  const timer=setTimeout(()=>finish(false),6500);
+  test.onload=()=>finish(test.naturalWidth>1&&test.naturalHeight>1);
+  test.onerror=()=>finish(false);test.referrerPolicy='no-referrer';test.src=url;
+});
+async function lookupArtistArt(mbid){
+  if(!mbid)return null;
+  // A photo/logo linked to this exact MusicBrainz ID is preferable.
+  try{
+    const artist=await getJSON('https://musicbrainz.org/ws/2/artist/'+encodeURIComponent(mbid)+'?inc=url-rels&fmt=json');
+    const link=(artist.relations||[]).find(r=>r.type==='wikidata'&&/Q\d+/.test(r.url?.resource||''));
+    const qid=link?.url?.resource?.match(/Q\d+/)?.[0];
+    if(qid){
+      const data=await getJSON('https://www.wikidata.org/w/api.php?action=wbgetentities&ids='+qid+'&props=claims&format=json&origin=*');
+      const claims=data.entities?.[qid]?.claims||{};
+      for(const prop of ['P18','P154']){
+        const filename=claims[prop]?.[0]?.mainsnak?.datavalue?.value;
+        if(typeof filename==='string'){
+          const url='https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(filename)+'?width=400';
+          if(await imageValid(url))return url;
+        }
+      }
+    }
+  }catch{}
+  // An actual release by the same artist is a useful visual fallback.
+  try{
+    const result=await getJSON('https://musicbrainz.org/ws/2/release-group/?artist='+encodeURIComponent(mbid)+'&type=album&limit=8&fmt=json');
+    for(const item of (result['release-groups']||[]).slice(0,6)){
+      if(!item.id)continue;
+      const url='https://coverartarchive.org/release-group/'+encodeURIComponent(item.id)+'/front-250';
+      if(await imageValid(url))return url;
+    }
+  }catch{}
+  return null;
+}
+// Serializes artist lookups to avoid hammering the public MusicBrainz API.
+let artistArtQueue=Promise.resolve();
+function queueArtistArt(key,mbid,showImage){
+  artistArtQueue=artistArtQueue.catch(()=>{}).then(async()=>{
+    if(pinnedArt[key]){showImage(pinnedArt[key]);return}
+    const url=await lookupArtistArt(mbid);
+    if(url){pinArt(key,url);showImage(url)}
+    await new Promise(resolve=>setTimeout(resolve,1100));
+  });
+}
+function sourceChoice(label,sub,onClick,kind='artist',id=''){
+  const b=document.createElement('button');b.type='button';b.className='match-card';
+  const art=document.createElement('span');art.className='match-art';
+  const placeholder=document.createElement('span');placeholder.className='match-art-fallback';
+  placeholder.textContent=kind==='item'?'♫':String(label||'?').trim().slice(0,1).toUpperCase();
+  art.append(placeholder);
+  const words=document.createElement('span');words.className='match-copy';
+  const name=document.createElement('strong');name.textContent=label;
+  const detail=document.createElement('small');detail.textContent=sub;
+  words.append(name,detail);b.append(art,words);
+  const key=artIdentity(kind,id||label);
+  const showImage=url=>{
+    if(!b.isConnected)return;
+    const img=document.createElement('img');
+    img.alt='';img.loading='lazy';img.decoding='async';img.referrerPolicy='no-referrer';img.src=url;
+    img.onerror=()=>{img.remove();placeholder.hidden=false};
+    img.onload=()=>{if(img.naturalWidth>1){placeholder.hidden=true;art.classList.add('has-image')}else{img.remove()}};
+    art.querySelector('img')?.remove();art.append(img);
+  };
+  if(pinnedArt[key])showImage(pinnedArt[key]);
+  else if(kind==='item'&&id){
+    const url='https://archive.org/services/img/'+encodeURIComponent(id);
+    imageValid(url).then(ok=>{if(ok){pinArt(key,url);showImage(url)}});
+  }else if(kind==='artist'&&id&&/^[0-9a-f-]{36}$/i.test(id)){
+    queueArtistArt(key,id,showImage);
+  }
+  b.onclick=onClick;
+  return b;
+}
 async function searchMatches(term){S.artist=term;S.page=0;S.tracks=[];S.selected=-1;S.view='discover';audio.pause();audio.removeAttribute('src');$('matchPanel').hidden=false;$('matchHeading').textContent='Matches for “'+term+'”';$('matchSummary').textContent='Choose the artist or recording you meant';$('matchList').replaceChildren();show('Finding artists and other matching recordings…');render();let list=$('matchList');let count=0;
-try{const data=await getJSON('https://musicbrainz.org/ws/2/artist/?query='+encodeURIComponent('artist:"'+term+'"')+'&fmt=json&limit=15');for(const artist of (data.artists||[])){const name=artist.name||'';let detail=[artist.type,artist.country,artist.disambiguation].filter(Boolean).join(' · ')||'MusicBrainz artist';list.append(sourceChoice(name,detail,()=>chooseArtist(name,artist.id)));count++}}catch(e){show('MusicBrainz artist lookup was unavailable; showing Archive matches where possible.',true)}
-try{const query='mediatype:audio AND ('+'title:('+term+') OR creator:('+term+'))';const url='https://archive.org/advancedsearch.php?q='+encodeURIComponent(query)+'&fl[]=identifier&fl[]=title&fl[]=creator&rows=12&page=1&output=json';const data=await getJSON(url);for(const d of data.response?.docs||[]){const name=Array.isArray(d.title)?d.title[0]:d.title;const creator=Array.isArray(d.creator)?d.creator.join(', '):d.creator||'Unknown creator';list.append(sourceChoice(name||d.identifier,'Internet Archive recording · '+creator,()=>chooseArchiveItem(d)));count++}}catch(e){if(!count)show('The online search services are unavailable. You can still add local audio files.',true)}
+try{const data=await getJSON('https://musicbrainz.org/ws/2/artist/?query='+encodeURIComponent('artist:"'+term+'"')+'&fmt=json&limit=15');for(const artist of (data.artists||[])){const name=artist.name||'';let detail=[artist.type,artist.country,artist.disambiguation].filter(Boolean).join(' · ')||'MusicBrainz artist';list.append(sourceChoice(name,detail,()=>chooseArtist(name,artist.id),'artist',artist.id));count++}}catch(e){show('MusicBrainz artist lookup was unavailable; showing Archive matches where possible.',true)}
+try{const query='mediatype:audio AND ('+'title:('+term+') OR creator:('+term+'))';const url='https://archive.org/advancedsearch.php?q='+encodeURIComponent(query)+'&fl[]=identifier&fl[]=title&fl[]=creator&rows=12&page=1&output=json';const data=await getJSON(url);for(const d of data.response?.docs||[]){const name=Array.isArray(d.title)?d.title[0]:d.title;const creator=Array.isArray(d.creator)?d.creator.join(', '):d.creator||'Unknown creator';list.append(sourceChoice(name||d.identifier,'Internet Archive recording · '+creator,()=>chooseArchiveItem(d),'item',d.identifier));count++}}catch(e){if(!count)show('The online search services are unavailable. You can still add local audio files.',true)}
 if(!count){list.append(sourceChoice('Search Internet Archive for '+term,'Try an exact creator search',()=>chooseArtist(term,null)))}else show('Choose a matching artist or recording above to build your playlist.')}
 async function chooseArtist(name,mbid){S.artist=name;S.page=0;S.tracks=[];S.selected=-1;S.view='discover';$('matchList').querySelectorAll('button').forEach(x=>x.classList.remove('selected'));$('playlistHeading').textContent=name;$('externalSearch').hidden=false;$('externalSearch').href='https://www.youtube.com/results?search_query='+encodeURIComponent(name+' music');$('externalSearch').textContent='Search '+name+' on YouTube ↗';show('Searching publicly available recordings attributed to '+name+'…');render();await loadMore()}
 async function chooseArchiveItem(d){const name=Array.isArray(d.title)?d.title[0]:d.title||d.identifier;S.artist=Array.isArray(d.creator)?d.creator[0]:d.creator||name;S.page=0;S.selected=-1;S.tracks=[];$('playlistHeading').textContent=name;$('externalSearch').hidden=true;show('Loading recording: '+name);try{const tracks=await tracksFromItem(d.identifier,S.artist);S.tracks=tracks;show(tracks.length+' playable files found in this item.');render()}catch(e){show('Unable to load the selected recording: '+e.message,true)}$('loadMore').hidden=true}
