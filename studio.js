@@ -14,13 +14,13 @@
     if(!t||!t.title||!t.artist)return null;
     const source=['LOCAL','ARCHIVE','AUDIUS','JAMENDO'].includes(t.source)?t.source:'ARCHIVE';
     const url=source!=='LOCAL'&&/^https:\/\//.test(t.url||'')?String(t.url).slice(0,1800):'';
-    return {id:trimText(t.id,300),artist:trimText(t.artist,160),title:trimText(t.title,160),
+    return {id:source==='LOCAL'?'':trimText(t.id,300),artist:trimText(t.artist,160),title:trimText(t.title,160),
       collection:trimText(t.collection,160),source,url};
   };
   const cleanSegment=(segment,index)=>{
     const track=safeTrack(segment?.track);
     if(!track)return null;
-    const start=seconds(segment.start),end=seconds(segment.end);
+    const start=Math.min(8999,seconds(segment.start)),end=seconds(segment.end);
     return {id:trimText(segment.id,120)||'section-'+index,track,start,
       end:Math.max(start+1,Math.min(9000,end||start+30)),cue:trimText(segment.cue,120)};
   };
@@ -249,11 +249,12 @@
   function cloudLoad(data){
     stop();
     state.routines=cleanRoutines(data);
-    state.selected=state.routines[0]?.id||'';
+    if(!state.routines.length)state.routines.push(blank());
+    state.selected=state.routines[0].id;
     render();
   }
   function init(){
-    if(!state.routines.length){state.routines=[blank()];state.selected=state.routines[0].id}
+    if(!state.routines.length){state.routines=[blank()];state.selected=state.routines[0].id;try{localStorage.setItem(STORE,JSON.stringify(state.routines))}catch{}}
     else state.selected=state.routines[0].id;
     $('studioNav').onclick=open;$('studioClose').onclick=close;
     $('studioNew').onclick=addRoutine;
