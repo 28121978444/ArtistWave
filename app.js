@@ -125,7 +125,7 @@ async function importLocalFiles(entries,{folder=false}={}){
   let added=0,ignored=0;let scanned=0;
   $('folderSummary').textContent='Scanning your music…';
   try{
-    for(const entry of entries){
+    for await(const entry of entries){
       if(scanned++>=6000){show('Scan limited to 6,000 files. Choose a smaller folder to import more.',true);break}
       const file=entry.file||entry;
       const path=entry.path||file.webkitRelativePath||file.name;
