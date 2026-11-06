@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#0b1015" />
+  <meta name="google-oauth-client-id" content="" />
   <title>ArtistWave — Your artist, your station</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -14,6 +15,24 @@
       <div class="side-label">YOUR LIBRARY</div>
       <button class="nav-item active" id="discoverNav"><span>◈</span> Discover</button>
       <button class="nav-item" id="favoritesNav"><span>♡</span> Favorites <span class="nav-count" id="favoriteCount">0</span></button>
+      <div class="cloud-account" aria-label="Account and private cloud sync">
+        <div class="cloud-account-label">ACCOUNT · OPTIONAL</div>
+        <div id="cloudAccountName" class="cloud-account-name">Guest · saved on this device</div>
+        <button class="nav-item cloud-signin" id="cloudSignIn" type="button">☁ Sign in with Google</button>
+        <div id="cloudAccountActions" class="cloud-account-actions" hidden>
+          <button type="button" id="cloudSyncNow">↻ Sync now</button>
+          <button type="button" id="cloudImportGuest">Import guest favorites</button>
+          <button type="button" id="cloudSignOut">Sign out</button>
+        </div>
+        <details id="cloudSetup" class="cloud-setup">
+          <summary>Google Drive sync setup</summary>
+          <label for="googleClientId">Google OAuth web client ID</label>
+          <input id="googleClientId" type="text" placeholder="…apps.googleusercontent.com" autocomplete="off" spellcheck="false" />
+          <button type="button" id="cloudSaveClient">Save client ID</button>
+          <small>App owner: configure an OAuth web client and enable Google Drive API. No client secret is needed.</small>
+        </details>
+        <div id="cloudStatus" class="cloud-status" role="status" aria-live="polite">Guest mode · cloud sync off</div>
+      </div>
       <button class="nav-item folder-nav" id="addFolderNav" type="button"><span>📁</span> Add Music Folder</button>
       <div class="folder-summary" id="folderSummary" aria-live="polite">No local folder selected</div>
       <div class="side-divider"></div>
@@ -23,7 +42,7 @@
     </aside>
 
     <main class="main">
-      <header class="topbar"><div class="breadcrumb">YOUR SPACE <span>/</span> <strong id="locationName">Discover</strong></div><div class="top-right"><span class="live-dot"></span> LOCAL PLAYER <span class="version">V 2.2</span></div></header>
+      <header class="topbar"><div class="breadcrumb">YOUR SPACE <span>/</span> <strong id="locationName">Discover</strong></div><div class="top-right"><span class="live-dot"></span> LOCAL PLAYER <span class="version">V 2.3</span></div></header>
       <section class="hero"><div class="hero-copy"><div class="eyebrow"><span class="little-star">✳</span> THE MUSIC IS YOURS TO CHOOSE</div><h1>One artist.<br><em>Every track.</em></h1><p>No noise. No distractions. Type an artist or band and build a listening session around them.</p></div><div class="hero-art" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="vinyl"><div class="vinyl-ring ring-one"></div><div class="vinyl-ring ring-two"></div><div class="vinyl-ring ring-three"></div><div class="record-label"><div class="record-hole"></div></div></div><div class="star star-one">✳</div><div class="star star-two">✧</div></div></section>
 
       <section class="search-section" id="discoverSection"><div class="section-heading"><div><div class="overline">01 / FIND YOUR SOUND</div><h2>Who are we listening to?</h2></div><span class="section-aside">SEARCH BY ARTIST OR BAND</span></div><form id="searchForm" class="search-form"><label class="search-box" for="artistInput"><span class="search-icon">⌕</span><input id="artistInput" name="artist" type="search" placeholder="e.g. Grateful Dead, Nina Simone, Miles Davis..." autocomplete="off" maxlength="100" required /><span class="key-hint">ENTER ↵</span></label><button class="primary-button" id="searchButton" type="submit">Find music <span>↗</span></button></form><div class="search-options"><label class="source-select-label" for="sourceMode"><span>Music sources</span><select id="sourceMode" aria-label="Playlist source"><option value="both" selected>Local + online</option><option value="local">Local only</option><option value="online">Online only</option></select></label><label class="checkbox"><input type="checkbox" id="includeLive" checked/><span>Include live recordings</span></label><span>Artist matches: MusicBrainz · Audio: selected providers</span></div><fieldset class="provider-panel" id="providerPanel"><legend>Online audio providers</legend>
@@ -62,6 +81,7 @@
   </dialog>
   <input id="folderInput" type="file" webkitdirectory directory multiple hidden />
   <audio id="audio" preload="metadata"></audio>
+  <script src="cloud-sync.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>
