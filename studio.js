@@ -236,7 +236,7 @@
     for(const id of ['artistWaveHero','discoverSection','playlistSection','genreResults','albumJump'])$(id).hidden=true;
     $('locationName').textContent='Showdance Studio';
     $('studioNav').classList.add('active');
-    render();$('studioWorkspace').scrollIntoView({behavior:'smooth',block:'start'});
+    render();
   }
   function close(){
     stop();$('studioWorkspace').hidden=true;
@@ -256,7 +256,7 @@
   function init(){
     if(!state.routines.length){state.routines=[blank()];state.selected=state.routines[0].id;try{localStorage.setItem(STORE,JSON.stringify(state.routines))}catch{}}
     else state.selected=state.routines[0].id;
-    $('studioNav').onclick=open;$('studioClose').onclick=close;
+    // navigation.js owns top-level mode buttons and the Back to Music action.
     $('studioNew').onclick=addRoutine;
     $('studioRoutineSelect').onchange=e=>selectRoutine(e.target.value);
     $('studioSave').onclick=editRoutine;
