@@ -231,20 +231,15 @@
         'Planned time '+asClock(total)+'. '+asClock(Math.max(0,target-total))+' remaining.'):
       'Add music sections from your current playlist or favorites.';
   }
+  // Studio owns its routine data and audio only. The shared navigation
+  // controls all page visibility and the global header.
   function open(){
     $('studioWorkspace').hidden=false;
-    for(const id of ['artistWaveHero','discoverSection','playlistSection','genreResults','albumJump'])$(id).hidden=true;
-    $('locationName').textContent='Showdance Studio';
-    $('studioNav').classList.add('active');
     render();
   }
   function close(){
-    stop();$('studioWorkspace').hidden=true;
-    for(const id of ['artistWaveHero','discoverSection','playlistSection'])$(id).hidden=false;
-    $('albumJump').hidden=false;
-    $('studioNav').classList.remove('active');
-    $('locationName').textContent='Discover';
-    host().render?.();
+    stop();
+    $('studioWorkspace').hidden=true;
   }
   function cloudLoad(data){
     stop();
