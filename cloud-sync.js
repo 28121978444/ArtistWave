@@ -165,7 +165,7 @@
   }
   function logout(){
     if(S.timer){clearTimeout(S.timer);S.timer=null}
-    if(S.dirty)status('Unsynced changes will remain in this browser. Sync before signing out.',true);
+    if(S.dirty){status('There are unsynced account changes. Select Sync now before signing out.',true);return}
     if(S.token&&window.google?.accounts?.oauth2?.revoke)window.google.accounts.oauth2.revoke(S.token,()=>{});
     S.token='';S.expires=0;S.subject='';S.email='';S.fileId='';S.signed=false;S.dirty=false;
     restoreGuest();updateUI();status('Signed out · guest library restored');
