@@ -315,12 +315,64 @@ async function importFolderHandle(handle){
   }
   await importLocalFiles(visit(handle,handle.name),{folder:true});
 }
+// File System Access handles can be stored in IndexedDB in supported browsers.
+// Never auto-scan a remembered folder: permission may have expired.
+const FOLDER_DB='artistwave-local-folders';
+let cachedFolderHandle=null;
+function folderStore(){
+  if(typeof indexedDB==='undefined')return Promise.resolve(null);
+  return new Promise(resolve=>{
+    try{
+      const request=indexedDB.open(FOLDER_DB,1);
+      request.onupgradeneeded=()=>request.result.createObjectStore('handles');
+      request.onsuccess=()=>resolve(request.result);
+      request.onerror=()=>resolve(null);
+      request.onblocked=()=>resolve(null);
+    }catch{resolve(null)}
+  });
+}
+async function savedFolderHandle(value){
+  const db=await folderStore();
+  if(!db)return null;
+  return new Promise(resolve=>{
+    try{
+      const tx=db.transaction('handles',arguments.length?'readwrite':'readonly');
+      const op=arguments.length?value===null?tx.objectStore('handles').delete('last'):
+        tx.objectStore('handles').put(value,'last'):tx.objectStore('handles').get('last');
+      op.onsuccess=()=>resolve(arguments.length?true:op.result||null);
+      op.onerror=()=>resolve(null);
+      tx.oncomplete=()=>db.close();
+      tx.onerror=()=>{db.close();resolve(null)};
+    }catch{db.close();resolve(null)}
+  });
+}
+function updateSavedFolderUI(){
+  $('reopenFolderNav').hidden=!cachedFolderHandle;
+  $('forgetFolderNav').hidden=!cachedFolderHandle;
+}
+async function restoreFolderHandle(){
+  cachedFolderHandle=await savedFolderHandle();
+  updateSavedFolderUI();
+  if(cachedFolderHandle)$('folderSummary').textContent='Saved folder: '+cachedFolderHandle.name+' · click Reopen to scan';
+}
+async function reopenSavedFolder(){
+  if(!cachedFolderHandle||S.importingFolder)return;
+  try{
+    let permission=await cachedFolderHandle.queryPermission({mode:'read'});
+    if(permission!=='granted')permission=await cachedFolderHandle.requestPermission({mode:'read'});
+    if(permission!=='granted'){show('Folder permission not granted. Choose Add Music Folder to select a new folder.',true);return}
+    await importFolderHandle(cachedFolderHandle);
+  }catch(error){show('Could not reopen saved folder: '+error.message,true)}
+}
+
 async function chooseLocalFolder(){
   if(S.importingFolder)return;
   if(typeof window.showDirectoryPicker==='function'){
     try{
       const handle=await window.showDirectoryPicker({mode:'read'});
       await importFolderHandle(handle);
+      cachedFolderHandle=handle;
+      if(await savedFolderHandle(handle)){updateSavedFolderUI()}else show('Folder imported. This browser cannot remember the folder after reload.');
       return;
     }catch(err){
       if(err?.name==='AbortError')return;
@@ -811,6 +863,12 @@ $('discoverNav').onclick=()=>{clearAlbumQueue();S.view='discover';$('locationNam
 $('favoritesNav').onclick=()=>{clearAlbumQueue();S.view='favorites';$('locationName').textContent='Favorites';$('playlistHeading').textContent='Your favorites';render()};
 $('clearList').onclick=()=>{clearAlbumQueue();if(S.view==='recent'){S.recent=[];window.ArtistWaveCloud?.persistGuestRecent([]);window.ArtistWaveCloud?.changed()}else if(S.view==='favorites'){S.favorites=[];window.ArtistWaveCloud?.persistGuestFavorites(S.favorites);window.ArtistWaveCloud?.changed()}else{clearPlaybackRecovery();S.tracks=[];S.onlineTracks=[];S.unavailable=[];S.catalogResolved=false;S.catalogLoading=false;S.catalogRequest++;S.selected=-1;audio.pause();audio.removeAttribute('src')}render();updatePlayer()};
 $('addFolderNav').onclick=chooseLocalFolder;
+$('reopenFolderNav').onclick=reopenSavedFolder;
+$('forgetFolderNav').onclick=async()=>{
+  await savedFolderHandle(null);cachedFolderHandle=null;updateSavedFolderUI();
+  $('folderSummary').textContent=S.local.length+' local track(s) indexed this session';
+  show('Saved folder access forgotten. Existing indexed files remain until you reload.');
+};
 $('folderInput').addEventListener('change',async event=>{const files=Array.from(event.target.files||[]);event.target.value='';await importLocalFiles(files,{folder:true})});
 $('sourceMode').addEventListener('change',()=>{
   window.ArtistWaveCloud?.changed();
@@ -1222,6 +1280,7 @@ window.addEventListener('artistwave:cloud-load',event=>{
   if(S.artist&&!S.archiveItemView&&sourceMode()!=='local')loadOnlineProviders(S.artist,S.matchRequest);
   if($('showUnavailable').checked&&sourceMode()!=='local')loadUnavailable();
 });
-window.ArtistWaveCloud?.init({getFavorites:()=>S.favorites});
+window.ArtistWaveCloud?.init({getFavorites:()=>S.favorites,getRecent:()=>safeRecentTracks(S.recent)});
+restoreFolderHandle();
 
 render();updatePlayer();
