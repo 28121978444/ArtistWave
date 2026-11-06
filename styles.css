@@ -88,3 +88,20 @@
 .genre-results{scroll-margin-top:16px}
 .genre-tree{max-height:calc(100vh - 330px);min-height:160px;overflow-y:auto}
 @media(max-width:800px){.genre-tree{max-height:340px;min-height:0}}
+
+/* v1.7: shared navigation for historical genre eras and showdance styles */
+.genre-tree{gap:7px;overflow-y:auto;scrollbar-color:#4a6c54 transparent;scrollbar-width:thin}
+.genre-category-heading{margin:15px 4px 6px;padding-top:12px;border-top:1px solid #31443c;font-size:10px;font-weight:800;letter-spacing:1.25px;color:#9eb29f}
+.genre-node{display:flex;flex-direction:column;min-width:0}
+.genre-top-button{width:100%;background:transparent;color:#dbece0;border:0;text-align:left;font-size:13px;font-weight:720;padding:13px 11px;line-height:1.35}
+.genre-top-button[aria-expanded="true"]{background:#243b2b;color:var(--accent)}
+.genre-top-button:hover{background:#29422f;color:var(--accent)}
+.genre-style-group{display:flex;flex-direction:column;min-width:0}
+.genre-style-button{width:100%;text-align:left;background:#1b2c25;border:0;border-radius:6px;padding:10px 9px;color:#c3dacc;font-size:11px;font-weight:730}
+.genre-style-button[aria-expanded="true"]{color:var(--accent);background:#293c2d}
+.genre-style-button:hover{color:var(--accent)}
+.genre-style-group .genre-era-group{margin-left:5px}
+.genre-era-button{white-space:normal;overflow-wrap:anywhere;line-height:1.4}
+.genre-results{scroll-margin-top:15px}
+.genre-artist-list{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+@media(max-width:800px){.genre-category-heading{width:100%}.genre-tree{max-height:350px}}
