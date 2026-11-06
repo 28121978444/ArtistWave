@@ -16,6 +16,7 @@
       <button class="nav-item active" id="discoverNav"><span>◈</span> Discover</button>
       <button class="nav-item" id="favoritesNav"><span>♡</span> Favorites <span class="nav-count" id="favoriteCount">0</span></button>
       <button class="nav-item" id="recentNav" type="button"><span>◷</span> Recently Played <span class="nav-count" id="recentCount">0</span></button>
+      <button class="nav-item studio-nav" id="studioNav" type="button"><span>🤸</span> Showdance Studio</button>
       <div class="side-label">MUSIC GENRES</div>
       <nav id="genreTree" class="genre-tree" aria-label="Browse music genres, styles and eras"></nav>
       <div class="side-divider"></div>
@@ -47,7 +48,54 @@
     </aside>
 
     <main class="main">
-      <header class="topbar"><div class="breadcrumb">YOUR SPACE <span>/</span> <strong id="locationName">Discover</strong></div><div class="top-right"><span class="live-dot"></span> LOCAL PLAYER <span class="version">V 2.5</span></div></header>
+      <header class="topbar"><div class="breadcrumb">YOUR SPACE <span>/</span> <strong id="locationName">Discover</strong></div><div class="top-right"><span class="live-dot"></span> LOCAL PLAYER <span class="version">V 3.0</span></div></header>
+      <section class="studio-workspace" id="studioWorkspace" hidden aria-labelledby="studioHeading">
+        <div class="studio-intro">
+          <div><div class="overline">ARTISTWAVE 3.0 / GYM WORKSPACE</div><h2 id="studioHeading">🤸 Showdance Studio</h2>
+            <p>Plan and rehearse gymnastics and dance competition routines. Set your gym’s own time limit; rules vary by discipline and event.</p></div>
+          <button type="button" id="studioClose">← Back to music</button>
+        </div>
+        <div class="studio-layout">
+          <div class="studio-main">
+            <section class="studio-panel" aria-label="Routine setup">
+              <div class="studio-panel-heading"><h3>Routine details</h3><button type="button" id="studioNew">+ New routine</button></div>
+              <label for="studioRoutineSelect">Saved routine</label>
+              <select id="studioRoutineSelect" aria-label="Choose saved routine"></select>
+              <div class="studio-input-grid">
+                <label>Routine name<input id="studioName" maxlength="90" placeholder="Floor final – Team A" /></label>
+                <label>Athlete / team<input id="studioAthlete" maxlength="90" placeholder="Athlete or group" /></label>
+                <label>Discipline<select id="studioDiscipline"><option>Artistic gymnastics</option><option>Rhythmic gymnastics</option><option>Acrobatic gymnastics</option><option>Dance / showdance</option><option>Group gymnastics</option><option>Other gym performance</option></select></label>
+                <label>Target duration (seconds)<input id="studioTarget" type="number" min="15" max="900" step="1" value="90" /></label>
+              </div>
+              <div class="studio-input-actions"><button type="button" id="studioSave">Save routine</button><button type="button" id="studioDelete">Delete routine</button></div>
+              <p class="studio-caption">Duration is a planning target, not a claim about competition regulations. Ask the event organizer for the correct limit.</p>
+            </section>
+            <section class="studio-panel" aria-label="Routine music">
+              <div class="studio-panel-heading"><h3>Music timeline</h3><span id="studioTotal" class="studio-duration">0:00 / 1:30</span></div>
+              <div class="studio-duration-track"><div id="studioDurationFill"></div></div>
+              <p id="studioTimingStatus" class="studio-caption">Add music from the active playlist or your favorites.</p>
+              <div class="studio-add-row">
+                <select id="studioTrackSelect" aria-label="Choose a track to add"></select>
+                <button type="button" id="studioAddTrack">+ Add track</button>
+              </div>
+              <div id="studioSegments" class="studio-segments" aria-live="polite"></div>
+              <div class="studio-practice">
+                <button type="button" id="studioPlay">▶ Rehearse routine</button>
+                <button type="button" id="studioStop">■ Stop</button>
+                <span id="studioPlaybackStatus" role="status" aria-live="polite">Ready to rehearse</span>
+              </div>
+              <p class="studio-caption">Use start/end times to preview sections in order. Browser seeking depends on the audio source. This is a rehearsal planner, not a downloadable audio editor.</p>
+            </section>
+          </div>
+          <aside class="studio-side">
+            <section class="studio-panel"><h3>Gym routine cues</h3><p>For each music section, add a cue such as <strong>Entrance</strong>, <strong>Tumbling pass</strong>, <strong>Formation change</strong>, or <strong>Final pose</strong>.</p>
+              <p>Sections play sequentially, with their chosen start/end times. Keep a locally available copy of your competition music and confirm performance rights.</p></section>
+            <section class="studio-panel"><h3>Saving & privacy</h3><p>Guest routines stay on this browser. With Google sign-in, online track references and routine metadata synchronize to your private Drive app data.</p><p>Local audio files are never uploaded. Reopen their folder on other devices to rehearse local segments.</p></section>
+          </aside>
+        </div>
+        <audio id="studioAudio" preload="metadata"></audio>
+      </section>
+
       <section class="hero"><div class="hero-copy"><div class="eyebrow"><span class="little-star">✳</span> THE MUSIC IS YOURS TO CHOOSE</div><h1>One artist.<br><em>Every track.</em></h1><p>No noise. No distractions. Type an artist or band and build a listening session around them.</p></div><div class="hero-art" aria-hidden="true"><div class="orb orb-a"></div><div class="orb orb-b"></div><div class="vinyl"><div class="vinyl-ring ring-one"></div><div class="vinyl-ring ring-two"></div><div class="vinyl-ring ring-three"></div><div class="record-label"><div class="record-hole"></div></div></div><div class="star star-one">✳</div><div class="star star-two">✧</div></div></section>
 
       <section class="search-section" id="discoverSection"><div class="section-heading"><div><div class="overline">01 / FIND YOUR SOUND</div><h2>Who are we listening to?</h2></div><span class="section-aside">SEARCH BY ARTIST OR BAND</span></div><form id="searchForm" class="search-form"><label class="search-box" for="artistInput"><span class="search-icon">⌕</span><input id="artistInput" name="artist" type="search" placeholder="e.g. Grateful Dead, Nina Simone, Miles Davis..." autocomplete="off" maxlength="100" required /><span class="key-hint">ENTER ↵</span></label><button class="primary-button" id="searchButton" type="submit">Find music <span>↗</span></button></form><div class="search-options"><label class="source-select-label" for="sourceMode"><span>Music sources</span><select id="sourceMode" aria-label="Playlist source"><option value="both" selected>Local + online</option><option value="local">Local only</option><option value="online">Online only</option></select></label><label class="checkbox"><input type="checkbox" id="includeLive" checked/><span>Include live recordings</span></label><span>Artist matches: MusicBrainz · Audio: selected providers</span></div><fieldset class="provider-panel" id="providerPanel"><legend>Online audio providers</legend>
@@ -90,5 +138,6 @@
   <script src="https://accounts.google.com/gsi/client" defer></script>
   <script src="cloud-sync.js" defer></script>
   <script src="app.js" defer></script>
+  <script src="studio.js" defer></script>
 </body>
 </html>
