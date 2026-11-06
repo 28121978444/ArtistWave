@@ -30,7 +30,7 @@ function trackKey(track){
 }
 function trackPriority(track){
   if(!track?.url)return 0;
-  const source=({LOCAL:100,ARCHIVE:60,AUDIUS:55,JAMENDO:50})[track.source]||40;
+  const source=({LOCAL:160,ARCHIVE:120,AUDIUS:90,JAMENDO:60})[track.source]||30;
   const ext=(track.url.split('?')[0].match(/\.(flac|wav|aiff|alac|m4a|mp3|ogg|oga|opus|aac)$/i)||[])[1]?.toLowerCase();
   const format={flac:12,wav:11,aiff:11,alac:11,m4a:9,mp3:8,opus:8,ogg:7,oga:7,aac:7}[ext]||0;
   const title=cleanTrackTitle(track.title,track.artist);
