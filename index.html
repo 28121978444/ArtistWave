@@ -20,7 +20,20 @@
       <div class="side-label">MUSIC GENRES</div>
       <nav id="genreTree" class="genre-tree" aria-label="Browse music genres, styles and eras"></nav>
       <div class="side-divider"></div>
-      <div class="cloud-account" aria-label="Account and private cloud sync">
+      <button class="nav-item folder-nav" id="addFolderNav" type="button"><span>📁</span> Add Music Folder</button>
+      <button class="nav-item folder-reopen" id="reopenFolderNav" type="button" hidden><span>↻</span> Reopen saved folder</button>
+      <button class="nav-item folder-forget" id="forgetFolderNav" type="button" hidden><span>×</span> Forget saved folder</button>
+      <div class="folder-summary" id="folderSummary" aria-live="polite">No local folder selected</div>
+      <div class="side-divider"></div>
+      
+      <div class="sidebar-bottom"><span class="icon-spark">✦</span><p>Just the artist you love.<br><span>No algorithm detours.</span></p></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><div class="breadcrumb">YOUR SPACE <span>/</span> <strong id="locationName">Discover</strong></div><div class="top-right"><span class="live-dot"></span><span class="player-mode-label">LOCAL PLAYER</span><span class="version">V 3.0</span>
+          <details class="topbar-account-menu" id="accountMenu">
+            <summary class="topbar-account-toggle" aria-label="Open account and cloud sync settings">☁ Account</summary>
+            <div class="cloud-account" aria-label="Account and private cloud sync">
         <div class="cloud-account-label">ACCOUNT · OPTIONAL</div>
         <div id="cloudAccountName" class="cloud-account-name">Guest · saved on this device</div>
         <button class="nav-item cloud-signin" id="cloudSignIn" type="button">☁ Sign in with Google</button>
@@ -38,17 +51,8 @@
         </details>
         <div id="cloudStatus" class="cloud-status" role="status" aria-live="polite">Guest mode · cloud sync off</div>
       </div>
-      <button class="nav-item folder-nav" id="addFolderNav" type="button"><span>📁</span> Add Music Folder</button>
-      <button class="nav-item folder-reopen" id="reopenFolderNav" type="button" hidden><span>↻</span> Reopen saved folder</button>
-      <button class="nav-item folder-forget" id="forgetFolderNav" type="button" hidden><span>×</span> Forget saved folder</button>
-      <div class="folder-summary" id="folderSummary" aria-live="polite">No local folder selected</div>
-      <div class="side-divider"></div>
-      
-      <div class="sidebar-bottom"><span class="icon-spark">✦</span><p>Just the artist you love.<br><span>No algorithm detours.</span></p></div>
-    </aside>
-
-    <main class="main">
-      <header class="topbar"><div class="breadcrumb">YOUR SPACE <span>/</span> <strong id="locationName">Discover</strong></div><div class="top-right"><span class="live-dot"></span> LOCAL PLAYER <span class="version">V 3.0</span></div></header>
+          </details>
+        </div></header>
       <section class="studio-workspace" id="studioWorkspace" hidden aria-labelledby="studioHeading">
         <div class="studio-intro">
           <div><div class="overline">ARTISTWAVE 3.0 / GYM WORKSPACE</div><h2 id="studioHeading">🤸 Showdance Studio</h2>
