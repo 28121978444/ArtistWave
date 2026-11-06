@@ -36,6 +36,7 @@
       collection:String(t.collection||'').slice(0,250),
       albumKind:t.albumKind==='album'?'album':t.albumKind==='collection'?'collection':'single',
       year:String(t.year||'').slice(0,4),
+      ...(typeof t.artwork==='string'&&/^https:\/\//.test(t.artwork)?{artwork:t.artwork.slice(0,1800)}:{}),
       source:String(t.source||'ARCHIVE').slice(0,30),url:t.url.slice(0,1800),
       ...(typeof t.sourceUrl==='string'&&/^https:\/\//.test(t.sourceUrl)?{sourceUrl:t.sourceUrl.slice(0,1800)}:{})
     };
