@@ -365,3 +365,6 @@
   .studio-add-row{flex-direction:column;align-items:stretch}
   .studio-add-row button{width:100%}
 }
+
+/* Dedicated workspace visibility must override the normal hero flex layout. */
+.hero[hidden],.studio-workspace[hidden]{display:none!important}
