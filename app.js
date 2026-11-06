@@ -1047,6 +1047,75 @@ const MUSIC_GENRES=[
 'Dancehall & Digital':artistRows("Yellowman|Early dancehall;Shabba Ranks|Dancehall deejay;Super Cat|Dancehall;Buju Banton|Dancehall and roots;Beenie Man|Dancehall;Bounty Killer|Dancehall;Sean Paul|Dancehall crossover;Shaggy|Reggae pop;Sister Nancy|Dancehall pioneer"),
 'Reggae Revival & Global':artistRows("Chronixx|Reggae revival;Protoje|Contemporary reggae;Koffee|Contemporary reggae;Jesse Royal|Modern roots;Kabaka Pyramid|Reggae/hip-hop crossover;Lila Iké|Contemporary roots;Steel Pulse|UK reggae;UB40|British reggae pop"),
 }}]},
+{name:'Pop',icon:'🎶',flat:true,sections:[{name:'Pop generations',eras:{
+'Classic Pop & Vocal':artistRows("ABBA|Swedish melodic pop;Elton John|Piano pop and songwriting;Billy Joel|Pop-rock ballads;Carpenters|Soft pop harmonies;Fleetwood Mac|Melodic pop rock;Stevie Wonder|Soulful pop;Cyndi Lauper|80s pop"),
+'1980s–90s Pop':artistRows("Michael Jackson|Pop and dance;Madonna|Dance pop;Whitney Houston|Pop and soul;George Michael|Pop vocals;Mariah Carey|Pop and R&B;Janet Jackson|Dance pop;Spice Girls|90s pop group"),
+'2000s–2010s Pop':artistRows("Beyoncé|Pop and R&B;Rihanna|Dance pop and R&B;Lady Gaga|Electronic pop;Katy Perry|Mainstream pop;Bruno Mars|Retro pop;Adele|Soulful pop ballads;P!nk|Pop rock"),
+'Modern Pop':artistRows("Taylor Swift|Singer-songwriter pop;Dua Lipa|Dance pop;Billie Eilish|Alternative pop;Olivia Rodrigo|Pop rock;Sabrina Carpenter|Contemporary pop;Chappell Roan|Theatrical pop;Harry Styles|Soft rock pop;Lorde|Art pop"),
+}}]},
+{name:'R&B & Soul',icon:'💜',flat:true,sections:[{name:'Soulful sounds',eras:{
+'Classic Soul & Motown':artistRows("Aretha Franklin|Soul vocalist;Marvin Gaye|Motown soul;The Supremes|Motown girl group;Otis Redding|Southern soul;Sam Cooke|Soul pioneer;Al Green|Memphis soul;Gladys Knight & The Pips|Motown and soul"),
+'Neo-Soul':artistRows("Erykah Badu|Neo-soul;D'Angelo|Neo-soul and funk;Lauryn Hill|Hip-hop soul;Jill Scott|Neo-soul vocals;Maxwell|Modern soul;India.Arie|Acoustic soul;Musiq Soulchild|Neo-soul"),
+'Contemporary R&B':artistRows("SZA|Alternative R&B;H.E.R.|R&B songwriting;Frank Ocean|Alternative R&B;The Weeknd|Dark pop R&B;Summer Walker|Modern R&B;Daniel Caesar|Soulful R&B;Victoria Monét|R&B and funk"),
+'Quiet Storm & Slow Jams':artistRows("Sade|Smooth soul;Anita Baker|Quiet storm R&B;Luther Vandross|Romantic soul;Toni Braxton|R&B ballads;Babyface|Soul ballads;Brian McKnight|R&B vocals"),
+}}]},
+{name:'Blues',icon:'🎸',flat:true,sections:[{name:'Blues traditions',eras:{
+'Delta & Country Blues':artistRows("Robert Johnson|Delta blues;Son House|Delta blues singer;Charley Patton|Early Delta blues;Mississippi John Hurt|Country blues guitar;Skip James|Acoustic Delta blues;Big Bill Broonzy|Country and urban blues"),
+'Chicago Electric Blues':artistRows("Muddy Waters|Chicago blues;Howlin' Wolf|Electric blues;Willie Dixon|Chicago blues songwriting;Buddy Guy|Blues guitar;Little Walter|Blues harmonica;Koko Taylor|Chicago blues vocals"),
+'Blues Rock & Revival':artistRows("B.B. King|Electric blues;Stevie Ray Vaughan|Texas blues guitar;Gary Clark Jr.|Modern blues rock;Joe Bonamassa|Blues rock;Susan Tedeschi|Blues soul;Christone Kingfish Ingram|Contemporary electric blues"),
+}}]},
+{name:'Country & Americana',icon:'🤠',flat:true,sections:[{name:'Roots & country',eras:{
+'Classic Country':artistRows("Johnny Cash|Country storytelling;Patsy Cline|Classic country vocals;Dolly Parton|Country songwriting;Willie Nelson|Outlaw country;Loretta Lynn|Honky-tonk;George Jones|Country ballads;Merle Haggard|Bakersfield country"),
+'Bluegrass & Roots':artistRows("Bill Monroe|Bluegrass founder;Alison Krauss|Bluegrass and country;Ricky Skaggs|Bluegrass virtuoso;The Stanley Brothers|Traditional bluegrass;Emmylou Harris|Americana;The Avett Brothers|Folk roots"),
+'Modern Country':artistRows("Chris Stapleton|Country soul;Kacey Musgraves|Modern country;Zach Bryan|Country songwriting;Maren Morris|Pop country;Luke Combs|Contemporary country;Tyler Childers|Appalachian country"),
+'Americana & Alt-Country':artistRows("Jason Isbell|Americana storytelling;Brandi Carlile|Americana vocals;Wilco|Alt-country rock;Lucinda Williams|Roots rock;Sturgill Simpson|Outlaw-influenced country;Margo Price|Americana country"),
+}}]},
+{name:'Folk & Acoustic',icon:'🪕',flat:true,sections:[{name:'Acoustic traditions',eras:{
+'Folk Revival':artistRows("Bob Dylan|Folk songwriting;Joan Baez|Folk vocals;Pete Seeger|Folk tradition;Joni Mitchell|Folk singer-songwriter;Simon & Garfunkel|Folk harmonies;Nick Drake|Acoustic folk"),
+'Indie Folk':artistRows("Bon Iver|Indie folk;Fleet Foxes|Folk harmonies;Sufjan Stevens|Indie folk;The Lumineers|Folk pop;First Aid Kit|Modern folk duo;Iron & Wine|Intimate folk"),
+'Singer-Songwriter':artistRows("Tracy Chapman|Acoustic songwriting;Damien Rice|Acoustic ballads;Phoebe Bridgers|Indie songwriting;Fiona Apple|Artful songwriting;Ben Howard|Contemporary folk;Laura Marling|British folk"),
+}}]},
+{name:'Indie & Alternative',icon:'🌈',flat:true,sections:[{name:'Alternative listening',eras:{
+'College & Alternative Rock':artistRows("R.E.M.|College rock;The Smiths|Indie guitar pop;The Cure|Post-punk alternative;Pixies|Alternative rock;Sonic Youth|Noise rock;Radiohead|Alternative rock"),
+'Indie Rock':artistRows("Arctic Monkeys|Indie rock;The Strokes|Garage revival;The National|Indie rock;Vampire Weekend|Indie pop rock;Tame Impala|Psychedelic indie;Franz Ferdinand|Dance rock;Yeah Yeah Yeahs|Indie art rock"),
+'Dream Pop & Shoegaze':artistRows("Cocteau Twins|Dream pop;Slowdive|Shoegaze;My Bloody Valentine|Shoegaze;Beach House|Dream pop;Alvvays|Indie dream pop;Mazzy Star|Dreamy alternative"),
+'Indie Pop & Bedroom Pop':artistRows("Clairo|Bedroom pop;beabadoobee|Indie pop rock;Men I Trust|Dreamy indie pop;Rex Orange County|Indie pop;The Japanese House|Indie electronic pop;girl in red|Indie pop"),
+}}]},
+{name:'Punk, Emo & Ska',icon:'⚡',flat:true,sections:[{name:'Guitar subcultures',eras:{
+'Classic Punk':artistRows("Ramones|New York punk;The Clash|UK punk;Sex Pistols|UK punk;Patti Smith|Poetic punk;Buzzcocks|Pop punk roots;Dead Kennedys|Hardcore punk"),
+'Pop Punk & Skate Punk':artistRows("Green Day|Pop punk;blink-182|Pop punk;The Offspring|Skate punk;Sum 41|Pop punk;New Found Glory|Pop punk;Paramore|Pop punk and alternative rock"),
+'Emo & Post-Hardcore':artistRows("My Chemical Romance|Emo rock;Fall Out Boy|Emo pop;Jimmy Eat World|Emo alternative;Taking Back Sunday|Emo rock;Pierce the Veil|Post-hardcore;Dashboard Confessional|Acoustic emo"),
+'Ska & Ska Punk':artistRows("The Specials|Two-tone ska;Madness|Ska revival;Toots and the Maytals|Jamaican ska;Reel Big Fish|Ska punk;Less Than Jake|Ska punk;No Doubt|Ska pop"),
+}}]},
+{name:'Electronic & Chill',icon:'🎛️',flat:true,sections:[{name:'Electronic listening',eras:{
+'Trip-Hop & Downtempo':artistRows("Massive Attack|Trip-hop;Portishead|Bristol trip-hop;Morcheeba|Downtempo;Zero 7|Chill electronic;Thievery Corporation|Downtempo;Bonobo|Organic electronic"),
+'Chillwave & Synthpop':artistRows("Washed Out|Chillwave;Toro y Moi|Chillwave;M83|Dreamy synthpop;CHVRCHES|Synthpop;The Postal Service|Indietronica;Empire of the Sun|Electronic pop"),
+'UK Garage & Future Beats':artistRows("Burial|Ambient UK garage;Jamie xx|Electronic beats;Fred again..|Emotive electronic;Overmono|UK electronic;Four Tet|Electronic experimentation;Bicep|Melodic breaks"),
+'Drum & Bass':artistRows("Goldie|Atmospheric drum and bass;Roni Size|Drum and bass;LTJ Bukem|Liquid drum and bass;Chase & Status|Modern drum and bass;Pendulum|Drum and bass rock;Netsky|Liquid drum and bass"),
+}}]},
+{name:'Ambient & Lo-fi',icon:'🌙',flat:true,sections:[{name:'Relax & focus',eras:{
+'Ambient Pioneers':artistRows("Brian Eno|Ambient composition;Harold Budd|Ambient piano;Steve Roach|Space ambient;Tangerine Dream|Electronic ambient;Aphex Twin|Selected ambient works;Stars of the Lid|Drone ambient"),
+'Lo-fi & Jazz-Hop':artistRows("Nujabes|Jazz hip-hop;J Dilla|Instrumental hip-hop;DJ Shadow|Sample-based beats;Emancipator|Downtempo beats;idealism|Lo-fi instrumental;Jinsang|Lo-fi beats"),
+'Modern Ambient & Minimal':artistRows("Tycho|Melodic ambient electronic;Helios|Warm ambient;Hammock|Ambient post-rock;Ólafur Arnalds|Neoclassical ambient;Nils Frahm|Minimalist piano;Hania Rani|Contemporary minimalist"),
+}}]},
+{name:'Classical & Piano',icon:'🎻',flat:true,sections:[{name:'Concert & piano music',eras:{
+'Baroque & Classical':artistRows("Johann Sebastian Bach|Baroque music;Antonio Vivaldi|Baroque concertos;Wolfgang Amadeus Mozart|Classical compositions;Joseph Haydn|Classical symphonies;George Frideric Handel|Baroque orchestral"),
+'Romantic Era':artistRows("Frédéric Chopin|Romantic piano;Ludwig van Beethoven|Romantic symphonies;Johannes Brahms|Romantic orchestral;Franz Liszt|Virtuoso piano;Clara Schumann|Piano and chamber music;Pyotr Ilyich Tchaikovsky|Romantic orchestral"),
+'Modern Classical & Piano':artistRows("Philip Glass|Minimalist composition;Steve Reich|Minimalism;Ludovico Einaudi|Contemporary piano;Yiruma|Melodic piano;Max Richter|Contemporary classical;Alexis Ffrench|Contemporary piano"),
+}}]},
+{name:'Global & World',icon:'🌍',flat:true,sections:[{name:'Sounds worldwide',eras:{
+'Afrobeats & African Pop':artistRows("Burna Boy|Afrofusion;Wizkid|Afrobeats;Tems|Alternative Afrobeats;Yemi Alade|African pop;Fela Kuti|Afrobeat pioneer;Angélique Kidjo|West African popular music"),
+'K-pop & Korean R&B':artistRows("BTS|K-pop;BLACKPINK|K-pop;TWICE|K-pop girl group;NewJeans|K-pop;IU|Korean pop;DEAN|Korean R&B;SEVENTEEN|K-pop"),
+'Flamenco & Iberian':artistRows("Paco de Lucía|Flamenco guitar;Camarón de la Isla|Flamenco vocals;Rosalía|Contemporary flamenco crossover;Vicente Amigo|Flamenco guitar;Mariza|Portuguese fado;Ana Moura|Fado"),
+'Balkan & Eastern Europe':artistRows("Goran Bregović|Balkan folk rock;Fanfare Ciocărlia|Romanian brass ensemble;Taraf de Haïdouks|Romanian folk ensemble;Balkan Beat Box|Balkan electronic;Shantel|Balkan club;Gogol Bordello|Gypsy punk"),
+'Middle Eastern & Arabic':artistRows("Fairuz|Lebanese singing;Umm Kulthum|Egyptian classical singing;Amr Diab|Egyptian pop;Nancy Ajram|Lebanese pop;Omar Souleyman|Syrian dabke;Anouar Brahem|Oud and jazz"),
+}}]},
+{name:'Latin & Caribbean',icon:'🌴',flat:true,sections:[{name:'Latin listening',eras:{
+'Bossa Nova & MPB':artistRows("João Gilberto|Bossa nova;Astrud Gilberto|Bossa nova vocals;Antônio Carlos Jobim|Bossa nova songwriter;Caetano Veloso|Brazilian MPB;Gilberto Gil|Brazilian popular music;Elis Regina|Brazilian vocals"),
+'Latin Rock & Alternative':artistRows("Santana|Latin rock;Maná|Spanish-language rock;Café Tacvba|Mexican alternative;Juanes|Latin pop rock;Natalia Lafourcade|Latin indie;Mon Laferte|Latin alternative"),
+'Bachata & Merengue':artistRows("Juan Luis Guerra|Merengue and bachata;Romeo Santos|Modern bachata;Aventura|Bachata group;Prince Royce|Modern bachata;Elvis Crespo|Merengue;Olga Tañón|Merengue pop"),
+'Caribbean & Dancehall':artistRows("Sean Paul|Dancehall;Shaggy|Reggae fusion;Buju Banton|Dancehall reggae;Beenie Man|Dancehall;Koffee|Modern reggae;Sister Nancy|Dancehall pioneer"),
+}}]},
 {name:'Dance Pop',icon:'✨',flat:true,training:true,sections:[{name:'Performance eras',eras:{
 'Disco-to-Pop Stage Classics':artistRows("Donna Summer|Disco stage energy;ABBA|Pop stage classics;Michael Jackson|Dance-pop performance;Madonna|Dance-pop choreography;Kylie Minogue|Dance floor pop;Boney M.|Disco showdance"),
 '1990s Eurodance':artistRows("2 Unlimited|High-energy Eurodance;Snap!|Dance-rap crossover;La Bouche|Eurodance vocals;Culture Beat|Eurodance;Haddaway|Eurodance;Corona|Italian Eurodance;Vengaboys|Party-dance shows;Ace of Base|Dance-pop"),
@@ -1088,7 +1157,7 @@ const MUSIC_GENRES=[
 'Street & Modern Rhythms':artistRows("Missy Elliott|Dance-focused hip-hop;Timbaland|Rhythmic hip-hop production;Busta Rhymes|High-energy rap;Anderson .Paak|Funk hip-hop crossover;Kaytranada|Dance beats;Skrillex|Bass music;Jungle|Rhythmic performance music"),
 }}]},
 ];
-const expandedGenre={name:'Rap',section:null,era:null};
+const expandedGenre={name:null,section:null,era:null};
 const browsePath=(genre,section,era)=>[genre.name,genre.flat?null:section.name,era].filter(Boolean).join(' → ');
 function chooseCatalogArtist(genre,section,era,name){
   $('artistInput').value=name;
