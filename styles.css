@@ -566,3 +566,13 @@ body[data-mode="studio"] .studio-workspace{padding-top:22px}
   }
   .app-shell>.main{width:100%;margin:0 auto}
 }
+
+/* YouTube session connection: clear whether the Google app account can be reused. */
+.youtube-account{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 19px;margin:0 0 16px;background:#172c27;border:1px solid #486d54;border-radius:12px}
+.youtube-account-copy{min-width:0;flex:1}
+.youtube-account-copy strong{font-size:13px;color:#e9f7df}
+.youtube-account-copy p{font-size:12px;line-height:1.55;color:#bcd0bf;margin:6px 0 0}
+.youtube-account>a{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;padding:10px 14px;font-size:12px;font-weight:800;color:#233425;background:#c5f398;border-radius:8px;text-decoration:none}
+.youtube-account>a:hover{background:#ddffb8}
+.youtube-account>a:focus-visible{outline:2px solid #f5ffdf;outline-offset:3px}
+@media(max-width:700px){.youtube-account{flex-direction:column;align-items:stretch;padding:13px}.youtube-account>a{width:100%;box-sizing:border-box}}
