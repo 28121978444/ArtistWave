@@ -1,0 +1,62 @@
+'use strict';
+const test=require('node:test');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const vm=require('node:vm');
+const source=fs.readFileSync('app.js','utf8');
+const html=fs.readFileSync('index.html','utf8');
+const start=source.indexOf('const MUSIC_GENRES=[');
+const end=source.indexOf('const expandedGenre=',start);
+const helpers=source.indexOf('function genreSearchMatches(');
+const helperEnd=source.indexOf('function renderGenreTree()',helpers);
+assert.ok(start>0&&end>start&&helpers>end&&helperEnd>helpers);
+const artistRows=values=>values.split(';').map(v=>{const split=v.indexOf('|');return [v.slice(0,split),v.slice(split+1)]});
+const norm=value=>String(value||'').normalize('NFKD').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+const {MUSIC_GENRES,genreSearchMatches,matchingGenreEras}=vm.runInNewContext(
+  source.slice(start,end)+source.slice(helpers,helperEnd)+'\n;({MUSIC_GENRES,genreSearchMatches,matchingGenreEras})',
+  {artistRows,norm,Number,Object}
+);
+test('preserves legacy genres while adding broad casual listening styles',()=>{
+  const names=MUSIC_GENRES.map(g=>g.name);
+  for(const name of ['Jazz','Rock','Rap','Reggae','Dance Pop','Latin Dance','Pop','R&B & Soul',
+    'Blues','Country & Americana','Folk & Acoustic','Indie & Alternative','Punk, Emo & Ska',
+    'Electronic & Chill','Ambient & Lo-fi','Classical & Piano','Global & World','Latin & Caribbean'])
+    assert.ok(names.includes(name),name);
+  assert.equal(new Set(names).size,names.length);
+  assert.ok(names.length>=20);
+});
+test('all added genres have non-empty substyles and artist suggestions',()=>{
+  for(const genre of MUSIC_GENRES){
+    assert.ok(genre.sections.length>0,genre.name);
+    for(const section of genre.sections){
+      const eras=Object.entries(section.eras);
+      assert.ok(eras.length>0,genre.name+': '+section.name);
+      for(const [era,artists] of eras){
+        assert.ok(artists.length>0,era);
+        for(const [artist,note] of artists){
+          assert.ok(artist.length>0&&note.length>0,era);
+        }
+      }
+    }
+  }
+});
+test('genre search matches genre, styles, artists, descriptions and folds accents',()=>{
+  const pop=MUSIC_GENRES.find(g=>g.name==='Pop');
+  const world=MUSIC_GENRES.find(g=>g.name==='Global & World');
+  const blues=MUSIC_GENRES.find(g=>g.name==='Blues');
+  assert.equal(genreSearchMatches(pop,norm('pop')),true);
+  assert.equal(genreSearchMatches(pop,norm('Sabrina Carpenter')),true);
+  assert.equal(genreSearchMatches(blues,norm('Delta')),true);
+  assert.equal(genreSearchMatches(world,norm('Fanfare Ciocarlia')),true);
+  assert.equal(genreSearchMatches(pop,norm('unknown style 234')),false);
+  const sections=world.sections[0];
+  const matches=matchingGenreEras(world,sections,norm('Balkan'));
+  assert.equal(matches.length,1);
+  assert.equal(matches[0][0],'Balkan & Eastern Europe');
+});
+test('sidebar has accessible genre filter and clear button',()=>{
+  for(const id of ['genreFilter','genreFilterCount','genreFilterClear','genreTree'])
+    assert.ok(html.includes('id="'+id+'"'),id);
+  assert.ok(html.indexOf('id="genreFilter"')<html.indexOf('id="genreTree"'));
+  assert.match(source,/\$\('genreFilter'\)\.addEventListener\('input',renderGenreTree\)/);
+});
