@@ -446,10 +446,11 @@ function render(){
     const heading=document.createElement('h3');heading.className='album-heading';heading.textContent=group.label;
     const count=document.createElement('span');count.className='album-count';
     const year=playable.concat(catalog).map(item=>extractYear(item.track.year)).find(Boolean);
-    if(year){const date=document.createElement('span');date.className='album-year';date.textContent=year;header.append(date)}
     const total=playable.length+catalog.length;
     count.textContent=total+' track'+(total===1?'':'s');
-    header.append(heading,count);
+    header.append(heading);
+    if(year){const date=document.createElement('span');date.className='album-year';date.textContent=year;header.append(date)}
+    header.append(count);
     if(playable.length){
       const button=document.createElement('button');button.type='button';button.className='album-play-button';
       button.textContent='▶ Play album';button.setAttribute('aria-label','Play '+group.label+' album');
@@ -511,7 +512,7 @@ function tryNextSource(token=S.playbackToken){
   }
   // Avoid endless loops when no online provider can play this recording.
   const track=current();S.activeSource=null;
-  audio.pause();audio.removeAttribute('src');
+  audio.pause();audio.removeAttribute('src');clearPlaybackRecovery();
   show('Could not play '+(track?.title||'this track')+' from the available sources. Select another track.',true);
   updatePlayer();
   return false;
@@ -743,7 +744,8 @@ $('volumeBar').oninput=e=>audio.volume=Number(e.target.value)/100;audio.volume=.
 $('seekBar').oninput=e=>{if(Number.isFinite(audio.duration))audio.currentTime=audio.duration*Number(e.target.value)/1000};
 audio.ontimeupdate=()=>{$('currentTime').textContent=time(audio.currentTime);$('duration').textContent=time(audio.duration);$('seekBar').value=Number.isFinite(audio.duration)&&audio.duration?Math.round(audio.currentTime/audio.duration*1000):0};
 $('includeLive').addEventListener('change',()=>window.ArtistWaveCloud?.changed());
-audio.onplay=()=>{clearTimeout(S.bufferTimer);S.bufferTimer=null;updatePlayer()};
+audio.onplay=updatePlayer;
+audio.onplaying=()=>{clearTimeout(S.bufferTimer);S.bufferTimer=null;updatePlayer()};
 audio.onpause=()=>{clearTimeout(S.bufferTimer);S.bufferTimer=null;updatePlayer()};
 audio.onerror=()=>{if(S.playCandidates.length)tryNextSource()};
 audio.onwaiting=()=>{if(S.playCandidates.length&&!audio.paused)queueBufferCheck(S.playbackToken)};
