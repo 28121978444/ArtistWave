@@ -342,87 +342,200 @@ const RAP_ERAS={
     ["Central Cee","UK rap"]
   ]
 };
-let chosenRapEra=null;
-function renderGenreTree(){
-  const tree=$('genreTree');
-  tree.replaceChildren();
-  const genre=document.createElement('details');
-  genre.className='genre-node';
-  genre.open=true;
-  const summary=document.createElement('summary');
-  summary.textContent='🎤 Rap';
-  genre.append(summary);
-  const eras=document.createElement('div');
-  eras.className='genre-era-list';
-  for(const decade of Object.keys(RAP_ERAS)){
-    const era=document.createElement('div');
-    era.className='genre-era-group';
-    const btn=document.createElement('button');
-    btn.type='button';
-    btn.className='genre-era-button';
-    btn.textContent=decade+'  ›';
-    const active=decade===chosenRapEra;
-    btn.setAttribute('aria-expanded',String(active));
-    btn.setAttribute('aria-controls','rap-artists-'+decade);
-    btn.classList.toggle('active',active);
-    btn.onclick=()=>showRapEra(active?null:decade);
-    era.append(btn);
-    const artists=document.createElement('div');
-    artists.id='rap-artists-'+decade;
-    artists.className='genre-sidebar-artists';
-    artists.hidden=!active;
-    for(const [name] of RAP_ERAS[decade]){
-      const artist=document.createElement('button');
-      artist.type='button';
-      artist.className='genre-sidebar-artist';
-      artist.textContent=name;
-      artist.onclick=()=>selectRapArtist(decade,name);
-      artists.append(artist);
-    }
-    era.append(artists);
-    eras.append(era);
-  }
-  genre.append(eras);
-  tree.append(genre);
-}
-function selectRapArtist(decade,name){
+
+const artistRows=s=>s.split(';').map(row=>row.trim()).filter(Boolean).map(row=>{const [name,note='Explore this artist']=row.split('|');return[name.trim(),note.trim()]});
+// A curated introduction, not a claim about chart rankings or musical exclusivity.
+// Periods follow each genre's history. Artists intentionally recur across eras.
+const MUSIC_GENRES=[
+{name:'Jazz',icon:'🎷',flat:true,sections:[{name:'Jazz movements',eras:{
+'Early Jazz / New Orleans':artistRows("Louis Armstrong|Early jazz and New Orleans;Jelly Roll Morton|Pianist and composer;Sidney Bechet|Soprano saxophone pioneer;King Oliver|Early jazz bandleader;Bessie Smith|Blues and early jazz;Kid Ory|New Orleans trombone"),
+'Swing & Big Band':artistRows("Duke Ellington|Composer and big band;Count Basie|Kansas City swing;Benny Goodman|Swing-era clarinet;Ella Fitzgerald|Jazz and swing vocals;Billie Holiday|Swing-era jazz singer;Artie Shaw|Swing clarinet;Mary Lou Williams|Pianist and arranger;Chick Webb|Harlem big band"),
+'Bebop':artistRows("Charlie Parker|Bebop saxophone;Dizzy Gillespie|Bebop and Afro-Cuban jazz;Thelonious Monk|Modern jazz piano;Bud Powell|Bebop piano;Max Roach|Bebop drumming;Fats Navarro|Bebop trumpet"),
+'Cool Jazz & West Coast':artistRows("Miles Davis|Birth of the Cool;Chet Baker|Cool trumpet and vocals;Gerry Mulligan|Baritone saxophone;Dave Brubeck|Cool jazz quartet;Paul Desmond|Alto saxophone;Lee Konitz|Cool-school saxophone"),
+'Hard Bop & Soul Jazz':artistRows("Art Blakey|Hard-bop drumming;Horace Silver|Gospel-influenced jazz;Sonny Rollins|Hard-bop saxophone;Clifford Brown|Hard-bop trumpet;Cannonball Adderley|Soul jazz;Lee Morgan|Hard-bop trumpet;Grant Green|Jazz guitar"),
+'Modal & Spiritual Jazz':artistRows("Miles Davis|Modal jazz;John Coltrane|Modal and spiritual jazz;McCoy Tyner|Modal-era piano;Pharoah Sanders|Spiritual jazz;Alice Coltrane|Spiritual harp and piano;Yusef Lateef|Global musical influences;Sun Ra|Afrofuturist jazz"),
+'Fusion & Jazz-Funk':artistRows("Miles Davis|Electric jazz;Herbie Hancock|Jazz-funk and fusion;Weather Report|Fusion ensemble;Chick Corea|Return to Forever;Mahavishnu Orchestra|Jazz-rock;Billy Cobham|Fusion drums;George Duke|Jazz-funk"),
+'Contemporary & Nu-Jazz':artistRows("Robert Glasper|Jazz and hip-hop crossover;Kamasi Washington|Contemporary spiritual jazz;Esperanza Spalding|Jazz bass and vocals;Nubya Garcia|UK jazz;Yussef Dayes|UK jazz drumming;BADBADNOTGOOD|Contemporary jazz;Hiromi|Jazz piano;Snarky Puppy|Jazz-funk"),
+}}]},
+{name:'Rock',icon:'🎸',flat:false,sections:[
+{name:'Classic & Hard Rock',eras:{
+'1960s Foundations':artistRows("The Rolling Stones|Blues rock;The Who|British rock;Jimi Hendrix|Electric guitar innovation;Led Zeppelin|Late-1960s heavy rock;Deep Purple|Hard-rock roots;Cream|Blues-rock trio"),
+'1970s Arena & Shock Rock':artistRows("Led Zeppelin|Heavy blues rock;Queen|Theatrical rock;AC/DC|Hard rock;Aerosmith|American hard rock;Alice Cooper|Shock-rock performances;Kiss|Arena rock;Deep Purple|Hard rock;UFO|British hard rock"),
+'1980s Hard Rock & Glam':artistRows("Guns N' Roses|Hard rock;Bon Jovi|Arena rock;Def Leppard|Melodic hard rock;Mötley Crüe|Glam metal;Alice Cooper|1980s solo career;Whitesnake|Hard rock;Scorpions|German hard rock;Europe|Melodic hard rock"),
+'1990s Alternative & Revival':artistRows("Nirvana|Grunge;Pearl Jam|Alternative rock;Soundgarden|Grunge;Alice in Chains|Heavy grunge;Foo Fighters|Modern rock;Alice Cooper|1990s albums and touring;The Black Crowes|Roots rock"),
+'2000s–Present':artistRows("Foo Fighters|Modern rock;Muse|Alternative rock;The White Stripes|Garage rock;Royal Blood|Modern hard rock;Greta Van Fleet|Classic rock influences;Alice Cooper|Continuing recordings and tours;Halestorm|Modern hard rock"),
+}},
+{name:'Heavy Metal',eras:{
+'1970s Origins':artistRows("Black Sabbath|Foundational metal;Judas Priest|Early metal;Deep Purple|Hard rock and metal roots;Motörhead|Fast heavy rock;Rainbow|Hard rock and early metal;Blue Öyster Cult|Metal influence"),
+'NWOBHM & 1980s':artistRows("Iron Maiden|New Wave of British Heavy Metal;Saxon|British heavy metal;Diamond Head|NWOBHM;Angel Witch|NWOBHM;Judas Priest|Classic heavy metal;Dio|Traditional metal;Accept|German heavy metal;Mercyful Fate|Dark heavy metal"),
+'1990s–2000s':artistRows("Iron Maiden|Long-running heavy metal;Judas Priest|Continued releases;Pantera|Groove-metal crossover;Primal Fear|Traditional metal revival;Nevermore|Progressive heavy metal;HammerFall|Heavy and power metal"),
+'2010s–Present':artistRows("Iron Maiden|Modern recordings;Judas Priest|Contemporary recordings;Enforcer|Traditional metal revival;Night Demon|US traditional metal;Haunt|Traditional metal;Eternal Champion|Epic metal"),
+}},
+{name:'Power Metal',eras:{
+'1980s Roots':artistRows("Helloween|European power-metal origins;Manowar|Epic heavy metal;Savatage|US power metal roots;Jag Panzer|US power metal;Virgin Steele|Epic metal;Blind Guardian|Early power and speed metal"),
+'1990s European Wave':artistRows("Blind Guardian|Fantasy-inspired power metal;Gamma Ray|European power metal;Stratovarius|Melodic power metal;Helloween|Power metal;Rhapsody of Fire|Symphonic power metal;Running Wild|Pirate-themed metal;Angra|Brazilian power metal"),
+'2000s Symphonic & Epic':artistRows("Rhapsody of Fire|Symphonic power metal;DragonForce|Fast melodic metal;Nightwish|Symphonic crossover;Sonata Arctica|Melodic power metal;Kamelot|Symphonic metal;Sabaton|Historical power metal;Avantasia|Metal opera"),
+'2010s–Present':artistRows("Sabaton|Modern power metal;Powerwolf|Theatrical power metal;Gloryhammer|Fantasy power metal;Beast in Black|Melodic power metal;Unleash the Archers|Canadian power metal;Brothers of Metal|Nordic-themed power metal;Blind Guardian|Continued power metal"),
+}},
+{name:'Death Metal',eras:{
+'1980s Origins':artistRows("Death|Florida death metal;Possessed|Early death metal;Morbid Angel|Florida death metal;Obituary|Florida death metal;Autopsy|Early US death metal;Bolt Thrower|British death metal"),
+'1990s Classic':artistRows("Death|Progressive death metal;Cannibal Corpse|American death metal;Deicide|Florida death metal;Entombed|Swedish death metal;Dismember|Swedish death metal;Suffocation|Brutal death metal;Immolation|New York death metal"),
+'Melodic Death Metal':artistRows("At the Gates|Gothenburg melodic death;In Flames|Swedish melodic death;Dark Tranquillity|Melodic death;Carcass|Melodic death evolution;Arch Enemy|Melodic death;Amon Amarth|Melodic death;Insomnium|Finnish melodic death"),
+'Technical & Progressive':artistRows("Death|Later technical albums;Cynic|Progressive death metal;Atheist|Technical death metal;Necrophagist|Technical death metal;Obscura|Technical death metal;Gorguts|Dissonant metal;Beyond Creation|Modern technical death"),
+'Modern & Underground':artistRows("Blood Incantation|Progressive death metal;Tomb Mold|Canadian death metal;Gatecreeper|US death metal;Frozen Soul|Texas death metal;200 Stab Wounds|US death metal;Undeath|New York death metal;Horrendous|Progressive death metal"),
+}},
+]},
+{name:'Rap',icon:'🎤',flat:true,sections:[{name:'Decades',eras:RAP_ERAS}]},
+{name:'Reggae',icon:'🌴',flat:true,sections:[{name:'Styles & movements',eras:{
+'Ska & Blue Beat':artistRows("The Skatalites|Jamaican ska pioneers;Prince Buster|Early Jamaican ska;Desmond Dekker|Ska and reggae;Toots and the Maytals|Ska and reggae;The Wailers|Early ska recordings;Derrick Morgan|Early Jamaican popular music"),
+'Rocksteady':artistRows("Alton Ellis|Rocksteady pioneer;The Paragons|Rocksteady vocal group;The Techniques|Rocksteady harmonies;The Melodians|Early reggae;The Heptones|Harmony trio;Phyllis Dillon|Rocksteady vocals"),
+'Roots Reggae':artistRows("Bob Marley & The Wailers|Roots reggae;Peter Tosh|Roots and social commentary;Bunny Wailer|Foundational roots reggae;Burning Spear|Rastafari roots;Culture|Conscious roots;Black Uhuru|Roots group;Third World|Reggae fusion;The Abyssinians|Spiritual roots"),
+'Dub & Sound Systems':artistRows("King Tubby|Dub mixing pioneer;Lee 'Scratch' Perry|Producer and dub innovator;Scientist|Dub mixing;Augustus Pablo|Melodica dub;Mad Professor|UK dub producer;Prince Jammy|Digital and dub;Sly & Robbie|Reggae production"),
+'Dancehall & Digital':artistRows("Yellowman|Early dancehall;Shabba Ranks|Dancehall deejay;Super Cat|Dancehall;Buju Banton|Dancehall and roots;Beenie Man|Dancehall;Bounty Killer|Dancehall;Sean Paul|Dancehall crossover;Shaggy|Reggae pop;Sister Nancy|Dancehall pioneer"),
+'Reggae Revival & Global':artistRows("Chronixx|Reggae revival;Protoje|Contemporary reggae;Koffee|Contemporary reggae;Jesse Royal|Modern roots;Kabaka Pyramid|Reggae/hip-hop crossover;Lila Iké|Contemporary roots;Steel Pulse|UK reggae;UB40|British reggae pop"),
+}}]},
+{name:'Dance Pop',icon:'✨',flat:true,training:true,sections:[{name:'Performance eras',eras:{
+'Disco-to-Pop Stage Classics':artistRows("Donna Summer|Disco stage energy;ABBA|Pop stage classics;Michael Jackson|Dance-pop performance;Madonna|Dance-pop choreography;Kylie Minogue|Dance floor pop;Boney M.|Disco showdance"),
+'1990s Eurodance':artistRows("2 Unlimited|High-energy Eurodance;Snap!|Dance-rap crossover;La Bouche|Eurodance vocals;Culture Beat|Eurodance;Haddaway|Eurodance;Corona|Italian Eurodance;Vengaboys|Party-dance shows;Ace of Base|Dance-pop"),
+'2000s Stage Pop':artistRows("Britney Spears|Choreography-driven pop;Beyoncé|Stage-performance pop;Lady Gaga|Theatrical dance-pop;Rihanna|Pop and dance;The Pussycat Dolls|Dance choreography;Justin Timberlake|Rhythmic pop;Shakira|Latin dance pop"),
+'2010s–Present Showdance':artistRows("Dua Lipa|Dance-pop choreography;Beyoncé|Stage productions;Lady Gaga|Theatrical pop;Ariana Grande|Pop choreography;Doja Cat|Pop and rap performance;Sia|Contemporary dance;Lizzo|Performance pop;Tate McRae|Dance-oriented pop"),
+}}]},
+{name:'Electronic Dance',icon:'⚡',flat:false,training:true,sections:[
+{name:'House & Club',eras:{
+'House Origins':artistRows("Frankie Knuckles|Chicago house;Marshall Jefferson|Early house;Larry Heard|Deep house;Inner City|Detroit house;Robin S.|Vocal house;Crystal Waters|House vocals"),
+'French & Filter House':artistRows("Daft Punk|French house;Cassius|French touch;Stardust|Filter house;Modjo|French house;Bob Sinclar|French house;David Guetta|Dance crossover"),
+'Modern House':artistRows("Disclosure|UK dance;Duke Dumont|Modern house;Purple Disco Machine|Disco house;John Summit|Tech house;Peggy Gou|Modern dance;FISHER|Tech house"),
+}},
+{name:'Trance & Festival',eras:{
+'1990s Classic Trance':artistRows("Paul van Dyk|Classic trance;Tiësto|Trance era;Armin van Buuren|Trance;Ferry Corsten|Uplifting trance;ATB|Melodic trance;Binary Finary|Classic trance"),
+'2000s Uplifting Trance':artistRows("Above & Beyond|Progressive trance;Armin van Buuren|Uplifting trance;Aly & Fila|Egyptian trance duo;Gareth Emery|Vocal trance;Cosmic Gate|Trance;Dash Berlin|Vocal trance"),
+'2010s–Present EDM':artistRows("Martin Garrix|Festival EDM;Swedish House Mafia|Progressive house;Avicii|Melodic EDM;Hardwell|Big-room EDM;Calvin Harris|Dance pop;Zedd|Dance crossover;Alesso|Progressive house"),
+}},
+]},
+{name:'Funk & Disco',icon:'🪩',flat:true,training:true,sections:[{name:'Groove eras',eras:{
+'1960s–70s Funk':artistRows("James Brown|Funk rhythms;Sly & The Family Stone|Psychedelic funk;Parliament-Funkadelic|P-Funk;Earth, Wind & Fire|Funk soul;The Meters|New Orleans funk;Kool & The Gang|Funk disco"),
+'1970s–80s Disco':artistRows("Chic|Disco funk;Donna Summer|Disco classics;Bee Gees|Disco pop;Gloria Gaynor|Disco vocals;The Trammps|Disco;The Jacksons|Disco funk;Sister Sledge|Disco vocals"),
+'1980s Electro-Funk':artistRows("Prince|Funk pop performance;The Gap Band|Electro-funk;Zapp|Talk-box funk;Rick James|Funk shows;Cameo|Funk R&B;Midnight Star|Electro-funk;The Time|Minneapolis funk"),
+'Nu-Disco & Modern Funk':artistRows("Jamiroquai|Acid jazz and funk;Chromeo|Electro-funk;Daft Punk|Disco-inspired electronic;Purple Disco Machine|Nu-disco;Parcels|Modern funk;Jungle|Dance choreography;Bruno Mars|Funk pop"),
+}}]},
+{name:'Latin Dance',icon:'💃',flat:true,training:true,sections:[{name:'Dance styles',eras:{
+'Salsa & Mambo':artistRows("Celia Cruz|Salsa vocals;Tito Puente|Mambo and Latin jazz;Héctor Lavoe|Salsa;Willie Colón|Salsa trombone;Rubén Blades|Salsa songwriting;Marc Anthony|Contemporary salsa"),
+'Samba & Latin Pop':artistRows("Sérgio Mendes|Brazilian jazz crossover;Carlinhos Brown|Bahian rhythms;Ivete Sangalo|Brazilian pop;Shakira|Latin dance pop;Ricky Martin|Latin pop;Gloria Estefan|Latin pop"),
+'Reggaeton & Urban Latin':artistRows("Daddy Yankee|Reggaeton pioneer;Don Omar|Reggaeton;Wisin & Yandel|Reggaeton duo;J Balvin|Modern reggaeton;Bad Bunny|Latin urban;Karol G|Latin urban pop;Rauw Alejandro|Dance reggaeton"),
+'Contemporary Latin Stage':artistRows("Rosalía|Flamenco crossover;Jennifer Lopez|Stage dance pop;Shakira|Latin dance performances;Becky G|Latin pop;Anitta|Brazilian funk pop;Nathy Peluso|Latin performance"),
+}}]},
+{name:'Cinematic & Orchestral',icon:'🎬',flat:true,training:true,sections:[{name:'Routine moods',eras:{
+'Classical & Ballet Drama':artistRows("Pyotr Ilyich Tchaikovsky|Ballet music;Igor Stravinsky|Rhythmic ballet;Sergei Prokofiev|Dramatic ballet;Camille Saint-Saëns|Character pieces;Aram Khachaturian|Dramatic ballet;Maurice Ravel|Orchestral dance"),
+'Film Score Classics':artistRows("John Williams|Symphonic film music;Ennio Morricone|Film score themes;Howard Shore|Epic orchestral music;James Horner|Cinematic themes;Danny Elfman|Theatrical film music;Rachel Portman|Melodic film scores"),
+'Modern Epic & Emotional':artistRows("Hans Zimmer|Percussive scores;Ludovico Einaudi|Minimalist piano;Max Richter|Contemporary classical;Ólafur Arnalds|Atmospheric classical;Two Steps From Hell|Epic trailer music;Audiomachine|Cinematic production music;Ramin Djawadi|TV and cinematic scores"),
+}}]},
+{name:'Breakbeat & Street',icon:'🔥',flat:true,training:true,sections:[{name:'Movement styles',eras:{
+'Breakdance Foundations':artistRows("Afrika Bambaataa|Electro and hip-hop;Grandmaster Flash & The Furious Five|Early hip-hop;Kurtis Blow|Old-school rap;Run-D.M.C.|Old-school hip-hop;The Sugarhill Gang|Early hip-hop;Mantronix|Electro hip-hop"),
+'1990s Big Beat & Breaks':artistRows("The Prodigy|High-impact breakbeat;The Chemical Brothers|Big beat;Fatboy Slim|Big beat;Propellerheads|Breakbeat;Basement Jaxx|House and breaks;Freestylers|UK breaks"),
+'Street & Modern Rhythms':artistRows("Missy Elliott|Dance-focused hip-hop;Timbaland|Rhythmic hip-hop production;Busta Rhymes|High-energy rap;Anderson .Paak|Funk hip-hop crossover;Kaytranada|Dance beats;Skrillex|Bass music;Jungle|Rhythmic performance music"),
+}}]},
+];
+const expandedGenre={name:'Rap',section:null,era:null};
+const browsePath=(genre,section,era)=>[genre.name,genre.flat?null:section.name,era].filter(Boolean).join(' → ');
+function chooseCatalogArtist(genre,section,era,name){
   $('artistInput').value=name;
-  $('locationName').textContent='Rap / '+decade+' / '+name;
   $('matchPanel').hidden=true;
   chooseArtist(name,null);
+  $('locationName').textContent=browsePath(genre,section,era)+' / '+name;
   $('playlistSection').scrollIntoView({behavior:'smooth',block:'start'});
 }
-function showRapEra(decade){
-  chosenRapEra=decade;
+function toggleBrowseGenre(genre){
+  expandedGenre.name=expandedGenre.name===genre.name?null:genre.name;
+  expandedGenre.section=null;expandedGenre.era=null;
+  renderGenreTree();
+  $('genreResults').hidden=true;
+}
+function toggleBrowseSection(genre,section){
+  expandedGenre.section=expandedGenre.section===section.name?null:section.name;
+  expandedGenre.era=null;
+  renderGenreTree();
+  $('genreResults').hidden=true;
+}
+function showBrowseEra(genre,section,era){
+  expandedGenre.name=genre.name;expandedGenre.section=section.name;
+  expandedGenre.era=expandedGenre.era===era?null:era;
   renderGenreTree();
   const panel=$('genreResults');
-  if(!decade){
-    panel.hidden=true;
-    return;
-  }
+  if(!expandedGenre.era){panel.hidden=true;return}
+  const artists=section.eras[era],path=browsePath(genre,section,era);
   panel.hidden=false;
-  $('genreResultsHeading').textContent='Rap → '+decade;
-  $('genreResultsCount').textContent=RAP_ERAS[decade].length+' ARTISTS';
-  $('genreResultsDescription').textContent='Choose an artist below or in the Rap sidebar to build an artist-only playlist.';
-  const list=$('genreArtistList');
-  list.replaceChildren();
-  for(const [name,description] of RAP_ERAS[decade]){
-    const button=document.createElement('button');
-    button.className='genre-artist-card';
-    button.type='button';
-    const title=document.createElement('strong');
-    title.textContent=name;
-    const detail=document.createElement('small');
-    detail.textContent=description;
-    const arrow=document.createElement('span');
-    arrow.textContent='↗';
-    button.append(title,detail,arrow);
-    button.onclick=()=>selectRapArtist(decade,name);
-    list.append(button);
+  $('genreResultsHeading').textContent=path;
+  $('genreResultsCount').textContent=artists.length+' ARTISTS';
+  $('genreResultsDescription').textContent=genre.training
+    ?'Showdance and gymnastics inspiration. Preview tracks, check tempo and suitability, and ensure you have any required music-use rights.'
+    :'Featured and less-famous artists. Performers may appear in several eras. Choose an artist to explore recordings.';
+  const list=$('genreArtistList');list.replaceChildren();
+  for(const [name,note] of artists){
+    const card=document.createElement('button');card.type='button';card.className='genre-artist-card';
+    const title=document.createElement('strong');title.textContent=name;
+    const detail=document.createElement('small');detail.textContent=note;
+    const arrow=document.createElement('span');arrow.textContent='↗';
+    card.append(title,detail,arrow);
+    card.onclick=()=>chooseCatalogArtist(genre,section,era,name);
+    list.append(card);
   }
-  // Keep the results easy to notice when an era is selected.
-  panel.scrollIntoView({behavior:'smooth',block:'start'});
+  $('locationName').textContent=path;
+  requestAnimationFrame(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}));
 }
+function renderGenreTree(){
+  const tree=$('genreTree');tree.replaceChildren();
+  MUSIC_GENRES.forEach((genre,index)=>{
+    if(index===4){
+      const heading=document.createElement('div');heading.className='genre-category-heading';
+      heading.textContent='SHOWDANCE & TRAINING';tree.append(heading);
+    }
+    const group=document.createElement('div');group.className='genre-node';
+    const open=expandedGenre.name===genre.name;
+    const button=document.createElement('button');button.type='button';button.className='genre-top-button';
+    button.textContent=genre.icon+'  '+genre.name;
+    button.setAttribute('aria-expanded',String(open));
+    button.onclick=()=>toggleBrowseGenre(genre);
+    group.append(button);
+    if(open){
+      const sections=document.createElement('div');sections.className='genre-era-list';
+      for(const section of genre.sections){
+        const sectionOpen=genre.flat||expandedGenre.section===section.name;
+        const container=document.createElement('div');container.className='genre-style-group';
+        if(!genre.flat){
+          const style=document.createElement('button');style.type='button';style.className='genre-style-button';
+          style.textContent=section.name+'  ▾';style.setAttribute('aria-expanded',String(sectionOpen));
+          style.onclick=()=>toggleBrowseSection(genre,section);
+          container.append(style);
+        }
+        if(sectionOpen){
+          for(const [era,artists] of Object.entries(section.eras)){
+            const eraGroup=document.createElement('div');eraGroup.className='genre-era-group';
+            const active=expandedGenre.era===era&&expandedGenre.section===section.name;
+            const toggle=document.createElement('button');toggle.type='button';toggle.className='genre-era-button';
+            toggle.textContent=era+'  ›';toggle.setAttribute('aria-expanded',String(active));
+            toggle.classList.toggle('active',active);toggle.onclick=()=>showBrowseEra(genre,section,era);
+            eraGroup.append(toggle);
+            if(active){
+              const list=document.createElement('div');list.className='genre-sidebar-artists';
+              list.setAttribute('aria-label','Artists: '+browsePath(genre,section,era));
+              for(const [name] of artists){
+                const artist=document.createElement('button');artist.type='button';artist.className='genre-sidebar-artist';
+                artist.textContent=name;artist.onclick=()=>chooseCatalogArtist(genre,section,era,name);
+                list.append(artist);
+              }
+              eraGroup.append(list);
+            }
+            container.append(eraGroup);
+          }
+        }
+        sections.append(container);
+      }
+      group.append(sections);
+    }
+    tree.append(group);
+  });
+}
+
 let artworkEditor=null;
 function openArtworkEditor(detail){
   artworkEditor=detail;
