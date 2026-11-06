@@ -13,7 +13,7 @@ assert.ok(dedupeStart>=0&&dedupeEnd>dedupeStart,'dedupe helpers found');
 assert.ok(folderStart>=0&&folderEnd>folderStart,'local folder helpers found');
 
 function setup(mode='both'){
-  const S={artist:'Nita Strauss',tracks:[],selected:-1,local:[],onlineTracks:[],localFiles:new Set(),importingFolder:false};
+  const S={artist:'Nita Strauss',tracks:[],selected:-1,local:[],onlineTracks:[],localFiles:new Set(),importingFolder:false,albumQueue:[]};
   const folderSummary={textContent:''};
   let selectedMode=mode;
   const norm=s=>String(s||'').normalize('NFKD').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
