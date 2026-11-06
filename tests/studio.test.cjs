@@ -62,7 +62,8 @@ test('studio has its own accessible workspace and shared account header',()=>{
   assert.ok(html.indexOf('class="topbar-account-menu"')>html.indexOf('<header class="topbar"'));
   assert.ok(html.indexOf('class="topbar-account-menu"')<html.indexOf('</header>'));
   assert.equal((html.match(/id="cloudSignIn"/g)||[]).length,1);
-  assert.ok(html.indexOf('id="genreTree"')<html.indexOf('<header class="topbar"'));
+  assert.ok(html.indexOf('id="genreTree"')<html.indexOf('<main class="main">'));
+  assert.ok(html.indexOf('<header class="topbar">')<html.indexOf('<aside class="sidebar">'));
 
 });
 
