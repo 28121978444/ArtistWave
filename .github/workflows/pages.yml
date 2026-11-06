@@ -29,13 +29,15 @@ jobs:
           test -s index.html
           test -s styles.css
           test -s app.js
+          test -s cloud-sync.js
           node --check app.js
+          node --check cloud-sync.js
           node --test tests/*.test.cjs
 
       - name: Prepare static website
         run: |
           mkdir -p site
-          cp index.html app.js styles.css site/
+          cp index.html app.js cloud-sync.js styles.css site/
           touch site/.nojekyll
 
       - name: Configure GitHub Pages
