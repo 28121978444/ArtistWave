@@ -24,6 +24,18 @@
     if(safeId)return base+safeId+(listId?'?list='+encodeURIComponent(listId):'');
     return base+'videoseries?list='+encodeURIComponent(listId);
   }
+  function updateYouTubeAccount(){
+    // Google Drive OAuth does not create a youtube.com sign-in cookie.
+    // YouTube's own embedded player can use an existing browser session
+    // where privacy settings permit it; ArtistWave cannot verify that state.
+    const connected=Boolean(window.ArtistWaveCloud?.isSignedIn?.());
+    $('youtubeAccountHeading').textContent=connected?'Google connected to ArtistWave':'YouTube account';
+    $('youtubeAccountStatus').textContent=connected
+      ?'ArtistWave is signed into Google. The YouTube player will attempt to use your existing YouTube browser session, if available. If it asks you to sign in, open YouTube in a new tab.'
+      :'YouTube uses a separate browser session. Sign into YouTube in a new tab if you want your account there.';
+    $('youtubeSignInLink').textContent=connected?'Continue with YouTube ↗':'Open YouTube / Sign in ↗';
+  }
+  window.addEventListener('artistwave:account-status',updateYouTubeAccount);
   function stopVideo(){
     frame.removeAttribute('src');
     $('youtubePlayerRegion').hidden=true;
@@ -57,7 +69,7 @@
       if(name===target)tab.setAttribute('aria-current','page');
       else tab.removeAttribute('aria-current');
     }
-    if(target==='youtube')$('locationName').textContent='YouTube';
+    if(target==='youtube'){updateYouTubeAccount();$('locationName').textContent='YouTube';}
     else if(target==='audio')$('locationName').textContent='Discover';
     else $('locationName').textContent='Showdance Studio';
     // Switching workspaces must never inherit scroll position from another
@@ -91,4 +103,5 @@
   });
   window.ArtistWaveNavigation={setMode,parseYouTubeUrl};
   document.body.dataset.mode='audio';
+  updateYouTubeAccount();
 })();
