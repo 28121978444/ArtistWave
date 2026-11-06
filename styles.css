@@ -268,3 +268,8 @@
  .sidebar .cloud-account-actions button{flex:1 1 auto}
  .sidebar .cloud-signin{text-align:left;justify-content:flex-start}
 }
+
+/* v2.4: trusted release-year labels alongside album and collection headings */
+.album-year{font-size:10px;color:var(--muted);border:1px solid #42604a;border-radius:5px;padding:4px 7px;line-height:1;white-space:nowrap}
+.album-heading{flex:0 1 auto}
+.album-header .album-year{flex:0 0 auto}
