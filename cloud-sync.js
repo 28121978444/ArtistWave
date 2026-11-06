@@ -57,9 +57,10 @@
     }
     return [...map.values()];
   };
-  const payload=(favorites,prefs)=>({
+  const cleanRecent=value=>cleanFavorites(value).slice(0,30);
+  const payload=(favorites,prefs,recent=[])=>({
     schema:1,updatedAt:new Date().toISOString(),favorites:dedupeFavorites(favorites),
-    preferences:cleanPrefs(prefs),
+    preferences:cleanPrefs(prefs),recent:cleanRecent(recent),
     customPlaylists:[] // Reserved for a future playlist editor; no audio blobs are uploaded.
   });
   function accountKey(){return 'artistwave:cloud-account:'+S.subject}
@@ -88,9 +89,9 @@
     const merged=dedupeFavorites([...(S.accountSnapshot?.favorites||[]),...additions]);
     return merged;
   }
-  function emitApply(favorites,prefs){
+  function emitApply(favorites,prefs,recent=[]){
     window.dispatchEvent(new CustomEvent('artistwave:cloud-load',{detail:{
-      favorites:dedupeFavorites(favorites),preferences:cleanPrefs(prefs)
+      favorites:dedupeFavorites(favorites),preferences:cleanPrefs(prefs),recent:cleanRecent(recent)
     }}));
   }
   async function driveRequest(path,options={}){
@@ -119,7 +120,7 @@
     const document=await driveRequest('/'+encodeURIComponent(S.fileId)+'?alt=media');
     const value=typeof document==='string'?JSON.parse(document):document;
     if(!value||value.schema!==1||!Array.isArray(value.favorites))throw Error('Unsupported cloud backup format');
-    return {schema:1,updatedAt:value.updatedAt||'',favorites:dedupeFavorites(value.favorites),preferences:cleanPrefs(value.preferences)};
+    return {schema:1,updatedAt:value.updatedAt||'',favorites:dedupeFavorites(value.favorites),preferences:cleanPrefs(value.preferences),recent:cleanRecent(value.recent)};
   }
   async function writeCloud(data){
     const body=JSON.stringify(data);
@@ -148,7 +149,7 @@
       // Always re-read current cloud state and use timestamps to avoid silent overwrites.
       const remote=await readCloud();
       const local=S.accountSnapshot||payload([],preferenceSnapshot());
-      const current=payload(window.ArtistWaveCloud.getFavorites(),preferenceSnapshot());
+      const current=payload(window.ArtistWaveCloud.getFavorites(),preferenceSnapshot(),window.ArtistWaveCloud.getRecent());
       const remoteDate=Date.parse(remote?.updatedAt||0)||0;
       const localDate=Date.parse(local?.updatedAt||0)||0;
       if(remote&&remoteDate>localDate&&S.dirty){
@@ -157,7 +158,7 @@
       }
       if(remote&&remoteDate>localDate&&!S.dirty){
         saveAccountSnapshot(remote);
-        emitApply(remote.favorites,remote.preferences);
+        emitApply(remote.favorites,remote.preferences,remote.recent);
         status('Loaded newer library from Google Drive.');
       }else{
         await writeCloud(current);S.dirty=false;
@@ -175,7 +176,7 @@
   }
   function restoreGuest(){
     const data=S.guestSnapshot||{favorites:[],preferences:cleanPrefs({})};
-    emitApply(data.favorites,data.preferences);
+    emitApply(data.favorites,data.preferences,data.recent);
   }
   function logout(){
     if(S.timer){clearTimeout(S.timer);S.timer=null}
@@ -201,7 +202,7 @@
     const identity=await identityResponse.json();
     if(!identity.sub)throw Error('Account identifier missing');
     // Preserve guest state before applying account-specific data.
-    S.guestSnapshot={favorites:window.ArtistWaveCloud.getFavorites(),preferences:preferenceSnapshot()};
+    S.guestSnapshot={favorites:window.ArtistWaveCloud.getFavorites(),preferences:preferenceSnapshot(),recent:window.ArtistWaveCloud.getRecent()};
     S.token=token;S.expires=expiry;S.subject=String(identity.sub);S.email=String(identity.email||'Google account');S.fileId='';
     let remote;
     try{remote=await readCloud()}
@@ -209,12 +210,12 @@
     const cache=safeRead(accountKey(),null);
     let account=remote||cache;
     if(!account){
-      account=payload(S.guestSnapshot.favorites,S.guestSnapshot.preferences);
+      account=payload(S.guestSnapshot.favorites,S.guestSnapshot.preferences,S.guestSnapshot.recent);
       await writeCloud(account);
     }
     S.signed=true;S.dirty=false;
     saveAccountSnapshot(account);
-    emitApply(account.favorites,account.preferences);
+    emitApply(account.favorites,account.preferences,account.recent);
     updateUI();status('Connected · private Google Drive library loaded');
   }
   function beginSignIn(){
@@ -256,8 +257,9 @@
     try{localStorage.setItem('artistwave:google-client-id',id)}catch{}
     status('OAuth client ID saved on this device. Select Sign in with Google.');
   }
-  function init({getFavorites}){
+  function init({getFavorites,getRecent=()=>[]}){
     window.ArtistWaveCloud.getFavorites=getFavorites;
+    window.ArtistWaveCloud.getRecent=getRecent;
     const meta=document.querySelector('meta[name="google-oauth-client-id"]')?.content?.trim();
     S.clientId=meta||localStorage.getItem('artistwave:google-client-id')||'';
     $('googleClientId').value=S.clientId;
@@ -269,13 +271,14 @@
       if(!S.signed)return;
       const current=window.ArtistWaveCloud.getFavorites();
       const additional=dedupeFavorites([...current,...cleanFavorites(S.guestSnapshot?.favorites)]);
-      emitApply(additional,preferenceSnapshot());queueSync();
+      emitApply(additional,preferenceSnapshot(),window.ArtistWaveCloud.getRecent());queueSync();
       status('Guest favorites imported. Syncing…');
     };
     updateUI();
   }
   window.ArtistWaveCloud={init,changed:queueSync,isSignedIn:()=>S.signed,
     persistGuestFavorites:favs=>{if(!S.signed)safeWrite('artistwave:favorites',favs)},
+    persistGuestRecent:recent=>{if(!S.signed)safeWrite('artistwave:recent',cleanRecent(recent))},
     persistGuestSetting:(key,value)=>{if(!S.signed){try{localStorage.setItem(key,value)}catch{}}},
     cleanFavorites,cleanPrefs,payload};
 })();
