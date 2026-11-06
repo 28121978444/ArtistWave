@@ -30,6 +30,7 @@ jobs:
           test -s styles.css
           test -s app.js
           node --check app.js
+          node --test tests/playlist-dedupe.test.cjs
 
       - name: Prepare static website
         run: |
