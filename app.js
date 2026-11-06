@@ -246,9 +246,10 @@ function showRapEra(decade){
     button.onclick=()=>{
       $('artistInput').value=name;
       $('locationName').textContent='Rap / '+decade+' / '+name;
-      // Use the same disambiguation workflow as typing into the search box.
-      searchMatches(name);
-      $('discoverSection').scrollIntoView({behavior:'smooth',block:'start'});
+      // Curated artist selection opens their playlist directly.
+      $('matchPanel').hidden=true;
+      chooseArtist(name,null);
+      $('playlistSection').scrollIntoView({behavior:'smooth',block:'start'});
     };
     list.append(button);
   }
