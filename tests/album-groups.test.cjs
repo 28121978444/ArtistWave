@@ -14,7 +14,7 @@ function setup(){
   const controls={shuffleButton:{classList:{remove(){}}}};
   let renderCount=0;
   const box={S,norm,audio,render(){renderCount++},updatePlayer(){},show(){},$:(id)=>controls[id],trackKey:t=>norm(t.artist)+'|'+norm(t.title),current:()=>S.tracks[S.selected],Map,Number,sourceMode:()=> 'both',providerEnabled:()=>true,trackSources:t=>[t,...(t.alternates||[])],clearTimeout(){},setTimeout(){return 1}};
-  const code=app.slice(start,end)+'\n'+app.slice(app.indexOf('function playAt('),app.indexOf('const getJSON=',app.indexOf('function playAt(')))+
+  const code=app.slice(start,end)+'\n'+app.slice(app.indexOf('function clearPlaybackRecovery('),app.indexOf('const getJSON=',app.indexOf('function clearPlaybackRecovery(')))+
     '\n;({albumLabel,groupTracksByAlbum,playAlbum,nextAlbumTrack,clearAlbumQueue,playAt,next,tryNextSource,extractYear})';
   return {S,audio,functions:vm.runInNewContext(code,box),get renderCount(){return renderCount}};
 }
