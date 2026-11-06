@@ -35,7 +35,6 @@
       :'YouTube uses a separate browser session. Sign into YouTube in a new tab if you want your account there.';
     $('youtubeSignInLink').textContent=connected?'Continue with YouTube ↗':'Open YouTube / Sign in ↗';
   }
-  window.addEventListener('artistwave:account-status',updateYouTubeAccount);
   function stopVideo(){
     frame.removeAttribute('src');
     $('youtubePlayerRegion').hidden=true;
