@@ -18,7 +18,7 @@ function setup(){
     '\n;({albumLabel,groupTracksByAlbum,playAlbum,nextAlbumTrack,clearAlbumQueue,playAt,next,tryNextSource,extractYear})';
   return {S,audio,functions:vm.runInNewContext(code,box),get renderCount(){return renderCount}};
 }
-const make=(title,collection,artist='Artist')=>({title,collection,artist,url:'https://example.org/'+title+'.mp3',id:title});
+const make=(title,collection,artist='Artist')=>({title,collection,artist,source:'ARCHIVE',url:'https://example.org/'+title+'.mp3',id:title});
 test('groups discontiguous tracks by album, preserving order and indices',()=>{
   const {functions:f}=setup();
   const groups=f.groupTracksByAlbum([make('A','One'),make('B','Two'),make('C','One')]);
