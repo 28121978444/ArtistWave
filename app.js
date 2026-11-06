@@ -1204,15 +1204,44 @@ function showBrowseEra(genre,section,era){
   $('locationName').textContent=path;
   requestAnimationFrame(()=>panel.scrollIntoView({behavior:'smooth',block:'start'}));
 }
+function genreSearchMatches(genre,query){
+  if(!query)return true;
+  if(norm(genre.name).includes(query))return true;
+  return genre.sections.some(section=>
+    norm(section.name).includes(query)||
+    Object.entries(section.eras).some(([style,artists])=>
+      norm(style).includes(query)||
+      artists.some(([artist,description])=>norm(artist).includes(query)||norm(description).includes(query))
+    )
+  );
+}
+function matchingGenreEras(genre,section,query){
+  if(!query||norm(genre.name).includes(query)||norm(section.name).includes(query))return Object.entries(section.eras);
+  return Object.entries(section.eras).filter(([style,artists])=>
+    norm(style).includes(query)||
+    artists.some(([artist,description])=>norm(artist).includes(query)||norm(description).includes(query)));
+}
 function renderGenreTree(){
   const tree=$('genreTree');tree.replaceChildren();
-  MUSIC_GENRES.forEach((genre,index)=>{
-    if(index===4){
-      const heading=document.createElement('div');heading.className='genre-category-heading';
-      heading.textContent='SHOWDANCE & TRAINING';tree.append(heading);
+  const query=norm($('genreFilter').value.trim());
+  const visible=MUSIC_GENRES.filter(genre=>genreSearchMatches(genre,query));
+  $('genreFilterClear').hidden=!query;
+  $('genreFilterCount').textContent=query
+    ?visible.length+' matching genre'+(visible.length===1?'':'s')
+    :MUSIC_GENRES.length+' genres · explore styles and artists';
+  let lastGroup='';
+  for(const [index,genre] of visible.entries()){
+    const groupKey=genre.training?'performance':index<4&&MUSIC_GENRES.indexOf(genre)<4?'heritage':'everyday';
+    if(!query&&groupKey!==lastGroup){
+      if(groupKey!=='heritage'){
+        const heading=document.createElement('div');heading.className='genre-category-heading';
+        heading.textContent=groupKey==='performance'?'DANCE & PERFORMANCE':'MORE TO EXPLORE';
+        tree.append(heading);
+      }
+      lastGroup=groupKey;
     }
     const group=document.createElement('div');group.className='genre-node';
-    const open=expandedGenre.name===genre.name;
+    const open=Boolean(query)||expandedGenre.name===genre.name;
     const button=document.createElement('button');button.type='button';button.className='genre-top-button';
     button.textContent=genre.icon+'  '+genre.name;
     button.setAttribute('aria-expanded',String(open));
@@ -1221,7 +1250,9 @@ function renderGenreTree(){
     if(open){
       const sections=document.createElement('div');sections.className='genre-era-list';
       for(const section of genre.sections){
-        const sectionOpen=genre.flat||expandedGenre.section===section.name;
+        const matchedEras=matchingGenreEras(genre,section,query);
+        if(query&&!matchedEras.length)continue;
+        const sectionOpen=Boolean(query)||genre.flat||expandedGenre.section===section.name;
         const container=document.createElement('div');container.className='genre-style-group';
         if(!genre.flat){
           const style=document.createElement('button');style.type='button';style.className='genre-style-button';
@@ -1230,7 +1261,7 @@ function renderGenreTree(){
           container.append(style);
         }
         if(sectionOpen){
-          for(const [era,artists] of Object.entries(section.eras)){
+          for(const [era,artists] of matchedEras){
             const eraGroup=document.createElement('div');eraGroup.className='genre-era-group';
             const active=expandedGenre.era===era&&expandedGenre.section===section.name;
             const toggle=document.createElement('button');toggle.type='button';toggle.className='genre-era-button';
@@ -1255,7 +1286,12 @@ function renderGenreTree(){
       group.append(sections);
     }
     tree.append(group);
-  });
+  }
+  if(!visible.length){
+    const message=document.createElement('p');message.className='genre-no-results';
+    message.textContent='No matching genres. Try a style, artist, or broader term.';
+    tree.append(message);
+  }
 }
 
 let artworkEditor=null;
@@ -1328,6 +1364,12 @@ $('artReset').addEventListener('click',()=>{
   // Refresh the current artist choices to restore automatically selected imagery.
   const term=$('artistInput').value.trim();
   if(term)searchMatches(term);
+});
+$('genreFilter').addEventListener('input',renderGenreTree);
+$('genreFilterClear').addEventListener('click',()=>{
+  $('genreFilter').value='';
+  renderGenreTree();
+  $('genreFilter').focus();
 });
 renderGenreTree();
 
