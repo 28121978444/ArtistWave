@@ -76,3 +76,15 @@
   .lyrics-actions .lyrics-link{font-size:9px;padding:6px 5px}
   .lyrics-credit{font-size:8px}
 }
+
+/* v1.6: Rap era expands to artist names directly in the genre sidebar */
+.genre-era-group{display:flex;flex-direction:column;min-width:0}
+.genre-era-button{width:100%;font-weight:600}
+.genre-era-button.active,.genre-era-button[aria-expanded="true"]{background:#29422f;color:var(--accent)}
+.genre-sidebar-artists{display:flex;flex-direction:column;gap:1px;padding:3px 0 7px 8px}
+.genre-sidebar-artists[hidden]{display:none}
+.genre-sidebar-artist{background:transparent;border:0;border-left:2px solid #365448;text-align:left;color:#c3d2c9;font-size:11px;padding:7px 8px 7px 11px;width:100%;overflow-wrap:anywhere}
+.genre-sidebar-artist:hover,.genre-sidebar-artist:focus-visible{border-left-color:var(--accent);color:var(--accent);background:#203328}
+.genre-results{scroll-margin-top:16px}
+.genre-tree{max-height:calc(100vh - 330px);min-height:160px;overflow-y:auto}
+@media(max-width:800px){.genre-tree{max-height:340px;min-height:0}}
