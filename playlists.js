@@ -145,6 +145,7 @@
   function render(){
     updateNav();
     $('myPlaylistsTotal').textContent=playlists.length+' playlist'+(playlists.length===1?'':'s');
+    if(!current()&&playlists.length)selected=playlists[0].id;
     const cards=$('myPlaylistsCards');cards.replaceChildren();
     if(!playlists.length){
       const empty=newNode('div','my-playlists-cards-empty');
@@ -162,7 +163,6 @@
       card.onclick=()=>{selected=p.id;render()};
       cards.append(card);
     }
-    if(!current()&&playlists.length)selected=playlists[0].id;
     const p=current();
     $('myPlaylistsDetailEmpty').hidden=!!p;
     $('myPlaylistsDetailContent').hidden=!p;
