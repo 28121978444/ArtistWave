@@ -1458,6 +1458,11 @@ window.ArtistWaveLibrary={
   playPlaylist:(tracks,index=0)=>{
     const previous=S.tracks[S.selected];
     clearAlbumQueue();
+    // Invalidate any in-flight artist or catalog searches so their async
+    // results cannot replace the user-selected saved playlist.
+    S.requestId++;S.matchRequest++;S.catalogRequest++;
+    S.loading=false;S.catalogLoading=false;
+    S.onlineTracks=[];S.unavailable=[];S.archiveItemView=false;
     S.tracks=tracks.slice();
     S.view='discover';
     S.selected=-1;
