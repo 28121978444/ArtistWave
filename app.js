@@ -1454,6 +1454,9 @@ restoreFolderHandle();
 window.ArtistWaveLibrary={
   getSongs:()=>S.view==='favorites'?dedupeTracks(S.favorites):S.view==='recent'?dedupeTracks(S.recent):S.tracks,
   getCurrent:()=>current(),
+  getQueue:()=>S.tracks.map((t,i)=>({title:t.title,artist:t.artist,index:i})),
+  getSelectedIndex:()=>S.selected,
+  playIndex:index=>playAt(index),
   getAvailable:()=>[...S.local,...S.tracks,...S.favorites,...S.recent],
   playPlaylist:(tracks,index=0)=>{
     const previous=S.tracks[S.selected];
