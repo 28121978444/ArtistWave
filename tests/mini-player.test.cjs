@@ -106,3 +106,14 @@ test('mini player playlist stays within the viewport and uses independent track 
   assert.match(fit,/@media\(max-height:640px\)/);
   assert.match(fit,/@media\(max-height:490px\)/);
 });
+
+test('main Entertainment player stays fixed to the viewport bottom on desktop and mobile',()=>{
+  const css=fs.readFileSync('styles.css','utf8');
+  assert.doesNotMatch(css,/\/\* Slim window launcher and browser popup fallback\. \*\/\s*\.player\{position:relative\}/);
+  const dock=css.slice(css.lastIndexOf('/* Persistent Entertainment player:'));
+  assert.match(dock,/body\[data-mode="audio"\] \.player\s*\{\s*position:fixed;\s*inset:auto 0 0;/);
+  assert.match(dock,/padding-bottom:calc\(115px \+ env\(safe-area-inset-bottom/);
+  assert.match(dock,/@media\(max-width:700px\)/);
+  assert.match(dock,/scroll-padding-bottom:calc\(155px/);
+  assert.match(css,/body\[data-mode="studio"\] \.player,body\[data-mode="youtube"\] \.player\{display:none!important\}/);
+});
