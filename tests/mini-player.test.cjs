@@ -33,7 +33,7 @@ function makeHost(openPopup=null){
     const handlers={};
     const n={id,textContent:'',title:'Repeat: off',value:'0',disabled:false,hidden:false,src:'',
       classList:{contains:()=>false},addEventListener:(ev,fn)=>{handlers[ev]=fn},
-      click(){calls.push(id)},dispatchEvent(event){events.push([id,event.type]);if(handlers[event.type])handlers[event.type](event)},
+      click(){calls.push(id);if(handlers.click)handlers.click()},dispatchEvent(event){events.push([id,event.type]);if(handlers[event.type])handlers[event.type](event)},
       removeAttribute(name){if(name==='src')this.src=''}
     };
     if(id==='audio'){n.paused=false;n.currentTime=44;n.duration=200;n.volume=.6;n.src='https://example.test/song.mp3'}
