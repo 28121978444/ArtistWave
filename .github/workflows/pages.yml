@@ -37,6 +37,7 @@ jobs:
           test -s mini-player.css
           test -s mini-player-host.js
           test -s mini-player.js
+          test -s theme.js
           node --check app.js
           node --check cloud-sync.js
           node --check studio.js
@@ -44,12 +45,13 @@ jobs:
           node --check playlists.js
           node --check mini-player-host.js
           node --check mini-player.js
+          node --check theme.js
           node --test tests/*.test.cjs
 
       - name: Prepare static website
         run: |
           mkdir -p site
-          cp index.html app.js cloud-sync.js studio.js navigation.js playlists.js mini-player.html mini-player.css mini-player-host.js mini-player.js styles.css site/
+          cp index.html app.js cloud-sync.js studio.js navigation.js playlists.js mini-player.html mini-player.css mini-player-host.js mini-player.js theme.js styles.css site/
           touch site/.nojekyll
 
       - name: Configure GitHub Pages
