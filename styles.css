@@ -621,3 +621,21 @@ body[data-mode="studio"] .studio-workspace{padding-top:22px}
   .sidebar .genre-top-button{font-size:14px}
   .sidebar .genre-style-button,.sidebar .genre-era-button{font-size:13px}
 }
+
+/* Optional random discovery: approachable without taking over the music browser. */
+.sidebar .surprise-artist{
+  display:flex;align-items:center;justify-content:center;flex:0 0 auto;width:100%;
+  min-height:39px;padding:10px 12px;margin:2px 0 0;
+  border:1px solid #698857;border-radius:9px;background:#2b4633;
+  color:#eaffd9;font-size:12px;font-weight:800;line-height:1.35;text-align:center;
+}
+.sidebar .surprise-artist:hover{background:#3c6040;border-color:#a3ce7b}
+.sidebar .surprise-artist:focus-visible{outline:2px solid #cbff95;outline-offset:2px}
+.sidebar .surprise-help{
+  display:block;flex:0 0 auto;margin:0 4px 5px;
+  font-size:10px;color:#94ad9e;line-height:1.45;
+}
+@media(max-width:700px){
+  .sidebar .surprise-artist,.sidebar .surprise-help{order:2;flex:1 0 100%;width:100%}
+  .sidebar .surprise-artist{font-size:13px}
+}
