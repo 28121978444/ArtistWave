@@ -195,6 +195,22 @@
   </div>
 
   <div class="player"><div class="now-playing"><div class="mini-art" id="miniArt">♫</div><div class="now-text"><strong id="nowTitle">Nothing playing yet</strong><span id="nowArtist">Find your next favorite</span></div><button id="favoriteCurrent" class="heart-button" aria-label="Save current track" disabled>♡</button><button id="playlistSaveCurrent" class="playlist-save-current" type="button" aria-label="Add current track to playlist" title="Add to playlist" disabled>＋</button></div><div class="playback"><div class="play-controls"><button id="shuffleButton" title="Shuffle" aria-label="Toggle shuffle">⤨</button><button id="previousButton" title="Previous" aria-label="Previous track">⏮</button><button id="playButton" class="play-main" title="Play" aria-label="Play">▶</button><button id="nextButton" title="Next" aria-label="Next track">⏭</button><button id="repeatButton" title="Repeat: off" aria-label="Change repeat mode">↻</button></div><div class="timeline"><span id="currentTime">0:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" aria-label="Seek playback"/><span id="duration">0:00</span></div></div><div class="player-right"><span class="volume-icon">◖))</span><input id="volumeBar" type="range" min="0" max="100" value="75" aria-label="Volume"/><span class="source-badge" id="playingSource">READY</span></div></div>
+  <dialog id="playlistDialog" class="playlist-dialog" aria-labelledby="playlistDialogTitle">
+    <form id="playlistDialogForm" method="dialog">
+      <div class="playlist-dialog-mark">♫</div>
+      <h2 id="playlistDialogTitle">New playlist</h2>
+      <p id="playlistDialogHint">Give this collection a name you'll remember.</p>
+      <label id="playlistNameLabel" for="playlistName">Playlist name</label>
+      <input id="playlistName" type="text" maxlength="80" autocomplete="off" required placeholder="e.g. Midnight Drive" />
+      <div class="playlist-dialog-actions"><button id="playlistDialogCancel" type="button">Cancel</button><button id="playlistDialogSave" type="submit">Create playlist</button></div>
+    </form>
+  </dialog>
+  <dialog id="playlistPickerDialog" class="playlist-dialog" aria-labelledby="playlistPickerTitle">
+    <div class="playlist-dialog-mark">＋</div><h2 id="playlistPickerTitle">Add to playlist</h2>
+    <p id="playlistPickerTrack"></p>
+    <div id="playlistPickerChoices" class="playlist-picker-choices"></div>
+    <div class="playlist-dialog-actions"><button id="playlistPickerCancel" type="button">Close</button><button id="playlistPickerCreate" type="button">＋ New playlist</button></div>
+  </dialog>
   <dialog id="artDialog" class="art-dialog" aria-labelledby="artDialogHeading">
     <form method="dialog" id="artDialogForm">
       <h2 id="artDialogHeading">Choose artwork</h2>
