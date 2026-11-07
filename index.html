@@ -16,7 +16,7 @@
           <button type="button" id="studioNav" class="mode-tab studio-nav">🤸 Showdance</button>
           <button type="button" id="modeYoutube" class="mode-tab">▶ YouTube</button>
         </nav>
-        <div class="top-right"><span class="version">V 3.1</span>
+        <div class="top-right"><span class="version">V 3.2</span>
           <details class="topbar-account-menu" id="accountMenu">
             <summary class="topbar-account-toggle" aria-label="Open account and cloud sync settings">☁ Account</summary>
             <div class="cloud-account" aria-label="Account and private cloud sync">
@@ -45,6 +45,7 @@
       <button class="nav-item active" id="discoverNav"><span>◈</span> Discover</button>
       <button class="nav-item" id="favoritesNav"><span>♡</span> Favorites <span class="nav-count" id="favoriteCount">0</span></button>
       <button class="nav-item" id="recentNav" type="button"><span>◷</span> Recently Played <span class="nav-count" id="recentCount">0</span></button>
+      <button class="nav-item library-playlists-nav" id="myPlaylistsNav" type="button"><span>♫</span> My Playlists <span class="nav-count" id="myPlaylistsCount">0</span></button>
       <div class="side-label">MUSIC GENRES</div>
       <label class="genre-filter-label" for="genreFilter">Filter genres and styles</label>
       <div class="genre-filter-row"><input id="genreFilter" type="search" placeholder="Search genres or artists…" maxlength="80" autocomplete="off" aria-describedby="genreFilterCount" /><button id="genreFilterClear" type="button" aria-label="Clear genre filter" hidden>×</button></div>
@@ -68,6 +69,33 @@
 
 
       <main class="main">
+      <section class="my-playlists-workspace" id="myPlaylistsWorkspace" hidden aria-labelledby="myPlaylistsHeading">
+        <div class="my-playlists-hero">
+          <div class="my-playlists-hero-art" aria-hidden="true"><span>♫</span><span>✦</span><span>◖◗</span></div>
+          <div class="my-playlists-hero-copy">
+            <div class="overline">ARTISTWAVE / YOUR COLLECTION</div>
+            <h1 id="myPlaylistsHeading">Your music.<br><em>Your playlists.</em></h1>
+            <p>Build your own listening collections. Save tracks while exploring, then return whenever the mood strikes.</p>
+          </div>
+          <button id="myPlaylistsCreate" class="my-playlists-create" type="button">＋ New playlist</button>
+        </div>
+        <div class="my-playlists-layout">
+          <section class="my-playlists-library" aria-label="Saved playlists">
+            <div class="my-playlists-section-head"><h2>Your collections</h2><span id="myPlaylistsTotal">0 playlists</span></div>
+            <div id="myPlaylistsCards" class="my-playlists-cards"></div>
+          </section>
+          <section class="my-playlists-detail" id="myPlaylistsDetail" aria-label="Playlist details">
+            <div class="my-playlists-detail-empty" id="myPlaylistsDetailEmpty"><span class="my-playlists-empty-icon">♫</span><h2>A soundtrack for every moment.</h2><p>Create a playlist, then add songs from Discover, Favorites, or Recently Played.</p></div>
+            <div id="myPlaylistsDetailContent" hidden>
+              <div class="my-playlists-detail-head"><div><div class="overline">PERSONAL PLAYLIST</div><h2 id="myPlaylistsDetailName"></h2><p id="myPlaylistsDetailInfo"></p></div>
+                <div class="my-playlists-detail-actions"><button id="myPlaylistsRename" type="button">✎ Rename</button><button id="myPlaylistsDelete" type="button">Delete</button></div></div>
+              <div class="my-playlists-play-actions"><button id="myPlaylistsPlay" type="button">▶ Play playlist</button><button id="myPlaylistsShuffle" type="button">⤨ Shuffle</button></div>
+              <div id="myPlaylistsTracks" class="my-playlists-tracks"></div>
+              <p class="my-playlists-note">Availability depends on your audio sources. Local files stay on your device and may need to be reopened in another session.</p>
+            </div>
+          </section>
+        </div>
+      </section>
       <section class="youtube-workspace" id="youtubeWorkspace" hidden aria-labelledby="youtubeHeading">
         <div class="youtube-head"><div class="overline">WATCH MUSIC / VIDEO</div><h2 id="youtubeHeading">▶ YouTube</h2>
           <p>Watch music videos using YouTube’s official, visible player. The entertainment audio library remains separate.</p></div>
@@ -166,7 +194,7 @@
     </main>
   </div>
 
-  <div class="player"><div class="now-playing"><div class="mini-art" id="miniArt">♫</div><div class="now-text"><strong id="nowTitle">Nothing playing yet</strong><span id="nowArtist">Find your next favorite</span></div><button id="favoriteCurrent" class="heart-button" aria-label="Save current track" disabled>♡</button></div><div class="playback"><div class="play-controls"><button id="shuffleButton" title="Shuffle" aria-label="Toggle shuffle">⤨</button><button id="previousButton" title="Previous" aria-label="Previous track">⏮</button><button id="playButton" class="play-main" title="Play" aria-label="Play">▶</button><button id="nextButton" title="Next" aria-label="Next track">⏭</button><button id="repeatButton" title="Repeat: off" aria-label="Change repeat mode">↻</button></div><div class="timeline"><span id="currentTime">0:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" aria-label="Seek playback"/><span id="duration">0:00</span></div></div><div class="player-right"><span class="volume-icon">◖))</span><input id="volumeBar" type="range" min="0" max="100" value="75" aria-label="Volume"/><span class="source-badge" id="playingSource">READY</span></div></div>
+  <div class="player"><div class="now-playing"><div class="mini-art" id="miniArt">♫</div><div class="now-text"><strong id="nowTitle">Nothing playing yet</strong><span id="nowArtist">Find your next favorite</span></div><button id="favoriteCurrent" class="heart-button" aria-label="Save current track" disabled>♡</button><button id="playlistSaveCurrent" class="playlist-save-current" type="button" aria-label="Add current track to playlist" title="Add to playlist" disabled>＋</button></div><div class="playback"><div class="play-controls"><button id="shuffleButton" title="Shuffle" aria-label="Toggle shuffle">⤨</button><button id="previousButton" title="Previous" aria-label="Previous track">⏮</button><button id="playButton" class="play-main" title="Play" aria-label="Play">▶</button><button id="nextButton" title="Next" aria-label="Next track">⏭</button><button id="repeatButton" title="Repeat: off" aria-label="Change repeat mode">↻</button></div><div class="timeline"><span id="currentTime">0:00</span><input id="seekBar" type="range" min="0" max="1000" value="0" aria-label="Seek playback"/><span id="duration">0:00</span></div></div><div class="player-right"><span class="volume-icon">◖))</span><input id="volumeBar" type="range" min="0" max="100" value="75" aria-label="Volume"/><span class="source-badge" id="playingSource">READY</span></div></div>
   <dialog id="artDialog" class="art-dialog" aria-labelledby="artDialogHeading">
     <form method="dialog" id="artDialogForm">
       <h2 id="artDialogHeading">Choose artwork</h2>
@@ -185,5 +213,6 @@
   <script src="app.js" defer></script>
   <script src="studio.js" defer></script>
   <script src="navigation.js" defer></script>
+  <script src="playlists.js" defer></script>
 </body>
 </html>
