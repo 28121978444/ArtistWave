@@ -83,7 +83,9 @@
   function createPlaylist(name){
     if(playlists.length>=80){notify('Playlist limit reached (80).');return null}
     const p={id:createId(),name,createdAt:new Date().toISOString(),tracks:[]};
-    playlists.unshift(p);selected=p.id;save();return p;
+    playlists.unshift(p);selected=p.id;save();
+    // save() normalizes to fresh objects; always return the live collection.
+    return current();
   }
   function addTrackTo(playlist,track){
     const cleaned=cleanTrack(track);
