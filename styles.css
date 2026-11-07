@@ -639,3 +639,113 @@ body[data-mode="studio"] .studio-workspace{padding-top:22px}
   .sidebar .surprise-artist,.sidebar .surprise-help{order:2;flex:1 0 100%;width:100%}
   .sidebar .surprise-artist{font-size:13px}
 }
+
+/* v3.2 My Playlists — a focused music-library experience, not another player. */
+.my-playlists-workspace[hidden],.playlist-dialog[hidden]{display:none!important}
+body[data-library-view="playlists"][data-mode="audio"] .hero,
+body[data-library-view="playlists"][data-mode="audio"] .search-section,
+body[data-library-view="playlists"][data-mode="audio"] .genre-results,
+body[data-library-view="playlists"][data-mode="audio"] .album-jump,
+body[data-library-view="playlists"][data-mode="audio"] .playlist-section,
+body[data-library-view="playlists"][data-mode="audio"] .local-section,
+body[data-library-view="playlists"][data-mode="audio"] .main>.footer{display:none!important}
+.my-playlists-workspace{width:100%;padding:24px 0 60px}
+.my-playlists-hero{position:relative;overflow:hidden;display:flex;align-items:center;gap:22px;min-height:215px;background:radial-gradient(ellipse at 88% 20%,#3e6750 0%,transparent 48%),linear-gradient(120deg,#24372c,#10252a 68%,#101c22);border:1px solid #47705a;border-radius:20px;padding:32px clamp(18px,3vw,42px);margin-bottom:23px}
+.my-playlists-hero-copy{position:relative;z-index:1;flex:1}
+.my-playlists-hero h1{font-size:clamp(30px,3.5vw,52px);line-height:1.03;letter-spacing:-1.9px;color:#fff;margin:12px 0 15px}
+.my-playlists-hero h1 em{font-style:normal;color:#c7f68d}
+.my-playlists-hero p{max-width:460px;color:#b9d0c4;font-size:13px;line-height:1.7;margin:0}
+.my-playlists-hero-art{position:relative;display:flex;align-items:center;justify-content:center;width:112px;height:112px;border:2px solid #83a76e;border-radius:24px;background:linear-gradient(145deg,#496b50,#1a3a35);box-shadow:0 16px 38px #0005;transform:rotate(-9deg);flex:0 0 112px}
+.my-playlists-hero-art span:first-child{font-size:61px;color:#e8ffb4;line-height:1}
+.my-playlists-hero-art span:nth-child(2){position:absolute;right:-14px;top:-15px;color:#d7fc9e;font-size:27px}
+.my-playlists-hero-art span:last-child{position:absolute;right:-17px;bottom:-20px;color:#a5e4be;font-size:23px}
+.my-playlists-create{position:relative;z-index:1;align-self:center;flex:0 0 auto;border:0;border-radius:11px;background:#c6f392;color:#1c3324;padding:15px 21px;font-weight:850;font-size:13px;box-shadow:0 8px 18px #0004}
+.my-playlists-create:hover{background:#e2ffb5}
+.my-playlists-layout{display:grid;grid-template-columns:minmax(225px,0.85fr) minmax(0,1.5fr);gap:18px;align-items:start}
+.my-playlists-library,.my-playlists-detail{background:#111e23;border:1px solid #354b43;border-radius:15px;padding:20px;min-width:0}
+.my-playlists-section-head{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:17px}
+.my-playlists-section-head h2{font-size:16px;margin:0}
+.my-playlists-section-head>span{font-size:11px;color:#9ab5a2;white-space:nowrap}
+.my-playlists-cards{display:flex;flex-direction:column;gap:9px}
+.my-playlists-card{display:flex;align-items:center;text-align:left;gap:12px;width:100%;min-width:0;min-height:77px;padding:10px;border:1px solid #30483f;border-radius:11px;background:#17282b;color:#eef7ed;transition:background .15s,border-color .15s}
+.my-playlists-card:hover{background:#223b33;border-color:#57795e}
+.my-playlists-card.selected{background:#254435;border-color:#a4d47c;box-shadow:inset 3px 0 #bcf487}
+.my-playlists-card-cover{display:grid;place-items:center;flex:0 0 53px;height:53px;border-radius:9px;color:#f4ffe8;font-size:25px;background:linear-gradient(135deg,#286e4c,#204e5d)}
+.my-playlists-card-cover.lavender{background:linear-gradient(135deg,#71568d,#34345c)}
+.my-playlists-card-cover.sunset{background:linear-gradient(135deg,#916043,#57334a)}
+.my-playlists-card-cover.blue{background:linear-gradient(135deg,#386f91,#23455c)}
+.my-playlists-card-cover.gold{background:linear-gradient(135deg,#806e35,#454b2d)}
+.my-playlists-card-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:5px}
+.my-playlists-card-copy strong{font-size:13px;line-height:1.35;overflow-wrap:anywhere}
+.my-playlists-card-copy small{font-size:11px;color:#aec4b5}
+.my-playlists-card-arrow{font-size:25px;color:#9cb6a6}
+.my-playlists-detail{min-height:340px}
+.my-playlists-detail-empty,.my-playlists-cards-empty,.my-playlists-tracks-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:50px 15px;gap:12px;color:#b8cdbf}
+.my-playlists-detail-empty[hidden],#myPlaylistsDetailContent[hidden]{display:none!important}
+.my-playlists-empty-icon{display:grid;place-items:center;width:68px;height:68px;border-radius:18px;color:#d8f8ae;background:#284637;font-size:37px}
+.my-playlists-detail-empty h2{font-size:21px;margin:4px 0 0;color:#f1f8ed}
+.my-playlists-detail-empty p,.my-playlists-cards-empty p,.my-playlists-tracks-empty p{font-size:12px;line-height:1.7;max-width:330px;margin:0}
+.my-playlists-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;border-bottom:1px solid #344942;padding:5px 0 16px}
+.my-playlists-detail-head h2{font-size:clamp(22px,2.5vw,32px);margin:9px 0;overflow-wrap:anywhere}
+.my-playlists-detail-head p{font-size:12px;color:#a2bbaa;margin:0}
+.my-playlists-detail-actions{display:flex;flex-wrap:wrap;gap:6px}
+.my-playlists-detail-actions button,.my-playlists-play-actions button{min-height:37px;padding:9px 12px;font-size:12px;font-weight:750;border-radius:8px;color:#d5ead9;background:#254037;border:1px solid #54705a}
+.my-playlists-detail-actions button:hover,.my-playlists-play-actions button:hover:not(:disabled){background:#355746}
+.my-playlists-detail-actions #myPlaylistsDelete{background:#3b2a31;border-color:#704b4b;color:#f3c7c7}
+.my-playlists-play-actions{display:flex;gap:10px;padding:18px 0}
+.my-playlists-play-actions #myPlaylistsPlay{background:#c6f393;color:#1e3523;border:0;padding:12px 22px}
+.my-playlists-play-actions button:disabled{opacity:.5;cursor:not-allowed}
+.my-playlists-tracks{display:flex;flex-direction:column;gap:5px}
+.my-playlists-track{display:grid;grid-template-columns:25px minmax(0,1fr) 65px auto;gap:10px;align-items:center;padding:11px 8px;border-radius:9px;background:#18272a;border:1px solid transparent}
+.my-playlists-track:hover{border-color:#466357;background:#213438}
+.my-playlists-track.missing{opacity:.72}
+.my-playlists-track-number{font-size:11px;color:#8caa95;text-align:center}
+.my-playlists-track-info{min-width:0;display:flex;flex-direction:column;gap:4px}
+.my-playlists-track-info strong{font-size:12px;overflow-wrap:anywhere}
+.my-playlists-track-info small{font-size:11px;color:#afc3b9;overflow-wrap:anywhere}
+.my-playlists-track-badge{font-size:10px;font-weight:750;text-align:center;color:#c6e7c6}
+.my-playlists-track.missing .my-playlists-track-badge{color:#e9c79d}
+.my-playlists-track-controls{display:flex;gap:4px;flex:0 0 auto}
+.my-playlists-track-controls button{min-width:27px;min-height:30px;border-radius:6px;border:1px solid #486356;color:#d7f4d2;background:#294037;font-size:12px}
+.my-playlists-track-controls button:hover:not(:disabled){background:#42634b}
+.my-playlists-track-controls button:disabled{opacity:.28;cursor:not-allowed}
+.my-playlists-track-controls .my-playlists-remove{color:#f0b9bc;background:#392d33;border-color:#67464c;font-size:18px}
+.my-playlists-note{color:#93aca2;font-size:11px;line-height:1.65;margin:18px 0 0}
+.sidebar .library-playlists-nav{color:#d8efce}
+.track-add-playlist,.playlist-save-current{border:1px solid #557558;border-radius:8px;background:#294132;color:#e1ffcf;font-weight:850;font-size:15px;min-width:31px;min-height:31px}
+.track-add-playlist:hover,.playlist-save-current:hover:not(:disabled){background:#406243}
+.playlist-save-current:disabled{opacity:.35}
+.playlist-dialog{max-width:min(430px,calc(100vw - 30px));width:100%;padding:28px;border:1px solid #648768;border-radius:17px;background:#14242a;color:#edf8e9;box-shadow:0 26px 80px #000b}
+.playlist-dialog::backdrop{background:#030b0cd9;backdrop-filter:blur(4px)}
+.playlist-dialog form{margin:0}
+.playlist-dialog-mark{display:grid;place-items:center;background:#365c40;color:#e9ffcc;font-size:31px;width:58px;height:58px;border-radius:16px;margin-bottom:18px}
+.playlist-dialog h2{font-size:23px;margin:0 0 9px}
+.playlist-dialog p{font-size:12px;color:#a6bfb0;line-height:1.6;margin:0 0 19px}
+.playlist-dialog label{display:block;font-size:12px;font-weight:760;margin:0 0 8px}
+.playlist-dialog input{width:100%;padding:13px 12px;border:1px solid #718b74;border-radius:9px;color:#f5fff3;background:#0a171a;font-size:14px}
+.playlist-dialog input:focus-visible{outline:2px solid #b9ef88;outline-offset:2px}
+.playlist-dialog-actions{display:flex;gap:10px;justify-content:flex-end;align-items:center;margin-top:23px}
+.playlist-dialog-actions button{border:1px solid #536d60;border-radius:8px;background:#294339;color:#ecf5e9;min-height:41px;padding:10px 15px;font-weight:750;font-size:12px}
+.playlist-dialog-actions button:last-child{background:#caf396;color:#223b26;border:0}
+.playlist-picker-choices{display:flex;flex-direction:column;max-height:45dvh;overflow-y:auto;gap:7px}
+.playlist-picker-choice{display:flex;align-items:center;gap:9px;text-align:left;width:100%;padding:13px;border:1px solid #476452;border-radius:9px;background:#21362e;color:#ecfae6}
+.playlist-picker-choice strong{font-size:13px;min-width:0;overflow-wrap:anywhere;flex:1}
+.playlist-picker-choice span{font-size:11px;color:#c4dbc6}
+.playlist-picker-choice:hover{background:#345540}
+.playlist-picker-empty{color:#b8ccbd;font-size:13px}
+#myPlaylistsNotice{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:1100px){
+  .my-playlists-hero{flex-wrap:wrap}
+  .my-playlists-layout{grid-template-columns:minmax(210px,0.85fr) minmax(0,1.3fr)}
+  .my-playlists-track{grid-template-columns:22px minmax(0,1fr) 55px}
+  .my-playlists-track-controls{grid-column:2/-1;justify-content:flex-end}
+}
+@media(max-width:780px){
+  .my-playlists-hero{padding:20px;min-height:0;gap:16px}
+  .my-playlists-hero-art{width:75px;height:75px;flex-basis:75px;border-radius:14px}
+  .my-playlists-hero-art span:first-child{font-size:40px}
+  .my-playlists-create{width:100%}
+  .my-playlists-layout{grid-template-columns:minmax(0,1fr)}
+  .my-playlists-library,.my-playlists-detail{padding:15px}
+  .my-playlists-track{grid-template-columns:20px minmax(0,1fr) 55px}
+}
