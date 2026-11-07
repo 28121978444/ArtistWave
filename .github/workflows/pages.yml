@@ -32,16 +32,18 @@ jobs:
           test -s cloud-sync.js
           test -s studio.js
           test -s navigation.js
+          test -s playlists.js
           node --check app.js
           node --check cloud-sync.js
           node --check studio.js
           node --check navigation.js
+          node --check playlists.js
           node --test tests/*.test.cjs
 
       - name: Prepare static website
         run: |
           mkdir -p site
-          cp index.html app.js cloud-sync.js studio.js navigation.js styles.css site/
+          cp index.html app.js cloud-sync.js studio.js navigation.js playlists.js styles.css site/
           touch site/.nojekyll
 
       - name: Configure GitHub Pages
