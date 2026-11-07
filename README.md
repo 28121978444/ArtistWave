@@ -253,3 +253,13 @@ The **🎧 Entertainment → My Playlists** section lets listeners create named 
 - Keep local music on the user's device. Local track entries are saved as names and other non-file metadata; blob URLs, paths, and audio bytes are never synchronized. Reopen the folder to reconnect those entries, which are marked **RELINK** when unavailable.
 
 Playlists store track references, not copyrighted media. An online audio link can become unavailable or a provider may require a different setting; playback remains dependent on the existing supported providers and locally accessible music. The YouTube workspace, Showdance routine editor and account authentication scopes are unchanged.
+
+## ArtistWave v3.2 — Mini Player window
+
+The bottom audio player now has a **▣ Mini player** button. Clicking it requests a separate compact **380px-wide window** with the browser's available full screen height. Browsers may adjust popup sizing and placement. If popup windows are blocked, ArtistWave presents an equally narrow full-height overlay instead, without losing the current track.
+
+The mini window has a dedicated interface with album artwork when available, song title, artist, playback source, seek timeline, play/pause, previous/next, shuffle, repeat, favorite, playlist-save shortcut, volume and a scrollable Up Next queue. The **↗ Full player** action brings the original ArtistWave window forward.
+
+**Single playback engine:** the compact window controls the original page's HTML audio element. It does not open a second audio stream or copy local audio files. The main ArtistWave tab must remain open while the mini window is in use; if closed or navigated away, the compact window shows a disconnected status. The playlist-save shortcut brings the main window forward so the picker is visible.
+
+No changes are made to YouTube embeds, Google sign-in, the Showdance workspace, or existing music providers.
