@@ -593,3 +593,31 @@ body[data-mode="studio"] .studio-workspace{padding-top:22px}
   .sidebar .genre-filter-count{order:2;flex:1 0 100%;width:100%}
   .sidebar .genre-tree{order:3}
 }
+
+/* v3.1 sidebar readability: slightly wider navigation and more legible genres. */
+:root{--sidebar:282px}
+@media(min-width:1061px){
+  .app-shell{grid-template-columns:var(--sidebar) minmax(0,1fr)}
+}
+@media(min-width:701px) and (max-width:1060px){
+  .app-shell{grid-template-columns:232px minmax(0,1fr)}
+  .app-shell>.sidebar{padding-left:12px;padding-right:12px}
+}
+@media(min-width:701px){
+  .app-shell>.sidebar{padding-left:16px;padding-right:16px}
+}
+.sidebar .nav-item{font-size:14px;line-height:1.35}
+.sidebar .side-label{font-size:11px;letter-spacing:1.65px}
+.sidebar .genre-top-button{font-size:14px;line-height:1.45}
+.sidebar .genre-style-button{font-size:13px;line-height:1.45}
+.sidebar .genre-era-button{font-size:13px;line-height:1.5}
+.sidebar .genre-sidebar-artist{font-size:12px;line-height:1.5}
+.sidebar .genre-category-heading{font-size:11px;line-height:1.5}
+.sidebar .genre-filter-label{font-size:11px}
+.sidebar .genre-filter-row input{font-size:12px}
+.sidebar .genre-filter-count{font-size:11px}
+.sidebar .sidebar-local-tools>summary{font-size:13px}
+@media(max-width:700px){
+  .sidebar .genre-top-button{font-size:14px}
+  .sidebar .genre-style-button,.sidebar .genre-era-button{font-size:13px}
+}
