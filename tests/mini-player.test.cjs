@@ -94,3 +94,15 @@ test('mini script uses existing main window engine through opener or embedded pa
   assert.match(compactScript,/setInterval\(refresh,500\)/);
   assert.ok(!compactScript.includes('new Audio('));
 });
+
+test('mini player playlist stays within the viewport and uses independent track scrolling',()=>{
+  const css=fs.readFileSync('mini-player.css','utf8');
+  const fit=css.slice(css.indexOf('/* Mini Player viewport fit:'));
+  assert.ok(fit.includes('html,body{height:100%;height:100dvh;overflow:hidden}'));
+  assert.match(fit,/\.mini-shell\s*\{[^}]*height:100dvh;min-height:0;[^}]*overflow:hidden/s);
+  assert.match(fit,/\.mini-main\s*\{[^}]*min-height:0;[^}]*overflow:hidden/s);
+  assert.match(fit,/\.mini-queue\s*\{[^}]*flex:1 1 0;[^}]*overflow:hidden/s);
+  assert.match(fit,/\.queue-list\s*\{[^}]*max-height:none;[^}]*overflow-y:auto/s);
+  assert.match(fit,/@media\(max-height:640px\)/);
+  assert.match(fit,/@media\(max-height:490px\)/);
+});
