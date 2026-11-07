@@ -59,3 +59,19 @@ test('workspace is hidden outside entertainment playlist mode',()=>{
   assert.match(css,/\.my-playlists-workspace\[hidden\]/);
   assert.match(source,/artistwave:cloud-load/);
 });
+
+test('creating a playlist from the track picker saves the pending track',()=>{
+  const start=source.indexOf('  function createPlaylist(');
+  const end=source.indexOf('  function addTrack(track){',start);
+  assert.ok(start>0&&end>start);
+  const {cleanTrack,cleanPlaylists,identity}=cleaners();
+  const prelude="let playlists=[],selected='';const current=()=>playlists.find(p=>p.id===selected);"+
+    "const createId=()=> 'test-playlist';const save=()=>{playlists=cleanPlaylists(playlists)};const notify=()=>{};";
+  const f=vm.runInNewContext(prelude+source.slice(start,end)+"\n;({createPlaylist,addTrackTo,current})",
+    {cleanTrack,cleanPlaylists,identity,Date});
+  const playlist=f.createPlaylist('Road Trip');
+  assert.ok(playlist);
+  assert.equal(f.addTrackTo(playlist,{id:'archive:1',artist:'Band',title:'Song',source:'ARCHIVE',url:'https://archive.org/song.mp3'}),true);
+  assert.equal(f.current().tracks.length,1);
+  assert.equal(f.current().tracks[0].title,'Song');
+});
