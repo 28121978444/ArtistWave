@@ -70,8 +70,8 @@ test('Surprise Me chooses curated artists and respects genre filters',()=>{
     {genreSearchMatches,matchingGenreEras,norm,Number,Math,Set});
   const rock=functions.discoverableArtists(MUSIC_GENRES,norm('Blues'));
   assert.ok(rock.length>0);
-  assert.ok(rock.every(p=>p.genre.name==='Blues'||p.style.toLowerCase().includes('blues')||
-    p.name.toLowerCase().includes('blues')||p.section.name.toLowerCase().includes('blues')));
+  assert.ok(rock.every(p=>genreSearchMatches(p.genre,norm('Blues'))));
+  assert.ok(rock.some(p=>p.genre.name==='Blues'));
   const noMatches=functions.discoverableArtists(MUSIC_GENRES,'never heard of this synthetic style');
   assert.equal(noMatches.length,0);
   const only=functions.discoverableArtists(MUSIC_GENRES,norm('Sabrina Carpenter'));
