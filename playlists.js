@@ -62,10 +62,13 @@
     render();
     window.scrollTo({top:0,left:0,behavior:'instant'});
   }
-  function showAudio(){
+  function showAudio(event){
     if(document.body.dataset.libraryView!=='playlists')return;
     document.body.dataset.libraryView='browse';
     updateNav();
+    const chosen=event?.currentTarget?.id;
+    const active=['discoverNav','favoritesNav','recentNav'].includes(chosen)?chosen:'discoverNav';
+    $(active).classList.add('active');
   }
   function openEditor(mode,playlist){
     dialogMode=mode;
