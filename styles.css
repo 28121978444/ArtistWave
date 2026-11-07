@@ -751,7 +751,8 @@ body[data-library-view="playlists"][data-mode="audio"] .main>.footer{display:non
 }
 
 /* Slim window launcher and browser popup fallback. */
-.player{position:relative}
+/* Keep the main player docked to the viewport, not to the scrolling page. */
+.player{position:fixed;bottom:0;left:0;right:0;z-index:100}
 .player .open-mini-player{position:absolute;right:16px;top:-33px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:7px 11px;background:#2b4536;border:1px solid #6a9365;border-radius:9px 9px 0 0;color:#eaffd8;font-size:11px;font-weight:800;line-height:1.25;box-shadow:0 -4px 14px #0004}
 .player .open-mini-player:hover{background:#3b6245;border-color:#a7ce85}
 .player .open-mini-player:focus-visible{outline:2px solid #c8ff9d;outline-offset:2px}
@@ -760,3 +761,31 @@ body[data-library-view="playlists"][data-mode="audio"] .main>.footer{display:non
 .mini-player-fallback>iframe{display:block;width:min(380px,100vw);height:100dvh;border:0;background:#111b1c;box-shadow:0 0 0 1px #5e7a62,0 15px 70px #000c}
 body.mini-player-active{overflow:hidden}
 @media(max-width:700px){.player .open-mini-player{right:8px;top:-29px;padding:6px 8px;font-size:10px}}
+
+/* Persistent Entertainment player: reserve space so final songs remain reachable. */
+body{padding-bottom:calc(115px + env(safe-area-inset-bottom,0px))}
+body[data-mode="audio"] .player{
+  position:fixed;
+  inset:auto 0 0;
+  width:100%;
+  margin:0;
+  z-index:100;
+  box-sizing:border-box;
+  padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));
+}
+body[data-mode="audio"] .main,
+body[data-mode="audio"] .app-shell{
+  scroll-padding-bottom:calc(135px + env(safe-area-inset-bottom,0px));
+}
+@media(max-width:700px){
+  body{padding-bottom:calc(132px + env(safe-area-inset-bottom,0px))}
+  body[data-mode="audio"] .player{
+    min-height:110px;
+    height:auto;
+    padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));
+  }
+  body[data-mode="audio"] .main,
+  body[data-mode="audio"] .app-shell{
+    scroll-padding-bottom:calc(155px + env(safe-area-inset-bottom,0px));
+  }
+}
