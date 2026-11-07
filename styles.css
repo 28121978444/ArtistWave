@@ -789,3 +789,123 @@ body[data-mode="audio"] .app-shell{
     scroll-padding-bottom:calc(155px + env(safe-area-inset-bottom,0px));
   }
 }
+
+
+/* ArtistWave Day template — soft ivory, forest green and warm natural surfaces. */
+:root[data-theme="day"]{
+  color-scheme:light;
+  --bg:#f6f8f1;--panel:#fffefa;--line:#d7e2d6;
+  --text:#23372e;--muted:#60786a;--accent:#376b3a;
+}
+[data-theme="day"] body{background:var(--bg);color:var(--text)}
+[data-theme="day"] .app-shell>.topbar{background:#fffefa;border-bottom-color:#d3e1d3;box-shadow:0 5px 18px #43594015}
+[data-theme="day"] .topbar,[data-theme="day"] .sidebar{background:#fffefa;color:#233a2d;border-color:#d7e2d6}
+[data-theme="day"] .brand,[data-theme="day"] .brand-light,[data-theme="day"] .breadcrumb strong{color:#294d34}
+[data-theme="day"] .nav-item{color:#345342}
+[data-theme="day"] .nav-item:hover,[data-theme="day"] .nav-item.active{background:#e7f2df;color:#2d6034}
+[data-theme="day"] .mode-tab{color:#4e6557}
+[data-theme="day"] .mode-tab:hover{background:#e6f0e1;border-color:#c4d9c3;color:#25552f}
+[data-theme="day"] .mode-tab.active{background:#dcedd5;color:#285a2e;border-color:#9fbe9b}
+[data-theme="day"] .topbar-account-toggle,[data-theme="day"] .version{background:#f0f5eb;color:#36543b;border-color:#c8dbca}
+.theme-toggle{
+  display:inline-flex;align-items:center;justify-content:center;gap:5px;
+  min-height:36px;padding:8px 12px;white-space:nowrap;
+  border:1px solid #5e825e;border-radius:9px;
+  background:#203d2e;color:#e1f9d7;font-weight:800;font-size:12px;
+  cursor:pointer;letter-spacing:0;
+}
+.theme-toggle:hover{background:#305c3c;border-color:#9bc68b}
+.theme-toggle:focus-visible{outline:2px solid #c5ed89;outline-offset:2px}
+[data-theme="day"] .theme-toggle{background:#f7f2d8;color:#655822;border-color:#d9cd95}
+[data-theme="day"] .theme-toggle:hover{background:#fff0bb}
+[data-theme="day"] .main{color:#263f31}
+[data-theme="day"] .hero{border-color:#d8e4d7}
+[data-theme="day"] .hero h1,[data-theme="day"] .section-heading h2{color:#243f31}
+[data-theme="day"] .hero-copy p,[data-theme="day"] .hero-copy span,[data-theme="day"] .status-message{color:#627769}
+[data-theme="day"] .search-box,[data-theme="day"] .search-form input,
+[data-theme="day"] .source-select-label select,[data-theme="day"] .provider-panel,
+[data-theme="day"] .provider-key input,[data-theme="day"] .provider-panel input[type="text"],
+[data-theme="day"] input[type="search"],[data-theme="day"] input[type="text"],
+[data-theme="day"] textarea,[data-theme="day"] select{
+  background:#fffefa;color:#234031;border-color:#bfd1c2;
+}
+[data-theme="day"] input::placeholder,[data-theme="day"] textarea::placeholder{color:#798f7d}
+[data-theme="day"] .provider-panel,[data-theme="day"] .match-panel,
+[data-theme="day"] .local-section,[data-theme="day"] .file-drop{background:#fffefa;color:#294135;border-color:#c9dacb}
+[data-theme="day"] .provider-panel small,[data-theme="day"] .search-options,[data-theme="day"] .checkbox{color:#5a7361}
+[data-theme="day"] .genre-node{background:#fffefa;border-color:#c6daca}
+[data-theme="day"] .genre-top-button{color:#304a38}
+[data-theme="day"] .genre-top-button:hover,[data-theme="day"] .genre-top-button[aria-expanded="true"]{background:#e3efde;color:#2e6638}
+[data-theme="day"] .genre-style-button{background:#edf4e9;color:#395a44}
+[data-theme="day"] .genre-style-button[aria-expanded="true"]{background:#daecd6;color:#245b34}
+[data-theme="day"] .genre-era-button,[data-theme="day"] .genre-sidebar-artist{color:#3d5948}
+[data-theme="day"] .genre-era-button:hover,[data-theme="day"] .genre-era-button.active,
+[data-theme="day"] .genre-era-button[aria-expanded="true"]{background:#deedda;color:#245a31}
+[data-theme="day"] .genre-sidebar-artist:hover{background:#e8f3e2;color:#255d34}
+[data-theme="day"] .genre-category-heading,[data-theme="day"] .side-label{color:#647e6a}
+[data-theme="day"] .genre-filter-row input{background:#f5f9f2;color:#2c4b37;border-color:#bad2be}
+[data-theme="day"] .genre-filter-row button,[data-theme="day"] .surprise-artist{background:#e2f0d9;color:#2a5d33;border-color:#93b994}
+[data-theme="day"] .surprise-artist:hover{background:#d1e9c6}
+[data-theme="day"] .sidebar .surprise-help,[data-theme="day"] .sidebar .genre-filter-count{color:#607968}
+[data-theme="day"] .genre-artist-card{background:#fffefa;border-color:#cbdccc;color:#2d4935}
+[data-theme="day"] .genre-artist-card:hover{background:#eaf3e5}
+[data-theme="day"] .genre-artist-card strong{color:#2a4d35}
+[data-theme="day"] .track-row{border-color:#dae6d9}
+[data-theme="day"] .track-row:hover{background:#eff5eb}
+[data-theme="day"] .track-row.active{background:#e2efdc}
+[data-theme="day"] .track-info strong,[data-theme="day"] .album-heading{color:#243c2e}
+[data-theme="day"] .track-info small,[data-theme="day"] .track-source,
+[data-theme="day"] .album-count,[data-theme="day"] .recording-name{color:#587462}
+[data-theme="day"] .album-group,[data-theme="day"] .album-header{border-color:#d4e2d2}
+[data-theme="day"] .track-actions button:not(.heart-button),
+[data-theme="day"] .track-add-playlist,[data-theme="day"] .playlist-save-current{background:#e7f2dc;color:#295f33;border-color:#a8c6a2}
+[data-theme="day"] .player{background:#fffefa;color:#284034;border-top-color:#b4ccb8;box-shadow:0 -8px 28px #39583c1c}
+[data-theme="day"] .now-text strong{color:#254032}
+[data-theme="day"] .now-text span,[data-theme="day"] .timeline{color:#6a806d}
+[data-theme="day"] .play-controls button:not(.play-main){color:#416f48}
+[data-theme="day"] .play-controls .play-main{background:#386f42;color:#fff}
+[data-theme="day"] .player .open-mini-player{background:#e5f0d9;color:#285b31;border-color:#abc8a3}
+[data-theme="day"] .source-badge{color:#30603b;border-color:#abc7a8}
+[data-theme="day"] .heart-button{color:#3b7348}
+[data-theme="day"] .my-playlists-hero{background:radial-gradient(ellipse at 85% 20%,#d6ebce,transparent 55%),linear-gradient(115deg,#e8f5df,#f8f9ee 80%);border-color:#a9cba8}
+[data-theme="day"] .my-playlists-hero h1{color:#274637}
+[data-theme="day"] .my-playlists-hero h1 em{color:#3e7a42}
+[data-theme="day"] .my-playlists-hero p{color:#56705d}
+[data-theme="day"] .my-playlists-library,[data-theme="day"] .my-playlists-detail{background:#fffefa;border-color:#cbdbca;color:#294031}
+[data-theme="day"] .my-playlists-card{background:#f5f9f1;color:#2e4d38;border-color:#d1dfcf}
+[data-theme="day"] .my-playlists-card:hover{background:#eaf3e6}
+[data-theme="day"] .my-playlists-card.selected{background:#e1efdb;border-color:#8bb28d}
+[data-theme="day"] .my-playlists-card-copy small,[data-theme="day"] .my-playlists-detail-head p,
+[data-theme="day"] .my-playlists-note{color:#667c6b}
+[data-theme="day"] .my-playlists-detail-empty h2{color:#294332}
+[data-theme="day"] .my-playlists-detail-empty,[data-theme="day"] .my-playlists-tracks-empty{color:#6a816d}
+[data-theme="day"] .my-playlists-detail-head{border-color:#d9e4d6}
+[data-theme="day"] .my-playlists-track{background:#f3f8f0;color:#31513b}
+[data-theme="day"] .my-playlists-track:hover{background:#e8f2e1;border-color:#c6d8be}
+[data-theme="day"] .my-playlists-track-info small{color:#71876f}
+[data-theme="day"] .my-playlists-detail-actions button,[data-theme="day"] .my-playlists-track-controls button,
+[data-theme="day"] .my-playlists-play-actions button:not(#myPlaylistsPlay){background:#e4efdc;color:#31583a;border-color:#b2ceb1}
+[data-theme="day"] .my-playlists-play-actions #myPlaylistsPlay,
+[data-theme="day"] .my-playlists-create{background:#356f40;color:#fff}
+[data-theme="day"] .playlist-dialog,[data-theme="day"] .art-dialog{background:#fffefa;color:#294234;border-color:#b5d1b4}
+[data-theme="day"] .playlist-dialog h2{color:#284231}
+[data-theme="day"] .playlist-dialog p,[data-theme="day"] .playlist-dialog label{color:#5c7162}
+[data-theme="day"] .playlist-dialog input{background:#f8faf5;color:#2a4335;border-color:#adc7ad}
+[data-theme="day"] .playlist-picker-choice{background:#eef6ea;color:#294833;border-color:#bed4bb}
+[data-theme="day"] .playlist-picker-choice:hover{background:#e1efdc}
+[data-theme="day"] .cloud-account,[data-theme="day"] .topbar-account-menu>.cloud-account{background:#fffefa;color:#2b4835;border-color:#c9ddcb;box-shadow:0 12px 30px #2a50311b}
+[data-theme="day"] .cloud-account-name,[data-theme="day"] .cloud-status{color:#4f6c59}
+[data-theme="day"] .cloud-account button{background:#e8f2e2;color:#2c5535;border-color:#b4cdae}
+[data-theme="day"] .youtube-head,[data-theme="day"] .studio-intro{background:linear-gradient(120deg,#e1efdc,#f6f9f2);border-color:#b7d2b4}
+[data-theme="day"] .youtube-head h2,[data-theme="day"] .studio-intro h2{color:#2c4d36}
+[data-theme="day"] .youtube-panel,[data-theme="day"] .studio-workspace section,
+[data-theme="day"] .youtube-account{background:#fffefa;color:#2d4838;border-color:#c3d9c6}
+[data-theme="day"] .youtube-account-copy strong{color:#29513a}
+[data-theme="day"] .youtube-account-copy p{color:#567060}
+[data-theme="day"] .youtube-account>a{background:#daecd2;color:#325c38}
+[data-theme="day"] .studio-workspace input,[data-theme="day"] .studio-workspace select,
+[data-theme="day"] .youtube-workspace input{background:#fffefa;color:#2d4537;border-color:#bcd0be}
+[data-theme="day"] .mini-player-fallback{background:#29352aa8}
+@media(max-width:700px){
+  .top-right .theme-toggle{padding:6px 8px;font-size:11px;min-height:32px}
+}
