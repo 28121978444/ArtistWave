@@ -80,10 +80,21 @@
       };
     })
   })):[];
-  const payload=(favorites,prefs,recent=[],routines=[])=>({
+  // Playlist metadata can sync, but never device-local blob URLs or file paths.
+  const cleanPlaylists=value=>Array.isArray(value)?value.slice(0,80).filter(p=>p&&typeof p==='object').map((p,i)=>({
+    id:String(p.id||'playlist-'+i).slice(0,110),
+    name:String(p.name||'Untitled playlist').trim().slice(0,80)||'Untitled playlist',
+    createdAt:String(p.createdAt||'').slice(0,35),
+    tracks:(Array.isArray(p.tracks)?p.tracks:[]).slice(0,350).filter(t=>t&&t.title&&t.artist).map(t=>{
+      if(t.source==='LOCAL')return {id:'',title:String(t.title).slice(0,250),artist:String(t.artist).slice(0,250),
+        collection:String(t.collection||'').slice(0,250),source:'LOCAL',url:''};
+      return cleanOnlineTrack(t);
+    }).filter(Boolean)
+  })):[];
+  const payload=(favorites,prefs,recent=[],routines=[],customPlaylists=[])=>({
     schema:1,updatedAt:new Date().toISOString(),favorites:dedupeFavorites(favorites),
     preferences:cleanPrefs(prefs),recent:cleanRecent(recent),routines:cleanRoutines(routines),
-    customPlaylists:[] // Reserved for a future playlist editor; no audio blobs are uploaded.
+    customPlaylists:cleanPlaylists(customPlaylists) // Metadata only; device files remain private.
   });
   function accountKey(){return 'artistwave:cloud-account:'+S.subject}
   function saveAccountSnapshot(data){S.accountSnapshot=data;safeWrite(accountKey(),data)}
@@ -112,9 +123,9 @@
     const merged=dedupeFavorites([...(S.accountSnapshot?.favorites||[]),...additions]);
     return merged;
   }
-  function emitApply(favorites,prefs,recent=[],routines=[]){
+  function emitApply(favorites,prefs,recent=[],routines=[],customPlaylists=[]){
     window.dispatchEvent(new CustomEvent('artistwave:cloud-load',{detail:{
-      favorites:dedupeFavorites(favorites),preferences:cleanPrefs(prefs),recent:cleanRecent(recent),routines:cleanRoutines(routines)
+      favorites:dedupeFavorites(favorites),preferences:cleanPrefs(prefs),recent:cleanRecent(recent),routines:cleanRoutines(routines),customPlaylists:cleanPlaylists(customPlaylists)
     }}));
   }
   async function driveRequest(path,options={}){
@@ -143,7 +154,7 @@
     const document=await driveRequest('/'+encodeURIComponent(S.fileId)+'?alt=media');
     const value=typeof document==='string'?JSON.parse(document):document;
     if(!value||value.schema!==1||!Array.isArray(value.favorites))throw Error('Unsupported cloud backup format');
-    return {schema:1,updatedAt:value.updatedAt||'',favorites:dedupeFavorites(value.favorites),preferences:cleanPrefs(value.preferences),recent:cleanRecent(value.recent),routines:cleanRoutines(value.routines)};
+    return {schema:1,updatedAt:value.updatedAt||'',favorites:dedupeFavorites(value.favorites),preferences:cleanPrefs(value.preferences),recent:cleanRecent(value.recent),routines:cleanRoutines(value.routines),customPlaylists:cleanPlaylists(value.customPlaylists)};
   }
   async function writeCloud(data){
     const body=JSON.stringify(data);
@@ -172,7 +183,7 @@
       // Always re-read current cloud state and use timestamps to avoid silent overwrites.
       const remote=await readCloud();
       const local=S.accountSnapshot||payload([],preferenceSnapshot());
-      const current=payload(window.ArtistWaveCloud.getFavorites(),preferenceSnapshot(),window.ArtistWaveCloud.getRecent(),window.ArtistWaveCloud.getRoutines());
+      const current=payload(window.ArtistWaveCloud.getFavorites(),preferenceSnapshot(),window.ArtistWaveCloud.getRecent(),window.ArtistWaveCloud.getRoutines(),window.ArtistWaveCloud.getPlaylists());
       const remoteDate=Date.parse(remote?.updatedAt||0)||0;
       const localDate=Date.parse(local?.updatedAt||0)||0;
       if(remote&&remoteDate>localDate&&S.dirty){
@@ -181,7 +192,7 @@
       }
       if(remote&&remoteDate>localDate&&!S.dirty){
         saveAccountSnapshot(remote);
-        emitApply(remote.favorites,remote.preferences,remote.recent,remote.routines);
+        emitApply(remote.favorites,remote.preferences,remote.recent,remote.routines,remote.customPlaylists);
         status('Loaded newer library from Google Drive.');
       }else{
         await writeCloud(current);S.dirty=false;
@@ -199,7 +210,7 @@
   }
   function restoreGuest(){
     const data=S.guestSnapshot||{favorites:[],preferences:cleanPrefs({})};
-    emitApply(data.favorites,data.preferences,data.recent,data.routines);
+    emitApply(data.favorites,data.preferences,data.recent,data.routines,data.customPlaylists);
   }
   function logout(){
     if(S.timer){clearTimeout(S.timer);S.timer=null}
@@ -225,7 +236,7 @@
     const identity=await identityResponse.json();
     if(!identity.sub)throw Error('Account identifier missing');
     // Preserve guest state before applying account-specific data.
-    S.guestSnapshot={favorites:window.ArtistWaveCloud.getFavorites(),preferences:preferenceSnapshot(),recent:window.ArtistWaveCloud.getRecent(),routines:window.ArtistWaveCloud.getRoutines()};
+    S.guestSnapshot={favorites:window.ArtistWaveCloud.getFavorites(),preferences:preferenceSnapshot(),recent:window.ArtistWaveCloud.getRecent(),routines:window.ArtistWaveCloud.getRoutines(),customPlaylists:window.ArtistWaveCloud.getPlaylists()};
     S.token=token;S.expires=expiry;S.subject=String(identity.sub);S.email=String(identity.email||'Google account');S.fileId='';
     let remote;
     try{remote=await readCloud()}
@@ -233,12 +244,12 @@
     const cache=safeRead(accountKey(),null);
     let account=remote||cache;
     if(!account){
-      account=payload(S.guestSnapshot.favorites,S.guestSnapshot.preferences,S.guestSnapshot.recent,S.guestSnapshot.routines);
+      account=payload(S.guestSnapshot.favorites,S.guestSnapshot.preferences,S.guestSnapshot.recent,S.guestSnapshot.routines,S.guestSnapshot.customPlaylists);
       await writeCloud(account);
     }
     S.signed=true;S.dirty=false;
     saveAccountSnapshot(account);
-    emitApply(account.favorites,account.preferences,account.recent,account.routines);
+    emitApply(account.favorites,account.preferences,account.recent,account.routines,account.customPlaylists);
     updateUI();status('Connected · private Google Drive library loaded');
   }
   function beginSignIn(){
@@ -280,10 +291,11 @@
     try{localStorage.setItem('artistwave:google-client-id',id)}catch{}
     status('OAuth client ID saved on this device. Select Sign in with Google.');
   }
-  function init({getFavorites,getRecent=()=>[],getRoutines=()=>[]}){
+  function init({getFavorites,getRecent=()=>[],getRoutines=()=>[],getPlaylists=()=>[]}){
     window.ArtistWaveCloud.getFavorites=getFavorites;
     window.ArtistWaveCloud.getRecent=getRecent;
     window.ArtistWaveCloud.getRoutines=getRoutines;
+    window.ArtistWaveCloud.getPlaylists=getPlaylists;
     const meta=document.querySelector('meta[name="google-oauth-client-id"]')?.content?.trim();
     S.clientId=meta||localStorage.getItem('artistwave:google-client-id')||'';
     $('googleClientId').value=S.clientId;
@@ -295,7 +307,7 @@
       if(!S.signed)return;
       const current=window.ArtistWaveCloud.getFavorites();
       const additional=dedupeFavorites([...current,...cleanFavorites(S.guestSnapshot?.favorites)]);
-      emitApply(additional,preferenceSnapshot(),window.ArtistWaveCloud.getRecent(),window.ArtistWaveCloud.getRoutines());queueSync();
+      emitApply(additional,preferenceSnapshot(),window.ArtistWaveCloud.getRecent(),window.ArtistWaveCloud.getRoutines(),window.ArtistWaveCloud.getPlaylists());queueSync();
       status('Guest favorites imported. Syncing…');
     };
     updateUI();
@@ -304,5 +316,7 @@
     persistGuestFavorites:favs=>{if(!S.signed)safeWrite('artistwave:favorites',favs)},
     persistGuestRecent:recent=>{if(!S.signed)safeWrite('artistwave:recent',cleanRecent(recent))},
     persistGuestSetting:(key,value)=>{if(!S.signed){try{localStorage.setItem(key,value)}catch{}}},
-    cleanFavorites,cleanPrefs,cleanRoutines,payload};
+    getPlaylists:()=>[],
+    persistGuestPlaylists:playlists=>{if(!S.signed)safeWrite('artistwave:custom-playlists',cleanPlaylists(playlists))},
+    cleanFavorites,cleanPrefs,cleanRoutines,cleanPlaylists,payload};
 })();
