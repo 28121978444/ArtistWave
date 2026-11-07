@@ -60,3 +60,35 @@ test('sidebar has accessible genre filter and clear button',()=>{
   assert.ok(html.indexOf('id="genreFilter"')<html.indexOf('id="genreTree"'));
   assert.match(source,/\$\('genreFilter'\)\.addEventListener\('input',renderGenreTree\)/);
 });
+
+test('Surprise Me chooses curated artists and respects genre filters',()=>{
+  const start=source.indexOf('const discoveryHistory=[];');
+  const end=source.indexOf('function surpriseArtist(){',start);
+  assert.ok(start>0&&end>start);
+  const helpers=source.slice(start,end);
+  const functions=vm.runInNewContext(helpers+'\n;({discoverableArtists,pickSurpriseArtist})',
+    {genreSearchMatches,matchingGenreEras,norm,Number,Math,Set});
+  const rock=functions.discoverableArtists(MUSIC_GENRES,norm('Blues'));
+  assert.ok(rock.length>0);
+  assert.ok(rock.every(p=>p.genre.name==='Blues'||p.style.toLowerCase().includes('blues')||
+    p.name.toLowerCase().includes('blues')||p.section.name.toLowerCase().includes('blues')));
+  const noMatches=functions.discoverableArtists(MUSIC_GENRES,'never heard of this synthetic style');
+  assert.equal(noMatches.length,0);
+  const only=functions.discoverableArtists(MUSIC_GENRES,norm('Sabrina Carpenter'));
+  assert.ok(only.length>=1);
+  assert.ok(only.some(x=>x.name==='Sabrina Carpenter'));
+  assert.ok(only.every(x=>x.name==='Sabrina Carpenter'));
+});
+test('Surprise Me avoids previous artists when choices are available',()=>{
+  const start=source.indexOf('function pickSurpriseArtist(');
+  const end=source.indexOf('function surpriseArtist(){',start);
+  const f=vm.runInNewContext(source.slice(start,end)+'\npickSurpriseArtist',{norm,Number,Math,Set});
+  const picks=[{name:'One'},{name:'Two'},{name:'Three'}];
+  assert.equal(f(picks,['one'],()=>0).name,'Two');
+  assert.equal(f(picks,['one','two'],()=>0).name,'Three');
+  assert.equal(f(picks,['one','two','three'],()=>0).name,'One');
+  assert.equal(f([],[],()=>0),null);
+  assert.ok(html.includes('id="surpriseArtist"'));
+  assert.ok(html.includes('id="surpriseArtistHelp"'));
+  assert.match(source,/\$\('surpriseArtist'\)\.addEventListener\('click',surpriseArtist\)/);
+});
