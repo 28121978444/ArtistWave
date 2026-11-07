@@ -239,3 +239,17 @@ Each category has smaller styles and example artists, including classic and cont
 The left sidebar now includes **Filter genres and styles**. Search by a genre name, substyle, artist, or description; matching groups expand to help users find the relevant substyle. Clear the filter with **×**. A result count and empty-search state are provided.
 
 **Important:** Genre entries are curated navigation suggestions, not a promise that every track is available from the current audio providers. Selecting an artist uses the same existing artist search and authorized playback sources (local files, Internet Archive, Audius, or optional Jamendo); no new streaming provider or license entitlement was added.
+
+## ArtistWave v3.2 — My Playlists
+
+The **🎧 Entertainment → My Playlists** section lets listeners create named collections of saved recordings. The library uses a modern cover-card layout, with a separate track detail panel and a compact **＋ New playlist** action.
+
+- Create, rename, select and delete personal playlists (delete requires confirmation).
+- Add playable music using the **＋** action beside tracks in Discover, Favorites, or Recently Played; the same action is available beside the currently playing track.
+- Save into an existing playlist, or create a playlist while adding a song.
+- Play a playlist in the saved order, shuffle the available tracks, or start from an individual track.
+- Move songs up or down and remove them without deleting the underlying music.
+- Store guest playlists in this browser's local storage. Google-connected accounts sync playlist metadata through the existing private Drive appDataFolder, alongside favorites and routine data.
+- Keep local music on the user's device. Local track entries are saved as names and other non-file metadata; blob URLs, paths, and audio bytes are never synchronized. Reopen the folder to reconnect those entries, which are marked **RELINK** when unavailable.
+
+Playlists store track references, not copyrighted media. An online audio link can become unavailable or a provider may require a different setting; playback remains dependent on the existing supported providers and locally accessible music. The YouTube workspace, Showdance routine editor and account authentication scopes are unchanged.
