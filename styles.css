@@ -749,3 +749,14 @@ body[data-library-view="playlists"][data-mode="audio"] .main>.footer{display:non
   .my-playlists-library,.my-playlists-detail{padding:15px}
   .my-playlists-track{grid-template-columns:20px minmax(0,1fr) 55px}
 }
+
+/* Slim window launcher and browser popup fallback. */
+.player{position:relative}
+.player .open-mini-player{position:absolute;right:16px;top:-33px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:7px 11px;background:#2b4536;border:1px solid #6a9365;border-radius:9px 9px 0 0;color:#eaffd8;font-size:11px;font-weight:800;line-height:1.25;box-shadow:0 -4px 14px #0004}
+.player .open-mini-player:hover{background:#3b6245;border-color:#a7ce85}
+.player .open-mini-player:focus-visible{outline:2px solid #c8ff9d;outline-offset:2px}
+.mini-player-fallback[hidden]{display:none!important}
+.mini-player-fallback{position:fixed;inset:0;z-index:500;background:#0a1115e8;display:flex;align-items:stretch;justify-content:center}
+.mini-player-fallback>iframe{display:block;width:min(380px,100vw);height:100dvh;border:0;background:#111b1c;box-shadow:0 0 0 1px #5e7a62,0 15px 70px #000c}
+body.mini-player-active{overflow:hidden}
+@media(max-width:700px){.player .open-mini-player{right:8px;top:-29px;padding:6px 8px;font-size:10px}}
