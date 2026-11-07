@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#101d1d" />
+  <title>ArtistWave — Mini Player</title>
+  <link rel="stylesheet" href="mini-player.css" />
+</head>
+<body>
+  <div class="mini-shell">
+    <header class="mini-top">
+      <div class="mini-brand"><span class="brand-icon">◖◗</span><span>artist<strong>wave</strong></span></div>
+      <span class="mini-label">MINI PLAYER</span>
+      <button id="miniClose" class="mini-close" type="button" aria-label="Close mini player">×</button>
+    </header>
+    <main class="mini-main">
+      <div class="mini-cover" id="miniCover">
+        <div class="cover-glow"></div>
+        <span id="miniArtPlaceholder" class="cover-symbol">♫</span>
+        <img id="miniCoverImage" alt="" hidden />
+        <span class="cover-shine" aria-hidden="true">✦</span>
+      </div>
+      <div class="mini-info">
+        <div class="mini-kicker"><span class="live-dot"></span><span id="miniPlaybackLabel">READY TO LISTEN</span></div>
+        <h1 id="miniTitle">Nothing playing yet</h1>
+        <p id="miniArtist">Find a song in ArtistWave</p>
+        <span id="miniSource" class="mini-source">READY</span>
+      </div>
+      <div class="mini-progress">
+        <input id="miniSeek" type="range" min="0" max="1000" value="0" aria-label="Seek through track" />
+        <div class="mini-time"><span id="miniCurrent">0:00</span><span id="miniDuration">0:00</span></div>
+      </div>
+      <nav class="mini-controls" aria-label="Music playback">
+        <button type="button" id="miniShuffle" title="Shuffle" aria-label="Toggle shuffle">⤨</button>
+        <button type="button" id="miniPrevious" aria-label="Previous track">⏮</button>
+        <button type="button" id="miniPlay" class="play" aria-label="Play or pause">▶</button>
+        <button type="button" id="miniNext" aria-label="Next track">⏭</button>
+        <button type="button" id="miniRepeat" title="Repeat" aria-label="Change repeat mode">↻</button>
+      </nav>
+      <div class="mini-more">
+        <button id="miniFavorite" class="mini-pill" type="button" aria-label="Toggle favorite">♡ <span>Favorite</span></button>
+        <button id="miniSave" class="mini-pill" type="button" aria-label="Add to a playlist">＋ <span>Playlist</span></button>
+      </div>
+      <div class="mini-volume">
+        <span aria-hidden="true">◖))</span>
+        <input id="miniVolume" type="range" min="0" max="100" value="75" aria-label="Volume" />
+        <span id="miniVolumeValue">75%</span>
+      </div>
+      <section class="mini-queue" aria-labelledby="miniQueueHeading">
+        <div class="queue-head"><h2 id="miniQueueHeading">Up next</h2><span id="miniQueueCount">0 tracks</span></div>
+        <div id="miniQueueList" class="queue-list"><p class="queue-empty">Find music in the main ArtistWave window to start listening.</p></div>
+      </section>
+    </main>
+    <footer class="mini-bottom">
+      <span id="miniConnection" role="status" aria-live="polite">Connected to ArtistWave</span>
+      <button id="miniOpenMain" type="button">↗ Full player</button>
+    </footer>
+  </div>
+  <script src="mini-player.js" defer></script>
+</body>
+</html>
