@@ -794,7 +794,7 @@ body[data-mode="audio"] .app-shell{
 /* ArtistWave Day template — soft ivory, forest green and warm natural surfaces. */
 :root[data-theme="day"]{
   color-scheme:light;
-  --bg:#f6f8f1;--panel:#fffefa;--line:#d7e2d6;
+  --bg:#f6f8f1;--panel:#fffefa;--line:#b9cbb9;
   --text:#23372e;--muted:#60786a;--accent:#376b3a;
 }
 [data-theme="day"] body{background:var(--bg);color:var(--text)}
@@ -909,3 +909,19 @@ body[data-mode="audio"] .app-shell{
 @media(max-width:700px){
   .top-right .theme-toggle{padding:6px 8px;font-size:11px;min-height:32px}
 }
+
+/* Day theme: clearer separators across workspaces without heavier Night borders. */
+[data-theme="day"] .app-shell>.topbar,
+[data-theme="day"] .sidebar,
+[data-theme="day"] .hero,
+[data-theme="day"] .playlist-section,
+[data-theme="day"] .genre-results,
+[data-theme="day"] .player,
+[data-theme="day"] .my-playlists-detail-head,
+[data-theme="day"] .my-playlists-hero,
+[data-theme="day"] .youtube-head,
+[data-theme="day"] .studio-intro{border-color:#b4c6b5}
+[data-theme="day"] .track-row,
+[data-theme="day"] .album-group,
+[data-theme="day"] .album-header,
+[data-theme="day"] .my-playlists-track{border-color:#c1d1c2}
