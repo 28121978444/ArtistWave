@@ -25,6 +25,10 @@
     }
     if(persist){
       try{localStorage.setItem(KEY,mode)}catch{}
+      const iframe=document.getElementById('miniPlayerFallbackFrame');
+      try{
+        iframe?.contentWindow?.dispatchEvent(new CustomEvent('artistwave:theme',{detail:{theme:mode}}));
+      }catch{}
     }
     return mode;
   }
