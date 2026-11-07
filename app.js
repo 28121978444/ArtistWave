@@ -385,7 +385,7 @@ async function chooseLocalFolder(){
   $('folderInput').click();
 }
 
-function updatePlayer(){const t=current();$('nowTitle').textContent=t?.title||'Nothing playing yet';$('nowArtist').textContent=t?.artist||'Find your next favorite';$('playingSource').textContent=(S.activeSource||t)?.source||'READY';$('playButton').textContent=audio.paused?'▶':'Ⅱ';$('favoriteCurrent').disabled=!t;$('favoriteCurrent').textContent=t&&S.favorites.some(x=>x.id===t.id)?'♥':'♡'}
+function updatePlayer(){const t=current();$('playlistSaveCurrent').disabled=!t;$('nowTitle').textContent=t?.title||'Nothing playing yet';$('nowArtist').textContent=t?.artist||'Find your next favorite';$('playingSource').textContent=(S.activeSource||t)?.source||'READY';$('playButton').textContent=audio.paused?'▶':'Ⅱ';$('favoriteCurrent').disabled=!t;$('favoriteCurrent').textContent=t&&S.favorites.some(x=>x.id===t.id)?'♥':'♡'}
 function makeLyricsActions(track){
   const actions=document.createElement('div');actions.className='lyrics-actions';
   const query=encodeURIComponent(track.artist+' '+track.title);
@@ -506,7 +506,10 @@ function render(){
     }else source.textContent=t.source;
     const fav=document.createElement('button');fav.className='heart-button';fav.textContent=S.favorites.some(x=>x.id===t.id)?'♥':'♡';
     fav.setAttribute('aria-label','Toggle favorite');fav.onclick=()=>favorite(t);
-    const controls=document.createElement('div');controls.className='track-actions';controls.append(fav,makeLyricsActions(t));
+    const add=document.createElement('button');add.type='button';add.className='track-add-playlist';add.textContent='＋';
+    add.title='Add '+t.title+' to a playlist';add.setAttribute('aria-label','Add '+t.title+' to a playlist');
+    add.onclick=()=>window.ArtistWavePlaylists?.addTrack(t);
+    const controls=document.createElement('div');controls.className='track-actions';controls.append(fav,add,makeLyricsActions(t));
     el.append(play,info,collection,source,controls);parent.append(el);
   }
   function appendUnavailable(t,parent){
@@ -1448,4 +1451,23 @@ window.ArtistWaveStudioHost={
 };
 restoreFolderHandle();
 
+window.ArtistWaveLibrary={
+  getSongs:()=>S.view==='favorites'?dedupeTracks(S.favorites):S.view==='recent'?dedupeTracks(S.recent):S.tracks,
+  getCurrent:()=>current(),
+  getAvailable:()=>[...S.local,...S.tracks,...S.favorites,...S.recent],
+  playPlaylist:(tracks,index=0)=>{
+    const previous=S.tracks[S.selected];
+    clearAlbumQueue();
+    S.tracks=tracks.slice();
+    S.view='discover';
+    S.selected=-1;
+    S.artist='';
+    $('playlistHeading').textContent='Now playing · My Playlists';
+    playAt(index);
+    return previous;
+  }
+};
+$('playlistSaveCurrent').addEventListener('click',()=>{
+  const track=current();if(track)window.ArtistWavePlaylists?.addTrack(track);
+});
 render();updatePlayer();
