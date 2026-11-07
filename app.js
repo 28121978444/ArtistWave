@@ -1221,6 +1221,53 @@ function matchingGenreEras(genre,section,query){
     norm(style).includes(query)||
     artists.some(([artist,description])=>norm(artist).includes(query)||norm(description).includes(query)));
 }
+// Random artist discovery uses only the curated directory, never auto-plays a recording.
+const discoveryHistory=[];
+function discoverableArtists(genres,query){
+  const picks=[],seen=new Set();
+  for(const genre of genres){
+    if(!genreSearchMatches(genre,query))continue;
+    for(const section of genre.sections){
+      for(const [style,artists] of matchingGenreEras(genre,section,query)){
+        for(const [name,note] of artists){
+          const key=norm(name);
+          if(seen.has(key))continue;
+          // A search for an exact artist or descriptor should narrow the pool,
+          // while genre and substyle terms can return the broader style roster.
+          const broad=!query||norm(genre.name).includes(query)||
+            norm(section.name).includes(query)||norm(style).includes(query);
+          if(!broad&&!norm(name).includes(query)&&!norm(note).includes(query))continue;
+          seen.add(key);
+          picks.push({genre,section,style,name});
+        }
+      }
+    }
+  }
+  return picks;
+}
+function pickSurpriseArtist(picks,history,random=Math.random){
+  if(!picks.length)return null;
+  const recent=new Set(history);
+  const fresh=picks.filter(p=>!recent.has(norm(p.name)));
+  const options=fresh.length?fresh:picks;
+  const fraction=Number(random());
+  const index=Math.min(options.length-1,Math.max(0,Math.floor((Number.isFinite(fraction)?fraction:0)*options.length)));
+  return options[index];
+}
+function surpriseArtist(){
+  const query=norm($('genreFilter').value.trim());
+  const picks=discoverableArtists(MUSIC_GENRES,query);
+  const pick=pickSurpriseArtist(picks,discoveryHistory);
+  if(!pick){
+    $('genreFilterCount').textContent='No matching artists. Try another genre or clear the filter.';
+    return;
+  }
+  const key=norm(pick.name);
+  discoveryHistory.push(key);
+  if(discoveryHistory.length>8)discoveryHistory.shift();
+  // Existing discovery performs the same normal artist search as clicking a genre.
+  chooseCatalogArtist(pick.genre,pick.section,pick.style,pick.name);
+}
 function renderGenreTree(){
   const tree=$('genreTree');tree.replaceChildren();
   const query=norm($('genreFilter').value.trim());
@@ -1371,6 +1418,7 @@ $('genreFilterClear').addEventListener('click',()=>{
   renderGenreTree();
   $('genreFilter').focus();
 });
+$('surpriseArtist').addEventListener('click',surpriseArtist);
 renderGenreTree();
 
 // Google account data applies only after the user explicitly signs in.
