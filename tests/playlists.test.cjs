@@ -38,7 +38,8 @@ test('Google Drive playlist payload excludes device files and preserves playlist
   const end=cloud.indexOf('  function accountKey()',start);
   assert.ok(start>0&&end>start);
   const code=cloud.slice(start,end)+'\n;({cleanPlaylists,payload})';
-  const functions=vm.runInNewContext(code,{Array,String,Boolean,Number,Map,Object,Date,Set});
+  const functions=vm.runInNewContext(code,{Array,String,Boolean,Number,Map,Object,Date,Set,
+    cleanPrefs:value=>value,dedupeFavorites:value=>value,cleanRecent:value=>value,cleanRoutines:value=>value});
   const playlists=[{id:'road',name:'Road Trip',tracks:[
     {id:'local:private',title:'Local',artist:'Band',source:'LOCAL',url:'blob:private'},
     {id:'online1',title:'Online',artist:'Band',source:'ARCHIVE',url:'https://archive.org/example.mp3'}
