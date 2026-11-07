@@ -65,3 +65,84 @@ body.disconnected .mini-bottom>span{color:#f1bfad}
 body.disconnected .mini-playback-only{opacity:.45}
 @media(max-height:750px){.mini-main{padding-top:15px}.mini-cover{max-height:24dvh;min-height:110px;width:min(100%,200px);margin-bottom:15px}.cover-symbol{font-size:70px}.mini-progress{margin-top:16px}.mini-volume{margin:10px 0 16px}.mini-controls{padding:12px 0}.mini-controls .play{height:56px;min-width:56px}}
 @media(prefers-reduced-motion:no-preference){.mini-cover{transition:box-shadow .2s ease}.mini-cover:hover{box-shadow:0 22px 48px #000a,0 0 0 1px #a3d07a}}
+
+
+/* Mini Player viewport fit: keep queue INSIDE the window at any screen height.
+   The header/player controls can shrink; only the track list scrolls. */
+html,body{height:100%;height:100dvh;overflow:hidden}
+.mini-shell{
+  height:100vh;height:100dvh;min-height:0;
+  overflow:hidden;
+  width:100%;
+}
+.mini-top,.mini-bottom{flex-shrink:0}
+.mini-main{
+  flex:1 1 0;
+  min-height:0;
+  overflow:hidden;
+  padding:clamp(9px,1.5dvh,17px) 17px 0;
+}
+.mini-cover{
+  flex:0 1 auto;
+  width:min(100%,clamp(92px,21dvh,190px));
+  height:auto;
+  min-height:0;
+  max-height:clamp(92px,21dvh,190px);
+  margin-bottom:clamp(7px,1.3dvh,13px);
+  border-radius:15px;
+}
+.cover-symbol{font-size:clamp(48px,9dvh,80px)}
+.mini-info{flex-shrink:1;min-height:0}
+.mini-info h1{font-size:clamp(17px,2.5dvh,22px);margin:6px 0 2px;line-height:1.15;max-height:2.3em;overflow:hidden}
+.mini-info p{font-size:12px;line-height:1.25;max-height:2.5em;overflow:hidden}
+.mini-source{margin-top:6px;padding:3px 8px}
+.mini-progress{flex-shrink:0;margin-top:clamp(7px,1.3dvh,13px)}
+.mini-time{padding-top:3px}
+.mini-controls{flex-shrink:0;padding:clamp(5px,1dvh,10px) 0}
+.mini-controls button{height:38px}
+.mini-controls .play{width:49px;min-width:49px;height:49px;font-size:21px}
+.mini-more{flex-shrink:0}
+.mini-pill{min-height:32px;padding:5px 13px}
+.mini-volume{flex-shrink:0;margin:clamp(5px,1dvh,10px) 0}
+.mini-queue{
+  flex:1 1 0;
+  min-height:68px;
+  overflow:hidden;
+  padding:9px 0 0;
+}
+.queue-head{flex-shrink:0;margin-bottom:5px}
+.queue-list{
+  flex:1 1 0;
+  min-height:0;
+  max-height:none;
+  overflow-x:hidden;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:#547a5c transparent;
+  padding:0 3px 8px 0;
+}
+.queue-song{min-height:44px;padding:6px 7px}
+.mini-bottom{position:relative;padding:9px 16px 11px}
+@media(max-height:640px){
+  .mini-top{min-height:48px;padding:8px 14px}
+  .mini-main{padding-top:7px}
+  .mini-cover{width:min(100%,clamp(72px,16dvh,115px));max-height:clamp(72px,16dvh,115px);margin-bottom:5px}
+  .mini-info h1{font-size:17px;margin:4px 0 2px}
+  .mini-info p{font-size:11px}
+  .mini-kicker{font-size:9px}
+  .mini-source{margin-top:4px}
+  .mini-progress{margin-top:5px}
+  .mini-controls{padding:3px 0}
+  .mini-controls button{height:32px;font-size:19px}
+  .mini-controls .play{width:42px;min-width:42px;height:42px;font-size:20px}
+  .mini-pill{min-height:28px;padding:4px 10px}
+  .mini-volume{margin:4px 0}
+  .mini-queue{padding-top:6px}
+  .mini-bottom{padding:6px 12px}
+}
+@media(max-height:490px){
+  .mini-cover{display:none}
+  .mini-main{padding-top:6px}
+  .mini-info h1{max-height:1.2em;white-space:nowrap;text-overflow:ellipsis}
+  .mini-queue{min-height:45px}
+}
