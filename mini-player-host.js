@@ -30,7 +30,11 @@
     else if(action==='next')$('nextButton').click();
     else if(action==='previous')$('previousButton').click();
     else if(action==='favorite'&&!$('favoriteCurrent').disabled)$('favoriteCurrent').click();
-    else if(action==='save'&&!$('playlistSaveCurrent').disabled)$('playlistSaveCurrent').click();
+    else if(action==='save'&&!$('playlistSaveCurrent').disabled){
+      $('playlistSaveCurrent').click();
+      // The playlist picker belongs to the main page; bring it to the front.
+      window.focus();
+    }
     else if(action==='shuffle')$('shuffleButton').click();
     else if(action==='repeat')$('repeatButton').click();
     else if(action==='volume'){
