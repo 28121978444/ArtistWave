@@ -26,7 +26,7 @@ test('Day/Night button appears on main page and Mini Player',()=>{
  }
  const workflow=fs.readFileSync('.github/workflows/pages.yml','utf8');
  assert.match(workflow,/node --check theme\.js/);
- assert.match(workflow,/mini-player\.js theme\.js styles\.css site\//);
+ assert.match(workflow,/mini-player\.js theme\.js install\.js sw\.js manifest\.webmanifest icon-192\.png icon-512\.png styles\.css site\//);
 });
 test('defaults to night, toggles to day and saves preference',()=>{
  const f=scene();
