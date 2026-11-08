@@ -1,6 +1,6 @@
 'use strict';
 const $=id=>document.getElementById(id),audio=$('audio');
-const S={artist:'',tracks:[],local:[],favorites:[],selected:-1,matches:[],view:'discover',shuffle:false,repeat:0,page:0,loading:false,artistMbid:null,unavailable:[],catalogLoading:false,catalogResolved:false,catalogRequest:0,requestId:0,matchRequest:0,onlineTracks:[],localFiles:new Set(),importingFolder:false,providerChecked:{},providerBusy:{},providerErrors:{},archiveItemView:false,albumQueue:[],activeSource:null,playbackToken:0,playCandidates:[],playCandidateIndex:0,bufferTimer:null,recent:[],folderHandleAvailable:false};
+const S={artist:'',tracks:[],local:[],favorites:[],selected:-1,matches:[],view:'discover',shuffle:false,repeat:0,page:0,loading:false,artistMbid:null,unavailable:[],catalogLoading:false,catalogResolved:false,catalogRequest:0,requestId:0,matchRequest:0,onlineTracks:[],localFiles:new Set(),importingFolder:false,providerChecked:{},providerBusy:{},providerErrors:{},archiveItemView:false,albumQueue:[],smartQueue:[],smartOrigin:null,smartOnDeck:false,activeSource:null,playbackToken:0,playCandidates:[],playCandidateIndex:0,bufferTimer:null,recent:[],folderHandleAvailable:false};
 try{S.favorites=JSON.parse(localStorage.getItem('artistwave:favorites')||'[]')}catch{}if(!Array.isArray(S.favorites))S.favorites=[];
 try{S.recent=JSON.parse(localStorage.getItem('artistwave:recent')||'[]')}catch{}if(!Array.isArray(S.recent))S.recent=[];
 const norm=s=>String(s||'').normalize('NFKD').toLowerCase().replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
@@ -548,7 +548,13 @@ function render(){
     const add=document.createElement('button');add.type='button';add.className='track-add-playlist';add.textContent='＋';
     add.title='Add '+t.title+' to a playlist';add.setAttribute('aria-label','Add '+t.title+' to a playlist');
     add.onclick=()=>window.ArtistWavePlaylists?.addTrack(t);
-    const controls=document.createElement('div');controls.className='track-actions';controls.append(fav,add,makeLyricsActions(t));
+    const nextSong=document.createElement('button');nextSong.type='button';nextSong.className='track-queue-next';nextSong.textContent='↳ Next';
+    nextSong.title='Play '+t.title+' next';nextSong.setAttribute('aria-label','Play '+t.title+' next');
+    nextSong.onclick=()=>addToSmartQueue(t,true);
+    const addQueue=document.createElement('button');addQueue.type='button';addQueue.className='track-queue-add';addQueue.textContent='☷';
+    addQueue.title='Add '+t.title+' to queue';addQueue.setAttribute('aria-label','Add '+t.title+' to queue');
+    addQueue.onclick=()=>addToSmartQueue(t,false);
+    const controls=document.createElement('div');controls.className='track-actions';controls.append(fav,add,nextSong,addQueue,makeLyricsActions(t));
     el.append(play,info,collection,source,controls);parent.append(el);
   }
   function appendUnavailable(t,parent){
@@ -676,9 +682,89 @@ function tryNextSource(token=S.playbackToken){
   updatePlayer();
   return false;
 }
-function playAt(i,{keepAlbum=false}={}){
+// Temporary queue: references only, never written to saved playlists or Drive.
+function addToSmartQueue(track,front=false){
+  if(!track?.title||!track?.url)return false;
+  if(S.smartQueue.length>=100){$('smartQueueStatus').textContent='The queue is full (100 tracks).';return false}
+  const item={...track};
+  if(front)S.smartQueue.unshift(item);else S.smartQueue.push(item);
+  $('smartQueueStatus').textContent=(front?'Playing next: ':'Added to queue: ')+item.title;
+  renderSmartQueue();
+  return true;
+}
+function renderSmartQueue(){
+  const list=$('smartQueueList');list.replaceChildren();
+  $('smartQueueCount').textContent=String(S.smartQueue.length);
+  $('smartQueueClear').disabled=!S.smartQueue.length;
+  if(!S.smartQueue.length){
+    const empty=document.createElement('p');empty.className='smart-queue-empty';
+    empty.textContent='Your queue is empty. Use ↳ Next or ☷ beside any track to add songs without changing your playlists.';
+    list.append(empty);return;
+  }
+  S.smartQueue.forEach((t,i)=>{
+    const row=document.createElement('div');row.className='smart-queue-track';
+    const order=document.createElement('span');order.className='smart-queue-order';order.textContent=String(i+1).padStart(2,'0');
+    const info=document.createElement('div');info.className='smart-queue-track-info';
+    const title=document.createElement('strong');title.textContent=t.title;
+    const artist=document.createElement('span');artist.textContent=t.artist||'Unknown artist';
+    info.append(title,artist);
+    const controls=document.createElement('div');controls.className='smart-queue-actions';
+    function action(label,description,fn,disabled=false){
+      const button=document.createElement('button');button.type='button';button.textContent=label;
+      button.setAttribute('aria-label',description+' '+t.title);button.title=description;button.disabled=disabled;
+      button.onclick=fn;controls.append(button);
+    }
+    action('▶','Play now',()=>playQueuedAt(i));
+    action('↑','Move up',()=>moveSmartQueue(i,-1),i===0);
+    action('↓','Move down',()=>moveSmartQueue(i,1),i===S.smartQueue.length-1);
+    action('×','Remove',()=>{S.smartQueue.splice(i,1);renderSmartQueue()});
+    row.append(order,info,controls);list.append(row);
+  });
+}
+function moveSmartQueue(i,direction){
+  const nextIndex=i+direction;
+  if(i<0||nextIndex<0||nextIndex>=S.smartQueue.length)return false;
+  [S.smartQueue[i],S.smartQueue[nextIndex]]=[S.smartQueue[nextIndex],S.smartQueue[i]];
+  renderSmartQueue();return true;
+}
+function playQueuedAt(index=0){
+  if(index<0||index>=S.smartQueue.length)return false;
+  if(!S.smartOnDeck)S.smartOrigin={track:current(),index:S.selected};
+  const [track]=S.smartQueue.splice(index,1);
+  let i=S.tracks.findIndex(t=>trackKey(t)===trackKey(track)&&t.url===track.url);
+  if(i<0){S.tracks.push(track);i=S.tracks.length-1}
+  S.smartOnDeck=true;
+  playAt(i,{queued:true});
+  renderSmartQueue();
+  return true;
+}
+function resumeSmartQueue(){
+  if(!S.smartOnDeck)return false;
+  S.smartOnDeck=false;
+  const origin=S.smartOrigin;S.smartOrigin=null;
+  if(!origin)return false;
+  let index=S.tracks.findIndex(t=>t===origin.track);
+  if(index<0)index=S.tracks.findIndex(t=>origin.track&&trackKey(t)===trackKey(origin.track));
+  if(index<0)index=origin.index;
+  if(index<0||index>=S.tracks.length-1)return false;
+  playAt(index+1);
+  return true;
+}
+function setSmartQueueOpen(open){
+  $('smartQueuePanel').hidden=!open;
+  $('smartQueueToggle').setAttribute('aria-expanded',String(open));
+  $('smartQueueToggle').classList.toggle('active',open);
+}
+$('smartQueueToggle').addEventListener('click',()=>setSmartQueueOpen($('smartQueuePanel').hidden));
+$('smartQueueClose').addEventListener('click',()=>setSmartQueueOpen(false));
+$('smartQueueClear').addEventListener('click',()=>{
+  S.smartQueue=[];renderSmartQueue();
+  $('smartQueueStatus').textContent='Upcoming queue cleared. The current song keeps playing.';
+});
+function playAt(i,{keepAlbum=false,queued=false}={}){
   if(i<0||i>=S.tracks.length)return;
   if(!keepAlbum)clearAlbumQueue();
+  if(!queued){S.smartOnDeck=false;S.smartOrigin=null}
   clearPlaybackRecovery();
   S.selected=i;
   S.playCandidates=permittedTrackSources(current());
@@ -691,7 +777,14 @@ function playAt(i,{keepAlbum=false}={}){
   startPlaybackSource(token);
   render();updatePlayer();
 }
-function next(direction=1){if(!S.tracks.length)return;if(S.albumQueue.length)return nextAlbumTrack(direction);let i=S.shuffle?Math.floor(Math.random()*S.tracks.length):(S.selected+direction+S.tracks.length)%S.tracks.length;playAt(i)}
+function next(direction=1){
+  if(direction>0&&S.smartQueue.length)return playQueuedAt(0);
+  if(direction>0&&S.smartOnDeck)return resumeSmartQueue();
+  if(!S.tracks.length)return;
+  if(S.albumQueue.length)return nextAlbumTrack(direction);
+  const i=S.shuffle?Math.floor(Math.random()*S.tracks.length):(S.selected+direction+S.tracks.length)%S.tracks.length;
+  playAt(i);
+}
 const getJSON=async url=>{const r=await fetch(url);if(!r.ok)throw Error('Service returned '+r.status);return r.json()};
 // Match artwork stays pinned to the MusicBrainz artist ID or Archive identifier.
 // Successful choices are remembered in this browser across searches and reloads.
@@ -909,7 +1002,7 @@ audio.onplaying=()=>{clearTimeout(S.bufferTimer);S.bufferTimer=null;if(current()
 audio.onpause=()=>{clearTimeout(S.bufferTimer);S.bufferTimer=null;updatePlayer()};
 audio.onerror=()=>{if(S.playCandidates.length)tryNextSource()};
 audio.onwaiting=()=>{if(S.playCandidates.length&&!audio.paused)queueBufferCheck(S.playbackToken)};
-audio.onstalled=()=>{if(S.playCandidates.length&&!audio.paused)queueBufferCheck(S.playbackToken)};audio.onended=()=>{if(S.repeat===2){audio.currentTime=0;audio.play().catch(()=>{})}else if(S.albumQueue.length){if(!nextAlbumTrack(1))updatePlayer()}else if(S.repeat===1||S.selected<S.tracks.length-1)next(1);else updatePlayer()};
+audio.onstalled=()=>{if(S.playCandidates.length&&!audio.paused)queueBufferCheck(S.playbackToken)};audio.onended=()=>{if(S.repeat===2){audio.currentTime=0;audio.play().catch(()=>{})}else if(S.smartQueue.length||S.smartOnDeck){if(!next(1))updatePlayer()}else if(S.albumQueue.length){if(!nextAlbumTrack(1))updatePlayer()}else if(S.repeat===1||S.selected<S.tracks.length-1)next(1);else updatePlayer()};
 $('albumJumpSelect').addEventListener('change',event=>{
   const target=document.getElementById(event.target.value);
   if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
@@ -1514,6 +1607,10 @@ window.ArtistWaveLibrary={
   getCurrent:()=>current(),
   getQueue:()=>S.tracks.map((t,i)=>({title:t.title,artist:t.artist,index:i})),
   getSelectedIndex:()=>S.selected,
+  getSmartQueue:()=>S.smartQueue.map((t,index)=>({title:t.title,artist:t.artist,index})),
+  queueMove:moveSmartQueue,
+  queuePlay:playQueuedAt,
+  queueRemove:index=>{if(!Number.isInteger(index)||index<0||index>=S.smartQueue.length)return false;S.smartQueue.splice(index,1);renderSmartQueue();return true},
   playIndex:index=>playAt(index),
   getAvailable:()=>[...S.local,...S.tracks,...S.favorites,...S.recent],
   playPlaylist:(tracks,index=0)=>{
@@ -1536,4 +1633,5 @@ window.ArtistWaveLibrary={
 $('playlistSaveCurrent').addEventListener('click',()=>{
   const track=current();if(track)window.ArtistWavePlaylists?.addTrack(track);
 });
+renderSmartQueue();
 render();updatePlayer();
