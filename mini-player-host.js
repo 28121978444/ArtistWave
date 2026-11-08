@@ -19,6 +19,7 @@
       favorite:!!track&&$('favoriteCurrent').textContent==='♥',
       hasTrack:!!track,
       queue:window.ArtistWaveLibrary?.getQueue?.()||[],
+      smartQueue:window.ArtistWaveLibrary?.getSmartQueue?.()||[],
       selected:window.ArtistWaveLibrary?.getSelectedIndex?.()??-1,
       shuffle:$('shuffleButton').classList.contains('active'),
       repeat:$('repeatButton').title||'Repeat: off'
@@ -35,6 +36,10 @@
       // The playlist picker belongs to the main page; bring it to the front.
       window.focus();
     }
+    else if(action==='queuePlay'&&Number.isInteger(Number(value)))window.ArtistWaveLibrary?.queuePlay?.(Number(value));
+    else if(action==='queueRemove'&&Number.isInteger(Number(value)))window.ArtistWaveLibrary?.queueRemove?.(Number(value));
+    else if(action==='queueMove'&&Number.isInteger(Number(value?.index))&&Number.isInteger(Number(value?.direction)))
+      window.ArtistWaveLibrary?.queueMove?.(Number(value.index),Number(value.direction));
     else if(action==='shuffle')$('shuffleButton').click();
     else if(action==='repeat')$('repeatButton').click();
     else if(action==='volume'){
