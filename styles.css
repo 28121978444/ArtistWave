@@ -961,3 +961,12 @@ body[data-mode="audio"] .app-shell{
   .album-group.album-collapsed .album-play-button{font-size:10px}
   .album-group.album-collapsed .album-fold-button{font-size:10px}
 }
+
+/* Keep the collapsed album truly one row on narrow devices. */
+@media(max-width:700px){
+  .album-group.album-collapsed .album-header{flex-wrap:nowrap}
+  .album-group.album-collapsed .album-heading{flex:1 1 0;min-width:0}
+  .album-group.album-collapsed .album-count{display:none}
+  .album-group.album-collapsed .album-play-button,
+  .album-group.album-collapsed .album-fold-button{flex-shrink:0;padding:6px 7px}
+}
