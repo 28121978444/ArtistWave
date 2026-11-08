@@ -61,7 +61,7 @@
     wrapper.hidden=true;
     frame.removeAttribute('src');
     document.body.classList.remove('mini-player-active');
-    if(new URLSearchParams(window.location.search).get('mini')==='1'){
+    if(window.location?.search&&new URLSearchParams(window.location.search).get('mini')==='1'){
       const url=new URL(window.location.href);
       url.searchParams.delete('mini');
       window.history?.replaceState?.({},'',url.pathname+url.search+url.hash);
@@ -89,7 +89,7 @@
   window.ArtistWaveMiniHost={state,command,open,closeFallback};
   // Direct bookmark: a fully functioning compact view in this tab/window.
   // The main audio engine runs in this page, so no opener is required.
-  if(new URLSearchParams(window.location.search).get('mini')==='1'){
+  if(window.location?.search&&new URLSearchParams(window.location.search).get('mini')==='1'){
     document.body.classList.add('mini-direct-route');
     window.ArtistWaveLibrary?.prepareMiniLibrary?.();
     showFallback();
