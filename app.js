@@ -729,7 +729,11 @@ function moveSmartQueue(i,direction){
 }
 function playQueuedAt(index=0){
   if(index<0||index>=S.smartQueue.length)return false;
-  if(!S.smartOnDeck)S.smartOrigin={track:current(),index:S.selected};
+  if(!S.smartOnDeck)S.smartOrigin={
+    track:current(),index:S.selected,
+    nextTrack:S.tracks[S.selected+1]||null,
+    albumQueue:S.albumQueue.slice()
+  };
   const [track]=S.smartQueue.splice(index,1);
   let i=S.tracks.findIndex(t=>trackKey(t)===trackKey(track)&&t.url===track.url);
   if(i<0){S.tracks.push(track);i=S.tracks.length-1}
@@ -743,12 +747,28 @@ function resumeSmartQueue(){
   S.smartOnDeck=false;
   const origin=S.smartOrigin;S.smartOrigin=null;
   if(!origin)return false;
-  let index=S.tracks.findIndex(t=>t===origin.track);
-  if(index<0)index=S.tracks.findIndex(t=>origin.track&&trackKey(t)===trackKey(origin.track));
-  if(index<0)index=origin.index;
-  if(index<0||index>=S.tracks.length-1)return false;
-  playAt(index+1);
-  return true;
+  const album=origin.albumQueue||[];
+  if(album.length&&origin.track){
+    const pos=album.indexOf(trackKey(origin.track));
+    const nextKey=album[pos+1];
+    if(!nextKey){
+      if(S.repeat!==1)return false;
+      const first=S.tracks.findIndex(t=>trackKey(t)===album[0]);
+      if(first<0)return false;
+      S.albumQueue=album;playAt(first,{keepAlbum:true});return true;
+    }
+    const i=S.tracks.findIndex(t=>trackKey(t)===nextKey);
+    if(i<0)return false;
+    S.albumQueue=album;
+    playAt(i,{keepAlbum:true});
+    return true;
+  }
+  const nextTrack=origin.nextTrack;
+  if(!nextTrack)return false;
+  let i=S.tracks.findIndex(t=>t===nextTrack);
+  if(i<0)i=S.tracks.findIndex(t=>trackKey(t)===trackKey(nextTrack));
+  if(i<0)return false;
+  playAt(i);return true;
 }
 function setSmartQueueOpen(open){
   $('smartQueuePanel').hidden=!open;
