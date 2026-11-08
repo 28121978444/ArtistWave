@@ -755,12 +755,6 @@ function setSmartQueueOpen(open){
   $('smartQueueToggle').setAttribute('aria-expanded',String(open));
   $('smartQueueToggle').classList.toggle('active',open);
 }
-$('smartQueueToggle').addEventListener('click',()=>setSmartQueueOpen($('smartQueuePanel').hidden));
-$('smartQueueClose').addEventListener('click',()=>setSmartQueueOpen(false));
-$('smartQueueClear').addEventListener('click',()=>{
-  S.smartQueue=[];renderSmartQueue();
-  $('smartQueueStatus').textContent='Upcoming queue cleared. The current song keeps playing.';
-});
 function playAt(i,{keepAlbum=false,queued=false}={}){
   if(i<0||i>=S.tracks.length)return;
   if(!keepAlbum)clearAlbumQueue();
@@ -988,6 +982,12 @@ $('searchForm').addEventListener('submit',e=>{e.preventDefault();const term=$('a
 $('loadMore').onclick=loadMore;
 $('playButton').onclick=()=>{if(!audio.src&&S.tracks.length){playAt(0);return}audio.paused?audio.play().catch(()=>{}):audio.pause()};
 $('nextButton').onclick=()=>next(1);$('previousButton').onclick=()=>next(-1);
+$('smartQueueToggle').addEventListener('click',()=>setSmartQueueOpen($('smartQueuePanel').hidden));
+$('smartQueueClose').addEventListener('click',()=>setSmartQueueOpen(false));
+$('smartQueueClear').addEventListener('click',()=>{
+  S.smartQueue=[];renderSmartQueue();
+  $('smartQueueStatus').textContent='Upcoming queue cleared. The current song keeps playing.';
+});
 $('albumFoldAll').addEventListener('click',toggleAllAlbums);
 $('shuffleButton').onclick=()=>{clearAlbumQueue();S.shuffle=!S.shuffle;$('shuffleButton').classList.toggle('active',S.shuffle)};
 $('shuffleAll').onclick=()=>{clearAlbumQueue();S.shuffle=true;$('shuffleButton').classList.add('active');next(1)};
