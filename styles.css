@@ -970,3 +970,54 @@ body[data-mode="audio"] .app-shell{
   .album-group.album-collapsed .album-play-button,
   .album-group.album-collapsed .album-fold-button{flex-shrink:0;padding:6px 7px}
 }
+
+/* Smart Queue: ephemeral listening order, independent from saved playlists. */
+.queue-toggle-button{display:inline-flex;align-items:center;gap:6px}
+.queue-toggle-button.active{color:var(--accent)}
+#smartQueuePanel[hidden]{display:none!important}
+.smart-queue-panel{
+  margin:20px 0 30px;padding:20px 22px;
+  border:1px solid #43624d;border-radius:14px;
+  background:#12211f;box-shadow:0 12px 32px #0003;
+}
+.smart-queue-head{display:flex;align-items:start;justify-content:space-between;gap:15px;border-bottom:1px solid #3b5648;padding-bottom:15px}
+.smart-queue-head h2{margin:7px 0;font-size:21px;letter-spacing:-.5px;color:#f1f8e8}
+.smart-queue-head p{margin:0;color:#a2bda9;font-size:12px;line-height:1.5}
+.smart-queue-head-actions{display:flex;gap:8px;align-items:center}
+.smart-queue-head-actions button{border:1px solid #5a755c;border-radius:8px;background:#294238;color:#e2f3da;padding:9px 12px;font-size:12px;font-weight:750}
+.smart-queue-head-actions button:disabled{opacity:.4;cursor:not-allowed}
+.smart-queue-head-actions button:last-child{font-size:19px;padding:3px 10px}
+.smart-queue-list{display:flex;flex-direction:column;gap:5px;padding:13px 0 0}
+.smart-queue-empty{color:#abc1ae;font-size:12px;line-height:1.7;margin:0;padding:13px}
+.smart-queue-track{display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:12px;padding:10px 12px;border:1px solid #344e40;border-radius:9px;background:#1a3029}
+.smart-queue-order{font-size:11px;color:#a5c49e}
+.smart-queue-track-info{min-width:0;display:flex;flex-direction:column;gap:4px}
+.smart-queue-track-info strong{font-size:13px;color:#edf8e9;overflow-wrap:anywhere}
+.smart-queue-track-info>span{font-size:11px;color:#abc0b0;overflow-wrap:anywhere}
+.smart-queue-actions{display:flex;align-items:center;gap:5px}
+.smart-queue-actions button{min-width:30px;min-height:30px;border:1px solid #5a7b5e;border-radius:7px;background:#294637;color:#e4f7d4;font-size:13px}
+.smart-queue-actions button:hover:not(:disabled){background:#3b5d44}
+.smart-queue-actions button:disabled{opacity:.3;cursor:not-allowed}
+.smart-queue-status{color:#c5edae;font-size:11px;min-height:1.5em}
+.track-queue-next,.track-queue-add{
+  border:1px solid #547659;border-radius:7px;background:#284136;color:#dcf8d4;
+  padding:6px 9px;white-space:nowrap;font-size:11px;font-weight:800;
+}
+.track-queue-next:hover,.track-queue-add:hover{background:#40614a}
+[data-theme="day"] .smart-queue-panel{background:#fffefa;border-color:#b8cdb9;box-shadow:0 10px 25px #45634413}
+[data-theme="day"] .smart-queue-head{border-color:#c9daca}
+[data-theme="day"] .smart-queue-head h2{color:#294736}
+[data-theme="day"] .smart-queue-head p,[data-theme="day"] .smart-queue-empty{color:#657e69}
+[data-theme="day"] .smart-queue-head-actions button,[data-theme="day"] .smart-queue-actions button,
+[data-theme="day"] .track-queue-next,[data-theme="day"] .track-queue-add{background:#e4f0dd;color:#2d6039;border-color:#b0c9ad}
+[data-theme="day"] .smart-queue-track{background:#f3f8f0;border-color:#d2dfd0}
+[data-theme="day"] .smart-queue-track-info strong{color:#2e5139}
+[data-theme="day"] .smart-queue-track-info>span,[data-theme="day"] .smart-queue-order{color:#657b69}
+[data-theme="day"] .smart-queue-status{color:#346c3c}
+@media(max-width:700px){
+  .smart-queue-panel{padding:15px}
+  .smart-queue-head{flex-wrap:wrap}
+  .smart-queue-track{gap:7px;padding:9px}
+  .smart-queue-actions button{min-width:26px;min-height:29px}
+  .track-queue-next,.track-queue-add{padding:6px}
+}
