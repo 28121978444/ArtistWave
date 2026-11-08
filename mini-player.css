@@ -187,3 +187,12 @@ html,body{height:100%;height:100dvh;overflow:hidden}
 [data-theme="day"] .mini-top .theme-toggle{background:#f7f0d5;color:#655822;border-color:#d6c989}
 [data-theme="day"] .mini-top .theme-toggle:hover{background:#fcecb9}
 @media(max-width:360px){.mini-top{gap:5px;padding-left:10px;padding-right:10px}.mini-label{display:none}}
+
+/* Temporary Smart Queue in compact player. */
+.mini-queue-divider{font-size:9px;letter-spacing:1.2px;color:#9cb7a0;font-weight:850;padding:10px 7px 5px}
+.queue-song-smart{grid-template-columns:minmax(0,1fr) auto;gap:5px}
+.mini-queue-actions{display:flex;gap:3px}
+.mini-queue-actions button{min-width:24px;min-height:28px;border-radius:5px;border:1px solid #53785b;background:#294735;color:#ddf3ce;font-size:11px}
+.mini-queue-actions button:hover{background:#3c6147}
+[data-theme="day"] .mini-queue-divider{color:#6b816d}
+[data-theme="day"] .mini-queue-actions button{background:#e5f2dc;color:#305d3a;border-color:#bed2b6}
