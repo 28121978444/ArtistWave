@@ -925,3 +925,39 @@ body[data-mode="audio"] .app-shell{
 [data-theme="day"] .album-group,
 [data-theme="day"] .album-header,
 [data-theme="day"] .my-playlists-track{border-color:#c1d1c2}
+
+/* v3.4 compact albums: a one-line album header with reversible track disclosure. */
+.album-tracks[hidden]{display:none!important}
+.album-fold-button,.album-fold-all{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:34px;padding:7px 12px;flex:0 0 auto;
+  color:#d7eacb;background:#273f35;border:1px solid #537359;
+  border-radius:8px;font-size:11px;font-weight:800;white-space:nowrap;
+}
+.album-fold-button:hover,.album-fold-all:hover{background:#365b42;border-color:#8bb681}
+.album-fold-button:focus-visible,.album-fold-all:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.album-fold-all{margin-left:auto}
+.album-group.album-collapsed{margin-top:9px;margin-bottom:9px}
+.album-group.album-collapsed .album-header{
+  min-height:48px;flex-wrap:nowrap;gap:9px;
+  padding:5px 12px;border-bottom:0;
+}
+.album-group.album-collapsed .album-cover{width:35px;height:35px;min-width:35px;flex:0 0 35px}
+.album-group.album-collapsed .album-heading{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.album-group.album-collapsed .album-count{flex:0 0 auto;margin-right:0}
+.album-group.album-collapsed .album-year{display:none}
+.album-group.album-collapsed .album-play-button{min-height:30px;padding:6px 9px}
+.album-group.album-collapsed .album-fold-button{min-height:30px;padding:6px 10px}
+[data-theme="day"] .album-fold-button,[data-theme="day"] .album-fold-all{
+  background:#e3efde;color:#285c33;border-color:#a4bea4;
+}
+[data-theme="day"] .album-fold-button:hover,[data-theme="day"] .album-fold-all:hover{background:#d3e7cc}
+[data-theme="day"] .album-group.album-collapsed .album-header{background:#f4f8f0}
+@media(max-width:700px){
+  .album-fold-all{margin-left:0}
+  .album-group.album-collapsed .album-header{flex-wrap:wrap;min-height:48px;padding:7px 9px;gap:5px}
+  .album-group.album-collapsed .album-heading{flex:1 1 45%;font-size:12px}
+  .album-group.album-collapsed .album-count{order:0;flex-basis:auto;font-size:9px}
+  .album-group.album-collapsed .album-play-button{font-size:10px}
+  .album-group.album-collapsed .album-fold-button{font-size:10px}
+}
