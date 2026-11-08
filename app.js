@@ -772,7 +772,7 @@ function playAt(i,{keepAlbum=false,queued=false}={}){
   render();updatePlayer();
 }
 function next(direction=1){
-  if(direction>0&&S.smartQueue.length)return playQueuedAt(0);
+  if(direction>0&&S.smartQueue?.length)return playQueuedAt(0);
   if(direction>0&&S.smartOnDeck)return resumeSmartQueue();
   if(!S.tracks.length)return;
   if(S.albumQueue.length)return nextAlbumTrack(direction);
