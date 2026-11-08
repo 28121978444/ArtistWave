@@ -1,0 +1,50 @@
+{
+  "name": "ArtistWave — Music & Playlists",
+  "short_name": "ArtistWave",
+  "description": "Discover music, organize playlists, and listen in a compact desktop-friendly player.",
+  "id": "/ArtistWave/",
+  "start_url": "/ArtistWave/",
+  "scope": "/ArtistWave/",
+  "display": "standalone",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ],
+  "background_color": "#0b1015",
+  "theme_color": "#0b1015",
+  "orientation": "any",
+  "categories": [
+    "music",
+    "entertainment"
+  ],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Mini Player",
+      "short_name": "Mini Player",
+      "description": "Launch ArtistWave directly in the compact mini-player layout.",
+      "url": "/ArtistWave/?mini=1",
+      "icons": [
+        {
+          "src": "icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "prefer_related_applications": false
+}
