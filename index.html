@@ -7,6 +7,9 @@
   <meta name="google-oauth-client-id" content="143348900361-co7l5q5b5jl2c51in1p6od1nft592smq.apps.googleusercontent.com" />
   <title>ArtistWave — Your artist, your station</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
 </head>
 <body>
   <div class="app-shell">
@@ -16,7 +19,8 @@
           <button type="button" id="studioNav" class="mode-tab studio-nav">🤸 Showdance</button>
           <button type="button" id="modeYoutube" class="mode-tab">▶ YouTube</button>
         </nav>
-        <div class="top-right"><button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to Day theme" aria-pressed="false">☀ Day</button><span class="version">V 3.3</span>
+        <div class="top-right"><button id="installAppButton" class="install-app-button" type="button" aria-label="Install ArtistWave as an app" title="Install ArtistWave">⬇ Install</button><button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to Day theme" aria-pressed="false">☀ Day</button><span class="version">V 3.3</span>
+          <span id="installAppStatus" class="install-app-status" role="status" aria-live="polite" hidden></span>
           <details class="topbar-account-menu" id="accountMenu">
             <summary class="topbar-account-toggle" aria-label="Open account and cloud sync settings">☁ Account</summary>
             <div class="cloud-account" aria-label="Account and private cloud sync">
@@ -242,5 +246,6 @@
   <script src="playlists.js" defer></script>
   <script src="mini-player-host.js" defer></script>
   <script src="theme.js" defer></script>
+  <script src="install.js" defer></script>
 </body>
 </html>
