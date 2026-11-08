@@ -469,6 +469,46 @@ function nextAlbumTrack(direction=1){
   playAt(i,{keepAlbum:true});return true;
 }
 
+// Browsing compactness is independent of playback and survives re-renders.
+const ALBUM_FOLD_KEY='artistwave:collapsed-albums:v1';
+let collapsedAlbums=new Set();
+try{
+  const stored=JSON.parse(localStorage.getItem(ALBUM_FOLD_KEY)||'[]');
+  if(Array.isArray(stored))collapsedAlbums=new Set(stored.filter(x=>typeof x==='string').slice(-300));
+}catch{}
+const albumFoldKey=(view,group)=>view+'|'+group.key;
+function saveCollapsedAlbums(){
+  try{localStorage.setItem(ALBUM_FOLD_KEY,JSON.stringify([...collapsedAlbums].slice(-300)))}catch{}
+}
+function updateAlbumFold(section,rows,button,collapsed){
+  section.classList.toggle('album-collapsed',collapsed);
+  rows.hidden=collapsed;
+  button.setAttribute('aria-expanded',String(!collapsed));
+  button.textContent=collapsed?'▾ Show tracks':'▴ Hide tracks';
+  button.setAttribute('aria-label',(collapsed?'Expand ':'Collapse ')+section.dataset.albumLabel);
+  button.title=(collapsed?'Expand':'Collapse')+' album tracks';
+}
+function updateAlbumFoldAll(){
+  const sections=[...$('trackList').querySelectorAll('.album-group')];
+  const allCollapsed=sections.length>0&&sections.every(el=>el.classList.contains('album-collapsed'));
+  const button=$('albumFoldAll');
+  button.textContent=allCollapsed?'▾ Expand all':'▴ Collapse all';
+  button.setAttribute('aria-label',allCollapsed?'Expand all albums':'Collapse all albums');
+  button.disabled=!sections.length;
+}
+function toggleAllAlbums(){
+  const sections=[...$('trackList').querySelectorAll('.album-group')];
+  const collapse=sections.some(el=>!el.classList.contains('album-collapsed'));
+  for(const section of sections){
+    const key=section.dataset.albumKey;
+    if(collapse)collapsedAlbums.add(key);else collapsedAlbums.delete(key);
+    updateAlbumFold(section,section.querySelector('.album-tracks'),section.querySelector('.album-fold-button'),collapse);
+  }
+  saveCollapsedAlbums();
+  updateAlbumFoldAll();
+}
+$('albumFoldAll').addEventListener('click',toggleAllAlbums);
+
 function render(){
   const list=$('trackList');list.replaceChildren();
   $('favoriteCount').textContent=S.favorites.length;
@@ -483,7 +523,7 @@ function render(){
   if(!songs.length&&!unplayable.length){
     const el=document.createElement('div');el.className='empty-state';
     el.textContent=S.catalogLoading?'Looking up song titles…':S.view==='favorites'?'No favorites yet.':S.view==='recent'?'Nothing played yet. Start a song to build your listening history.':S.artist?'No playable recordings found in the selected sources. Enable “Show titles without audio” to browse catalog entries.':'No playable recordings yet. Search for an artist or add local tracks.';
-    list.append(el);return;
+    list.append(el);updateAlbumFoldAll();return;
   }
   const playableGroups=groupTracksByAlbum(songs);
   const catalogGroups=groupTracksByAlbum(unplayable);
@@ -534,6 +574,10 @@ function render(){
     const jumpOption=document.createElement('option');jumpOption.value=groupId;
     jumpOption.textContent=group.label+(group.artist?' · '+group.artist:'');jump.append(jumpOption);
     section.setAttribute('aria-label','Album: '+group.label);
+    const foldKey=albumFoldKey(S.view,group);
+    section.dataset.albumKey=foldKey;
+    section.dataset.albumLabel=group.label;
+    const collapsed=collapsedAlbums.has(foldKey);
     const header=document.createElement('div');header.className='album-header';
     const coverTrack=playable.concat(catalog).map(item=>item.track).find(t=>albumArtwork(t.artwork));
     const cover=document.createElement('div');cover.className='album-cover';
@@ -562,12 +606,26 @@ function render(){
       };
       header.append(button);
     }
+    const foldButton=document.createElement('button');
+    foldButton.type='button';foldButton.className='album-fold-button';
+    const rowsId='album-tracks-'+visited.size;
+    foldButton.setAttribute('aria-controls',rowsId);
+    header.append(foldButton);
     section.append(header);
-    const rows=document.createElement('div');rows.className='album-tracks';
+    const rows=document.createElement('div');rows.className='album-tracks';rows.id=rowsId;
+    updateAlbumFold(section,rows,foldButton,collapsed);
+    foldButton.onclick=()=>{
+      const next=!section.classList.contains('album-collapsed');
+      if(next)collapsedAlbums.add(foldKey);else collapsedAlbums.delete(foldKey);
+      saveCollapsedAlbums();
+      updateAlbumFold(section,rows,foldButton,next);
+      updateAlbumFoldAll();
+    };
     playable.forEach(item=>appendPlayable(item.track,item.index,rows));
     catalog.forEach(item=>appendUnavailable(item.track,rows));
     section.append(rows);list.append(section);
   }
+  updateAlbumFoldAll();
 }
 function favorite(t){if(!t)return;if(t.source==='LOCAL'){show('Local files cannot be saved as persistent favorites.');return}S.favorites=S.favorites.some(x=>x.id===t.id)?S.favorites.filter(x=>x.id!==t.id):[...S.favorites,t];window.ArtistWaveCloud?.persistGuestFavorites(S.favorites);window.ArtistWaveCloud?.changed();render();updatePlayer()}
 function clearPlaybackRecovery(){
