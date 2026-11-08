@@ -263,3 +263,13 @@ The mini window has a dedicated interface with album artwork when available, son
 **Single playback engine:** the compact window controls the original page's HTML audio element. It does not open a second audio stream or copy local audio files. The main ArtistWave tab must remain open while the mini window is in use; if closed or navigated away, the compact window shows a disconnected status. The playlist-save shortcut brings the main window forward so the picker is visible.
 
 No changes are made to YouTube embeds, Google sign-in, the Showdance workspace, or existing music providers.
+
+## Install ArtistWave as a desktop app
+
+ArtistWave supports browser installation on compatible desktop and mobile browsers. On Chrome or Edge, open [ArtistWave](https://28121978444.github.io/ArtistWave/) and click **⬇ Install** or use the browser's **Install this site as an app** menu item. It opens as a dedicated app window and can be launched from the desktop or app launcher. Browser support and whether the install prompt appears vary by platform.
+
+The installable app provides a **Mini Player** launcher shortcut pointing to `/ArtistWave/?mini=1`. It loads the compact full-height layout with its own audio engine when opened directly, without needing a second main ArtistWave browser window. The regular in-page pop-out still uses the original playback engine and remains available from the main player's Mini Player button.
+
+The service worker caches only the app's local interface assets for resilience. It **does not** cache or download media streams, online provider data, Google Drive account data or OAuth tokens. Music discovery and online playback still require an internet connection, and local audio files still require user-granted folder access. App installation does not add any new account permissions.
+
+GitHub Pages publishes the web manifest, two raster icon sizes, service worker and install controller alongside the existing site. Existing playlists, Entertainment, YouTube and Showdance behavior are unchanged.
