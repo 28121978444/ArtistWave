@@ -1021,3 +1021,29 @@ body[data-mode="audio"] .app-shell{
   .smart-queue-actions button{min-width:26px;min-height:29px}
   .track-queue-next,.track-queue-add{padding:6px}
 }
+
+/* Installed ArtistWave — compact, unobtrusive desktop install control. */
+.top-right{position:relative}
+.install-app-button{
+  display:inline-flex;align-items:center;justify-content:center;min-height:36px;
+  padding:8px 12px;border-radius:9px;border:1px solid #54785a;
+  background:#244833;color:#dcf9c7;white-space:nowrap;font-size:11px;
+  font-weight:850;letter-spacing:0;
+}
+.install-app-button:hover:not(:disabled){background:#376544;border-color:#9bc88e}
+.install-app-button:disabled{opacity:.7;cursor:default}
+.install-app-status{
+  position:absolute;right:0;top:calc(100% + 12px);width:min(350px,calc(100vw - 26px));
+  padding:13px 15px;border-radius:11px;border:1px solid #638367;
+  background:#142a23;color:#e3f4df;font-size:12px;line-height:1.6;
+  z-index:150;box-shadow:0 14px 36px #0009;letter-spacing:0;
+}
+.install-app-status[hidden]{display:none!important}
+[data-theme="day"] .install-app-button{background:#e7f2df;color:#2d6036;border-color:#b7d2b4}
+[data-theme="day"] .install-app-button:hover:not(:disabled){background:#d7eacc}
+[data-theme="day"] .install-app-status{background:#fffefa;color:#31503a;border-color:#b9d0b7;box-shadow:0 14px 35px #355c3b28}
+@media(max-width:700px){
+  .top-right{gap:5px}
+  .install-app-button{min-height:32px;padding:6px 8px;font-size:10px}
+  .top-right>.version{display:none}
+}
