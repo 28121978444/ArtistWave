@@ -38,6 +38,11 @@ jobs:
           test -s mini-player-host.js
           test -s mini-player.js
           test -s theme.js
+          test -s install.js
+          test -s sw.js
+          test -s manifest.webmanifest
+          test -s icon-192.png
+          test -s icon-512.png
           node --check app.js
           node --check cloud-sync.js
           node --check studio.js
@@ -46,12 +51,15 @@ jobs:
           node --check mini-player-host.js
           node --check mini-player.js
           node --check theme.js
+          node --check install.js
+          node --check sw.js
+          node -e "const m=JSON.parse(require('node:fs').readFileSync('manifest.webmanifest')); if(m.scope!=='/ArtistWave/'||m.display!=='standalone')process.exit(1)"
           node --test tests/*.test.cjs
 
       - name: Prepare static website
         run: |
           mkdir -p site
-          cp index.html app.js cloud-sync.js studio.js navigation.js playlists.js mini-player.html mini-player.css mini-player-host.js mini-player.js theme.js styles.css site/
+          cp index.html app.js cloud-sync.js studio.js navigation.js playlists.js mini-player.html mini-player.css mini-player-host.js mini-player.js theme.js install.js sw.js manifest.webmanifest icon-192.png icon-512.png styles.css site/
           touch site/.nojekyll
 
       - name: Configure GitHub Pages
