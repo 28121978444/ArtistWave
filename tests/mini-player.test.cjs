@@ -87,6 +87,36 @@ test('popup-blocked browsers get an accessible full-height in-page mini player',
   const css=fs.readFileSync('styles.css','utf8');
   assert.match(css,/\.mini-player-fallback\{position:fixed;inset:0/);
 });
+test('a direct mini URL launches a compact standalone player without an opener',()=>{
+  const nodes=new Map(),calls=[];
+  const item=id=>{
+    if(!nodes.has(id))nodes.set(id,{hidden:true,src:'',addEventListener(){},removeAttribute(name){if(name==='src')this.src=''}});
+    return nodes.get(id);
+  };
+  const window={
+    location:{search:'?mini=1',href:'https://example.org/ArtistWave/?mini=1'},
+    history:{replaceState:(...args)=>calls.push(['history',...args])},
+    ArtistWaveLibrary:{prepareMiniLibrary:()=>calls.push('prepareMiniLibrary')}
+  };
+  const document={getElementById:item,body:{classList:{add:c=>calls.push(['add',c]),remove:c=>calls.push(['remove',c])}}};
+  vm.runInNewContext(hostScript,{window,document,URL,URLSearchParams,Number,Math});
+  assert.ok(calls.includes('prepareMiniLibrary'));
+  assert.equal(item('miniPlayerFallback').hidden,false);
+  assert.equal(item('miniPlayerFallbackFrame').src,'mini-player.html?embedded=1');
+  assert.ok(calls.some(c=>Array.isArray(c)&&c[1]==='mini-direct-route'));
+  window.ArtistWaveMiniHost.closeFallback();
+  assert.equal(item('miniPlayerFallback').hidden,true);
+  assert.ok(calls.some(c=>Array.isArray(c)&&c[0]==='history'&&c[3]==='/ArtistWave/'));
+});
+test('mini queue lets users reorder queued tracks without adding another audio engine',()=>{
+  assert.match(compactScript,/smartQueue=\[\]/);
+  assert.match(compactScript,/send\('queueMove'/);
+  assert.match(compactScript,/send\('queuePlay'/);
+  assert.match(compactScript,/send\('queueRemove'/);
+  assert.match(hostScript,/getSmartQueue/);
+  assert.match(hostScript,/queueMove/);
+  assert.doesNotMatch(compactScript,/new Audio\(/);
+});
 test('mini script uses existing main window engine through opener or embedded parent',()=>{
   assert.match(compactScript,/window\.opener/);
   assert.match(compactScript,/window\.parent/);
