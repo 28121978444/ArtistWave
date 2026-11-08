@@ -5,7 +5,7 @@
   const status=document.getElementById('installAppStatus');
   let deferredPrompt=null;
   const installed=()=>window.matchMedia?.('(display-mode: standalone)').matches||
-    window.navigator.standalone===true;
+    window.navigator?.standalone===true;
   function message(value){
     if(!status)return;
     status.textContent=value;
