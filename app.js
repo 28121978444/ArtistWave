@@ -507,7 +507,6 @@ function toggleAllAlbums(){
   saveCollapsedAlbums();
   updateAlbumFoldAll();
 }
-$('albumFoldAll').addEventListener('click',toggleAllAlbums);
 
 function render(){
   const list=$('trackList');list.replaceChildren();
@@ -896,6 +895,7 @@ $('searchForm').addEventListener('submit',e=>{e.preventDefault();const term=$('a
 $('loadMore').onclick=loadMore;
 $('playButton').onclick=()=>{if(!audio.src&&S.tracks.length){playAt(0);return}audio.paused?audio.play().catch(()=>{}):audio.pause()};
 $('nextButton').onclick=()=>next(1);$('previousButton').onclick=()=>next(-1);
+$('albumFoldAll').addEventListener('click',toggleAllAlbums);
 $('shuffleButton').onclick=()=>{clearAlbumQueue();S.shuffle=!S.shuffle;$('shuffleButton').classList.toggle('active',S.shuffle)};
 $('shuffleAll').onclick=()=>{clearAlbumQueue();S.shuffle=true;$('shuffleButton').classList.add('active');next(1)};
 $('repeatButton').onclick=()=>{S.repeat=(S.repeat+1)%3;$('repeatButton').title=['Repeat: off','Repeat: all','Repeat: one'][S.repeat];$('repeatButton').classList.toggle('active',S.repeat>0)};
