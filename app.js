@@ -1633,6 +1633,15 @@ window.ArtistWaveLibrary={
   queueRemove:index=>{if(!Number.isInteger(index)||index<0||index>=S.smartQueue.length)return false;S.smartQueue.splice(index,1);renderSmartQueue();return true},
   playIndex:index=>playAt(index),
   getAvailable:()=>[...S.local,...S.tracks,...S.favorites,...S.recent],
+  prepareMiniLibrary:()=>{
+    if(S.tracks.length)return S.tracks.length;
+    const available=dedupeTracks(S.recent.length?S.recent:S.favorites).filter(t=>t.url&&/^https:\/\//.test(t.url));
+    if(!available.length)return 0;
+    S.tracks=available;S.selected=-1;S.view='discover';
+    $('playlistHeading').textContent='Ready to play · Recent listening';
+    render();updatePlayer();
+    return available.length;
+  },
   playPlaylist:(tracks,index=0)=>{
     const previous=S.tracks[S.selected];
     clearAlbumQueue();
